@@ -45,7 +45,7 @@ CREATE TABLE
 CREATE TABLE
     senior_request (
         user_id INT NOT NULL,
-        status TEXT NOT NULL,
+        status TEXT NOT NULL, -- status should be one of: pending, approved, rejected
         ssn_image TEXT NOT NULL,
         PRIMARY KEY (user_id),
         FOREIGN KEY (user_id) REFERENCES "user"(user_id)
