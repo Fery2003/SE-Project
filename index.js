@@ -39,14 +39,13 @@ app.get('/', async (req, res) => {
 
   app.post('/register/api/v1/users', async (req, res) => {
     try {
-      const { name, email, password } = req.body;
+      const { firstname, lastname, email, roleid, password } = req.body;
       const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
       if (user.rows.length !== 0) {
         res.status(401).json('User already exists!');
-      } else {
-        const salt = await bcrypt.genSalt(10);
-        const bcryptPassword = await bcrypt.hash(password, salt);
-        const newUser = await pool.query('INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *', [name, email, bcryptPassword]);
+      }
+      else {
+        const newUser = await pool.query('INSERT INTO se_project.users (firstname, lastname, email, roleid, password) VALUES ($1, $2, $3, $4, $5) RETURNING *', [firstname, lastname, email, roleid, password]);
         const token = jwtGenerator(newUser.rows[0].user_id);
         res.json({ token });
       }
@@ -57,7 +56,7 @@ app.get('/', async (req, res) => {
 
   app.get('/dashboard', async (req, res) => {
     try {
-      const user = await pool.query('SELECT name FROM users WHERE user_id = $1', [req.user]);
+      const user = await pool.query('SELECT name FROM se_project.users WHERE userid = $1', [req.user]);
       res.json(user.rows[0]);
     } catch (error) {
       console.error(error.message);
@@ -68,13 +67,11 @@ app.get('/', async (req, res) => {
   app.put('/resetPassword/api/v1/password/reset', async (req, res) => {
     try {
       const { email, password } = req.body;
-      const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+      const user = await pool.query('SELECT * FROM se_project.users WHERE email = $1', [email]);
       if (user.rows.length === 0) {
         res.status(401).json('Invalid Credentials!');
       } else {
-        const salt = await bcrypt.genSalt(10);
-        const bcryptPassword = await bcrypt.hash(password, salt);
-        const resetPassword = await pool.query('UPDATE users SET password = $1 WHERE email = $2 RETURNING *', [bcryptPassword, email]);
+        const resetPassword = await pool.query('UPDATE se_project.users SET password = $1 WHERE email = $2 RETURNING *', [password, email]);
         res.json(resetPassword.rows[0]);
       }
     } catch (error) {
@@ -84,7 +81,7 @@ app.get('/', async (req, res) => {
 
   app.get('/subscriptions/api/v1/zones', async (req, res) => {
     try {
-      const zones = await pool.query('SELECT * FROM zones');
+      const zones = await pool.query('SELECT * FROM se_project.zones');
       res.json(zones.rows);
     } catch (error) {
       console.error(error.message);
@@ -93,8 +90,8 @@ app.get('/', async (req, res) => {
 
   app.post('/subscriptions/api/payment/subscription', async (req, res) => {
     try {
-      const { subId, creditCardNumber, holderName, payedAmount, origin, destination, tripDate } = req.body;
-      const subscription = await pool.query('INSERT INTO subscriptions (sub_id, credit_card_number, holder_name, payed_amount, origin, destination, trip_date) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [subId, creditCardNumber, holderName, payedAmount, origin, destination, tripDate]);
+      const { subtype, zoneid, user_id, nooftickets, } = req.body;
+      const subscription = await pool.query('INSERT INTO se_project.subsription (subtype, zoneid, user_id,nooftickets) VALUES ($1, $2, $3, $4) RETURNING *', [subtype, zoneid, userid, nooftickets]);
       res.json(subscription.rows[0]);
     } catch (error) {
       console.error(error.message);
@@ -103,9 +100,8 @@ app.get('/', async (req, res) => {
 
   app.post('/tickets/api/payment/tickets', async (req, res) => {
     try {
-      const { ticketId, creditCardNumber, holderName, payedAmount, origin, destination, tripDate } = req.body;
-      const ticket = await pool.query('INSERT INTO tickets (ticket_id, credit_card_number, holder_name, payed_amount, origin, destination, trip_date) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [ticketId, creditCardNumber, holderName, payedAmount, origin, destination, tripDate]);
-      res.json(ticket.rows[0]);
+      const { status, origin, destination, userid, ticketid, tripdate } = req.body;
+      const ticket = await pool.query('INSERT INTO se_project.tickets (status , origin,destination , userid , ticketid , tripdate) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [status, origin, destination, userid, ticketid, tripdate]);
     } catch (error) {
       console.error(error.message);
     }
@@ -113,13 +109,9 @@ app.get('/', async (req, res) => {
 
   app.post('/tickets/api/v1/tickets/purchase/subscription', async (req, res) => {
     try {
-      const { subId, origin, destination, tripDate } = req.body;
-      const subscription = await pool.query('SELECT * FROM subscriptions WHERE sub_id = $1 AND origin = $2 AND destination = $3 AND trip_date = $4', [subId, origin, destination, tripDate]);
-      if (subscription.rows.length === 0) {
-        res.status(401).json('Invalid Credentials!');
-      } else {
-        res.json(subscription.rows[0]);
-      }
+      const { status, origin, destination, userid, ticketid, tripdate } = req.body;
+      const ticket = await pool.query('INSERT INTO se_project.tickets (status , origin,destination , userid , ticketid , tripdate) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [status, origin, destination, userid, ticketid, tripdate]);
+      res.json(ticket.rows[0]);
     } catch (error) {
       console.error(error.message);
     }
@@ -127,8 +119,8 @@ app.get('/', async (req, res) => {
 
   app.post('/prices/api/v1/tickets/price/:originId', async (req, res) => {
     try {
-      const { originId } = req.body;
-      const price = await pool.query('SELECT price FROM prices WHERE origin_id = $1', [originId]);
+      const { zonetype } = req.body;
+      const price = await pool.query('SELECT * FROM se_project.zones WHERE zonetype = $1', [zonetype]);
       res.json(price.rows[0]);
     } catch (error) {
       console.error(error.message);
@@ -137,7 +129,7 @@ app.get('/', async (req, res) => {
 
   app.get('/rides', async (req, res) => {
     try {
-      const rides = await pool.query('SELECT * FROM rides');
+      const rides = await pool.query('SELECT * FROM se_project.rides');
       res.json(rides.rows);
     } catch (error) {
       console.error(error.message);
@@ -160,8 +152,8 @@ app.get('/', async (req, res) => {
 
   app.post('/request/senior/api/v1/senior/request', async (req, res) => {
     try {
-      const { name, email, origin, destination, tripDate } = req.body;
-      const senior = await pool.query('INSERT INTO seniors (name, email, origin, destination, trip_date) VALUES ($1, $2, $3, $4, $5) RETURNING *', [name, email, origin, destination, tripDate]);
+      const { status, userid, nationalid } = req.body;
+      const senior = await pool.query('INSERT INTO se_project.senior_request (status,userid,nationalid) VALUES ($1, $2, $3) RETURNING *', [status, userid, nationalid]);
       res.json(senior.rows[0]);
     } catch (error) {
       console.error(error.message);
@@ -170,8 +162,8 @@ app.get('/', async (req, res) => {
 
   app.put('/rises/simulate/api/v1/ride/simulate', async (req, res) => {
     try {
-      const { rideId, origin, destination, tripDate } = req.body;
-      const ride = await pool.query('UPDATE rides SET origin = $1, destination = $2, trip_date = $3 WHERE ride_id = $4 RETURNING *', [origin, destination, tripDate, rideId]);
+      const { id } = req.body;
+      const ride = await pool.query('UPDATE se_project.rides SET status = $1 WHERE ride_id = $2 RETURNING *', [status, id]);
       res.json(ride.rows[0]);
     } catch (error) {
       console.error(error.message);
@@ -179,9 +171,8 @@ app.get('/', async (req, res) => {
   });
   app.post('/stations', async (req, res) => {
     try {
-      const { name } = req.body;
-      const newStation = await pool.query('INSERT INTO stations (name) VALUES ($1) RETURNING *', [name]);
-      res.json(newStation.rows[0]);
+      const { stationname, stationtype, stationposition, stationstatus } = req.body;
+      const newStation = await pool.query('INSERT INTO se_project.stations (stationname,stationtype,stationposition,stationstatus) VALUES ($1, $2, $3, $4) RETURNING *', [stationname, stationtype, stationposition, stationstatus]);
     } catch (error) {
       console.error(error.message);
     }
@@ -191,8 +182,8 @@ app.get('/', async (req, res) => {
   app.put('/stations/:id', async (req, res) => {
     try {
       const { id } = req.params;
-      const { name } = req.body;
-      const updateStation = await pool.query('UPDATE stations SET name = $1 WHERE station_id = $2 RETURNING *', [name, id]);
+      const { stationname, stationtype, stationposition, stationstatus } = req.body;
+      const updateStation = await pool.query('UPDATE stations SET stationname = $1, stationtype = $2, stationposition = $3, stationstatus = $4 WHERE station_id = $5 RETURNING *', [stationname, stationtype, stationposition, stationstatus, id]);
       res.json(updateStation.rows[0]);
     } catch (error) {
       console.error(error.message);
@@ -203,8 +194,8 @@ app.get('/', async (req, res) => {
   app.delete('/stations/:id', async (req, res) => {
     try {
       const { id } = req.params;
-      const deleteStation = await pool.query('DELETE FROM stations WHERE station_id = $1 RETURNING *', [id]);
-      res.json(deleteStation.rows[0]);
+      const deleteStation = await pool.query('DELETE FROM stations WHERE station_id = $1', [id]);
+      res.json('Station was deleted!');
     } catch (error) {
       console.error(error.message);
     }
@@ -213,8 +204,8 @@ app.get('/', async (req, res) => {
 
   app.post('/routes', async (req, res) => {
     try {
-      const { station_id, station_id2, name } = req.body;
-      const newRoute = await pool.query('INSERT INTO routes (station_id, station_id2, name) VALUES ($1, $2, $3) RETURNING *', [station_id, station_id2, name]);
+      const { routename, fromStationid, toStationid } = req.body;
+      const newRoute = await pool.query('INSERT INTO se_project.routes (routename.fromStationid,toStationid) VALUES ($1, $2) RETURNING *', [routename.fromStationid, toStationid]);
       res.json(newRoute.rows[0]);
     } catch (error) {
       console.error(error.message);
@@ -226,8 +217,8 @@ app.get('/', async (req, res) => {
   app.put('/routes/:id', async (req, res) => {
     try {
       const { id } = req.params;
-      const { name } = req.body;
-      const updateRoute = await pool.query('UPDATE routes SET name = $1 WHERE route_id = $2 RETURNING *', [name, id]);
+      const { routename, fromStationid, toStationid } = req.body;
+      const updateRoute = await pool.query('UPDATE routes SET routename = $1, fromStationid = $2, toStationid = $3 WHERE route_id = $4 RETURNING *', [routename, fromStationid, toStationid, id]);
       res.json(updateRoute.rows[0]);
     } catch (error) {
       console.error(error.message);
@@ -239,8 +230,8 @@ app.get('/', async (req, res) => {
   app.delete('/routes/:id', async (req, res) => {
     try {
       const { id } = req.params;
-      const deleteRoute = await pool.query('DELETE FROM routes WHERE route_id = $1 RETURNING *', [id]);
-      res.json(deleteRoute.rows[0]);
+      const deleteRoute = await pool.query('DELETE FROM routes WHERE route_id = $1', [id]);
+      res.json('Route was deleted!');
     } catch (error) {
       console.error(error.message);
     }
