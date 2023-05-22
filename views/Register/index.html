@@ -8,6 +8,34 @@
 </head>
 <link rel="stylesheet" href="style.css">
 <body>
-    
+  <div class="container">
+    <form>
+      <div class="form-group">
+        <label for="firstname">First Name:</label>
+        <input type="text" id="firstname" name="firstname" placeholder="Enter your first name">
+      </div>
+      <div class="form-group">
+        <label for="lastname">Last Name:</label>
+        <input type="text" id="lastname" name="lastname" placeholder="Enter your last name">
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email address">
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password">
+      </div>
+      <div class="form-group">
+        <label for="roleid">Role ID:</label>
+        <select id="roleid" name="roleid">
+          <option value="1">Admin</option>
+          <option value="2">User</option>
+          <option value="3">senior</option>
+        </select>
+      </div>
+      <input type="submit" class="btn-register" value="Register">
+    </form>
+  </div>
 </body>
 </html>
