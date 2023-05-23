@@ -42,7 +42,9 @@ app.post('/api/v1/users/register', async (req, res) => {
   try {
     const { firstname, lastname, email, password, roleid } = req.body;
     const user = await pool.query('SELECT * FROM se_project.users WHERE email = $1', [email]);
-
+    if (user.rows.length > 0) {
+      res.status(401).json('User already exists!');
+    }
     const newUser = await pool.query('INSERT INTO se_project.users (firstname, lastname, email, roleid, password) VALUES ($1, $2, $3, $4, $5) RETURNING *', [firstname, lastname, email, roleid, password]);
     res.json(newUser.rows[0]);
   } catch (error) {
