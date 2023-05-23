@@ -36,15 +36,15 @@ const getUser = async function (req) {
 
     return user;
 }
-app.get('/dashboard', async (req, res) => {
-    try {
-        const user = await pool.query('SELECT * FROM se_project.users WHERE id = $1', [req.user]);
-        res.json(user.rows[0]);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send('Server Error!');
-    }
-});
+// app.get('/dashboard', async (req, res) => {
+//     try {
+//         const user = await pool.query('SELECT * FROM se_project.users WHERE id = $1', [req.user]);
+//         res.json(user.rows[0]);
+//     } catch (error) {
+//         console.error(error.message);
+//         res.status(500).send('Server Error!');
+//     }
+// });
 
 // Reset password endpoint
 app.put('/api/v1/password/reset', async (req, res) => {
@@ -101,15 +101,15 @@ app.post('/prices/api/v1/tickets/price/:originId', async (req, res) => {
 });
 
 // Get all rides endpoint
-app.get('/rides', async (req, res) => {
-    try {
-        const rides = await pool.query('SELECT * FROM se_project.rides');
-        res.json(rides.rows);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send('Server Error!');
-    }
-});
+// app.get('/rides', async (req, res) => {
+//     try {
+//         const rides = await pool.query('SELECT * FROM se_project.rides');
+//         res.json(rides.rows);
+//     } catch (error) {
+//         console.error(error.message);
+//         res.status(500).send('Server Error!');
+//     }
+// });
 
 // Request ticket refund endpoint
 app.post('/request/refund/api/v1/refund/:ticketId', async (req, res) => {
@@ -127,7 +127,7 @@ app.put('/rides/simulate/api/v1/ride/simulate', async (req, res) => {
 });
 
 // Create new station endpoint
-app.post('/stations', async (req, res) => {
+app.post('/manage/stations/api/v1/station', async (req, res) => {
     try {
         const { stationname, stationtype, stationposition, stationstatus } = req.body;
         const newStation = await pool.query('INSERT INTO se_project.stations (stationname, stationtype, stationposition, stationstatus) VALUES ($1, $2, $3, $4) RETURNING *', [stationname, stationtype, stationposition, stationstatus]);
@@ -139,17 +139,17 @@ app.post('/stations', async (req, res) => {
 });
 
 // Update station endpoint
-app.put('/stations/:id', async (req, res) => {
+app.put('/manage/stations/api/v1/station/:stationId', async (req, res) => {
 
 });
 
 // Delete station endpoint
-app.delete('/stations/:id', async (req, res) => {
+app.delete('/manage/stations/api/v1/station/:stationId', async (req, res) => {
 
 });
 
 // Create new route endpoint
-app.post('/routes', async (req, res) => {
+app.post('/manage/routes/api/v1/route', async (req, res) => {
     try {
         const { routename, fromStationid, toStationid } = req.body;
         const newRoute = await pool.query('INSERT INTO se_project.routes (routename, fromStationid, toStationid) VALUES ($1, $2, $3) RETURNING *', [routename, fromStationid, toStationid]);
@@ -161,11 +161,11 @@ app.post('/routes', async (req, res) => {
 });
 
 // Update route endpoint
-app.put('/routes/:id', async (req, res) => {
+app.put('/manage/routes/api/v1/route/:routeId', async (req, res) => {
 
 });
 
 // Delete route endpoint
-app.delete('/routes/:id', async (req, res) => {
+app.delete('/manage/routes/api/v1/route/:routeId', async (req, res) => {
 
 });
