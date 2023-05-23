@@ -36,6 +36,9 @@ const getUser = async function (req) {
 
     return user;
 }
+
+//User stuff
+
 // app.get('/dashboard', async (req, res) => {
 //     try {
 //         const user = await pool.query('SELECT * FROM se_project.users WHERE id = $1', [req.user]);
@@ -126,6 +129,30 @@ app.put('/rides/simulate/api/v1/ride/simulate', async (req, res) => {
 
 });
 
+//Admin Stuff
+
+// Reset password endpoint
+app.put('/api/v1/password/reset', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await pool.query('UPDATE se_project.users SET password = $1 WHERE email = $2 RETURNING *', [password, email]);
+        res.json(user.rows[0]);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Server Error!');
+    }
+});
+
+// app.get('/dashboard', async (req, res) => {
+//     try {
+//         const user = await pool.query('SELECT * FROM se_project.users WHERE id = $1', [req.user]);
+//         res.json(user.rows[0]);
+//     } catch (error) {
+//         console.error(error.message);
+//         res.status(500).send('Server Error!');
+//     }
+// });
+
 // Create new station endpoint
 app.post('/manage/stations/api/v1/station', async (req, res) => {
     try {
@@ -140,7 +167,14 @@ app.post('/manage/stations/api/v1/station', async (req, res) => {
 
 // Update station endpoint
 app.put('/manage/stations/api/v1/station/:stationId', async (req, res) => {
+    try{
+        const {stationName} = req.body
 
+    }
+    catch (error)
+    {
+        
+    }
 });
 
 // Delete station endpoint
