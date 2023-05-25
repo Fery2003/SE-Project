@@ -1,4 +1,4 @@
--- Active: 1684831529052@@127.0.0.1@5432@se_project23@project23
+-- Active: 1679073997780@@127.0.0.1@5432@project@project23
 -- DROP TABLE IF EXISTS se_project.users;
 -- DROP TABLE IF EXISTS roles;
 -- DROP TABLE IF EXISTS faculties;
@@ -9,7 +9,7 @@
 --so either change them from pgadmin or change in the code to lower
 
 
-CREATE TABLE IF NOT EXISTS project23.users
+CREATE TABLE IF NOT EXISTS users
 (
     id SERIAL NOT NULL,
     firstname text NOT NULL,
