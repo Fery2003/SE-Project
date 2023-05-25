@@ -1,8 +1,9 @@
 const { isEmpty } = require("lodash");
 const { v4 } = require("uuid");
-const db = require("../../connectors/db");
+const db = require("../../connectors/db.js");
 const roles = require("../../constants/roles");
-const { getSessionToken } = require('../../utils/session')
+const { getSessionToken } = require('../../utils/session.js');
+const { compileFunction } = require("vm");
 const getUser = async function (req) {
   const sessionToken = getSessionToken(req);
   if (!sessionToken) {
@@ -40,7 +41,7 @@ module.exports = function (app) {
       const user = await getUser(req);
       const users = await db.select('*').from("se_project.users")
 
-      return res.status(200).json(users);
+      return res.status(200).json(users.rows[0]);
     } catch (e) {
       console.log(e.message);
       return res.status(400).send("Could not get users");
@@ -168,6 +169,16 @@ module.exports = function (app) {
 
   // Simulate ride endpoint
   app.put('/rides/simulate/api/v1/ride/simulate', async (req, res) => {
+    try {
+      const {source, dest, date} = req.body;
+      const user = await getUser(req)
+      const uid = user.userid;
+      const updatedRide = await db.query('UPDATE rides SET status = $1 WHERE origin = $2 and destination = $3 and userid = $4 and tripdate = $5 RETURNING *', ['completed', source, dest, uid, date]);
+      console.log(updatedRide.rows[0]);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send('Server Error!');
+    }
 
   });
 
