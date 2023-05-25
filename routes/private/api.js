@@ -1,6 +1,7 @@
 const { isEmpty } = require("lodash");
 const { v4 } = require("uuid");
-const {db, pool} = require("../../connectors/db.js");
+const db = require("../../connectors/knexDB.js");
+const pool = require("../../connectors/poolDB.js");
 const roles = require("../../constants/roles");
 const { getSessionToken } = require('../../utils/session.js');
 const { compileFunction } = require("vm");
@@ -12,7 +13,7 @@ const getUser = async function (req) {
   console.log("hi", sessionToken);
   const user = await db
     .select("*")
-    .from("se_project.sessions")
+    .from("sessions")
     .where("token", sessionToken)
     .innerJoin(
       "se_project.users",
@@ -98,6 +99,7 @@ module.exports = function (app) {
       const { email, password } = req.body;
       const user = await pool.query('UPDATE se_project.users SET password = $1 WHERE email = $2 RETURNING *', [password, email]);
       res.json(user.rows[0]);
+      redirect('/login')
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -212,6 +214,7 @@ module.exports = function (app) {
       const { stationname, stationtype, stationposition, stationstatus } = req.body;
       const newStation = await pool.query('INSERT INTO se_project.stations (stationname, stationtype, stationposition, stationstatus) VALUES ($1, $2, $3, $4) RETURNING *', [stationname, stationtype, stationposition, stationstatus]);
       res.json(newStation.rows[0]);
+      redirect('/');
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -225,7 +228,9 @@ module.exports = function (app) {
       const { stationName } = req.body
       const updateStation = await pool.query("UPDATE stations SET stationname = $1 WHERE id = $2 RETURNING *", [stationName, stationId]);
       res.json(updateStation.rows[0])
+      redirect('/');
     }
+    
     catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -234,6 +239,26 @@ module.exports = function (app) {
 
   // Delete station endpoint
   app.delete('/manage/stations/api/v1/station/:stationId', async (req, res) => {
+    try {
+      const stationid = req.params;
+      const station = await pool.query("SELECT * FROM stations WHERE id = $1", [stationid]);
+      console.log(station.rows[0])
+      if (station.stationtype == "normal")
+      {
+        if(station.stationposition == "start")
+        {
+          await pool.query('delete from routes where fromstationid = $1', [stationid]);
+        }
+        else if(station.stationposition == "end")
+        {
+          await pool.query('delete from routes where tostationid = $1', [stationid]);
+        }
+        const deleted = await pool.query("delete from stations where id = $1 redering *", [stationid])
+        console.log(deleted.rows[0]);
+      }
+    } catch (error) {
+      
+    }
 
   });
 
