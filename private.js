@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const axios = require('axios');
-const pool = require('./db.js');
+const db = require('./db.js'); //here i'm saying #import ./db.js as db
 
 app.use(express.json());
 
@@ -168,12 +168,15 @@ app.post('/manage/stations/api/v1/station', async (req, res) => {
 // Update station endpoint
 app.put('/manage/stations/api/v1/station/:stationId', async (req, res) => {
     try{
+        const stationId = req.params
         const {stationName} = req.body
-
+        const updateStation = await db.query("UPDATE stations SET stationname = $1 WHERE id = $2 RETURNING *", [stationName, stationId]);
+        res.json(updateStation.rows[0])
     }
     catch (error)
     {
-        
+        console.error(error.message);
+        res.status(500).send('Server Error!');
     }
 });
 
@@ -202,4 +205,18 @@ app.put('/manage/routes/api/v1/route/:routeId', async (req, res) => {
 // Delete route endpoint
 app.delete('/manage/routes/api/v1/route/:routeId', async (req, res) => {
 
+});
+
+//Update zone price
+app.post('/manage/zones/api/v1/zones/:zoneId', async (req, res) => {
+    try {
+        const { newPrice } = req.body;
+        const zoneId = req.params;
+        const updatedPrice = await db.query('UPDATE zones SET price = $1 WHERE id = $2 RETURNING *', [newPrice, zoneId]);
+        res.json(updatedPrice.rows[0]);
+        
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Server Error!');
+    }
 });
