@@ -1,7 +1,7 @@
-M2&M.pdf
-/views/Login
-/views/Register
-/views/ResetPassword
-/views/Rides
-/views/Dashboard
-/connectors/db.js
+
+/views/Admin
+/views/User
+/views/Shared
+/node_modules
+package-lock.json
+```
