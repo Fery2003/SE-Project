@@ -1,6 +1,6 @@
 const { isEmpty } = require("lodash");
 const { v4 } = require("uuid");
-const db = require("../../connectors/db");
+const db = require("../../connectors/knexDB.js");
 const roles = require("../../constants/roles");
 module.exports = function (app) {
   app.post("/api/v1/user", async function (req, res) {
@@ -58,7 +58,7 @@ module.exports = function (app) {
     if (user.password !== password) {
       return res.status(401).send("Password does not match");
     }
-
+    
     // set the expiry time as 15 minutes after the current time
     const token = v4();
     const currentDateTime = new Date();
