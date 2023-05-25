@@ -1,10 +1,11 @@
 const path = require('path');
 const express = require('express');
-const authMiddleware = require('./middleware/auth');
-const privateApiRoutes = require('./routes/private/api');
-const publicApiRoutes = require('./routes/public/api');
-const publicViewRoutes = require('./routes/public/view');
-const privateViewRoutes = require('./routes/private/view');
+const authMiddleware = require('./middleware/auth.js');
+const privateApiRoutes = require('./routes/private/api.js');
+const publicApiRoutes = require('./routes/public/api.js');
+const publicViewRoutes = require('./routes/public/view.js');
+const privateViewRoutes = require('./routes/private/view.js');
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
