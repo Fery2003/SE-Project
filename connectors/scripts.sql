@@ -1,4 +1,4 @@
--- Active: 1679073997780@@127.0.0.1@5432@project@project23
+-- Active: 1679073997780@@127.0.0.1@5432@project@se_project
 -- DROP TABLE IF EXISTS se_project.users;
 -- DROP TABLE IF EXISTS roles;
 -- DROP TABLE IF EXISTS faculties;
@@ -8,7 +8,8 @@
 --- Note in pgadmin columns name will be lowerCase 
 --so either change them from pgadmin or change in the code to lower
 
-
+-- READ THIS: CHANGE YOUR SCHEMA TO USE THE SCHEMA "se_project" FROM ABOVE BEFORE RUNNING THIS STUFF SO YOU DON'T GET ERRORS
+CREATE SCHEMA se_project -- RUN THIS TO MAKE THE SCHEMA
 CREATE TABLE IF NOT EXISTS users
 (
     id SERIAL NOT NULL,
