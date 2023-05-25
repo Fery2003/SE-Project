@@ -1,8 +1,4 @@
-<<<<<<< HEAD
--- Active: 1684831529052@@127.0.0.1@5432@se_project23@project23
-=======
--- Active: 1679073997780@@127.0.0.1@5432@project@se_project
->>>>>>> 65711abadae75c7ff34ea38aed0d0e6808e33738
+-- Active: 1684831529052@@127.0.0.1@5432@se_project23@se_project
 -- DROP TABLE IF EXISTS se_project.users;
 -- DROP TABLE IF EXISTS roles;
 -- DROP TABLE IF EXISTS faculties;
