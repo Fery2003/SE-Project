@@ -6,4 +6,5 @@
 /constants
 package.json
 package-lock.json
-
+/connectors/scripts.sql
+/connectors/seed.sql
