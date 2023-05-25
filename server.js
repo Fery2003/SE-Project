@@ -5,6 +5,7 @@ const privateApiRoutes = require('./routes/private/api');
 const publicApiRoutes = require('./routes/public/api');
 const publicViewRoutes = require('./routes/public/view');
 const privateViewRoutes = require('./routes/private/view');
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
