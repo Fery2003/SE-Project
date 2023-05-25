@@ -2,6 +2,8 @@
 /views/User
 /views/Shared
 /node_modules
+/connectors
+/constants
 package.json
 package-lock.json
 ```
