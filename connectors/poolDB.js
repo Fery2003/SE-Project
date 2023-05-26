@@ -10,8 +10,8 @@ const config = {
     host: 'localhost',
     port: 5432,
     user: 'postgres',
-    password: '86032125',
-    database: 'se_project23',
+    password: '1598753',
+    database: 'project',
   }
 };
 
@@ -20,5 +20,5 @@ const pool = new Pool(config);
 
 // expose the created connection so we can
 // use it in other files to make sql statements
-module.exports = pool;
+module.exports = pool;
 

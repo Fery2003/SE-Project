@@ -1,6 +1,6 @@
 const { isEmpty } = require("lodash");
 const { v4 } = require("uuid");
-const db = require("../../connectors/knexDB.js");
+const db = require("../../connectors/knexdb");
 const roles = require("../../constants/roles");
 module.exports = function (app) {
   app.post("/api/v1/user", async function (req, res) {

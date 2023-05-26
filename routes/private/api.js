@@ -35,49 +35,18 @@ const getUser = async function (req) {
 
 module.exports = function (app) {
   // example
-  app.get("/users", async function (req, res) {
-    try {
-      const user = await getUser(req);
-      const users = await db.select('*').from("se_project.users")
+  // app.get("/users", async function (req, res) {
+  //   try {
+  //     const user = await getUser(req);
+  //     const users = await db.select('*').from("se_project.users")
 
-      return res.status(200).json(users.rows[0]);
-    } catch (e) {
-      console.log(e.message);
-      return res.status(400).send("Could not get users");
-    }
+  //     return res.status(200).json(users.rows[0]);
+  //   } catch (e) {
+  //     console.log(e.message);
+  //     return res.status(400).send("Could not get users");
+  //   }
 
-  });
-
-  app.get('/', async (req, res) => {
-    try {
-      const { rows } = await pool.query('SELECT * FROM se_project.stations');
-      res.json(rows);
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send('Server Error!');
-    }
-  });
-
-  const getUser = async function (req) {
-    const sessionToken = getSessionToken(req);
-    if (!sessionToken) {
-      return res.status(301).redirect('/');
-    }
-
-    const user = await db.select('*')
-      .from('se_project.sessions')
-      .where('token', sessionToken)
-      .innerJoin('se_project.users', 'se_project.sessions.userid', 'se_project.users.id')
-      .innerJoin('se_project.roles', 'se_project.users.roleid', 'se_project.roles.id')
-      .first();
-
-    console.log('user =>', user)
-    user.isStudent = user.roleid === roles.student;
-    user.isAdmin = user.roleid === roles.admin;
-    user.isSenior = user.roleid === roles.senior;
-
-    return user;
-  }
+  // });
 
   //User stuff
 
@@ -91,13 +60,23 @@ module.exports = function (app) {
   //     }
   // });
 
+  app.get('/dashboard', async (req, res) => {
+    try {
+      const user = await getUser(req);
+      res.json(user);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
+  });
+
   // Reset password endpoint
   app.put('/api/v1/password/reset', async (req, res) => {
     try {
-      const { email, password } = req.body;
-      const user = await pool.query('UPDATE se_project.users SET password = $1 WHERE email = $2 RETURNING *', [password, email]);
-      res.json(user.rows[0]);
-      redirect('/login')
+      const user = await getUser(req);
+      const ret = await db.query('UPDATE se_project.users SET password = $1 WHERE id = $2', [req.body.password, user.id]);
+      res.json(ret.rows[0]);
+      redirect('/login');
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -115,12 +94,19 @@ module.exports = function (app) {
     }
   });
 
-  // Create subscription endpoint, same logic of reg
-  app.post('/subscriptions/api/payment/subscription', async (req, res) => {
+  // pay for subscription endpoint
+  app.post('/api/v1/payment/subscription', async (req, res) => {
     try {
-
+      const purchaseID = req.body.purchaseID;
+      const { creditCardNumber, holderName, paidAmount, subType, zoneId } = req.body;
+      const createSub = await pool.query(
+        'INSERT INTO se_project.transactions (amount, userid, purchaseid, purchasetype) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        [purchaseID, creditCardNumber, holderName, paidAmount, subType, zoneId]
+      );
+      res.json(createSub.rows[0]);
     } catch (error) {
-
+      console.error(error.message);
+      res.status(500).send('Server Error!');
     }
   });
 
