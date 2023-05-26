@@ -7,3 +7,4 @@ package.json
 package-lock.json
 /connectors/scripts.sql
 /connectors/seed.sql
+node_modules/.package-lock.json
