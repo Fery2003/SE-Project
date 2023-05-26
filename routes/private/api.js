@@ -12,9 +12,7 @@ const getUser = async function (req) {
   }
   console.log("hi", sessionToken);
   const user = await db
-    .select("*")
-    .from("sessions")
-    .where("token", sessionToken)
+    .from("se_project.sessions").where("token", sessionToken)
     .innerJoin(
       "se_project.users",
       "se_project.sessions.userid",

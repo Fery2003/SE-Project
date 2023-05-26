@@ -1,4 +1,23 @@
-const db = require('connectors/knexDB');
+// import the knex library that will allow us to
+// construct SQL statements
+const knex = require('knex');
+
+
+// define the configuration settings to connect
+// to our local postgres server
+const config = {
+  client: 'pg',
+  connection: {
+    host: 'localhost',
+    port: 5432,
+    user: 'postgres',
+    password: '86032125',
+    database: 'se_project23',
+  }
+};
+
+// create the connection with postgres
+const db = knex(config);
 async function uploadSR() {
   let SR = [
     { stationid: 1, routeid: 1 },
@@ -28,7 +47,7 @@ async function uploadSR() {
   ];
   for (let i = 0; i < SR.length; i++) {
     const element = SR[i];
-    await db('stationroutes').insert(element).returning('*');
+    await db('se_project.stationroutes').insert(element).returning('*');
   }
 }
 async function uploadS() {
@@ -79,7 +98,7 @@ async function uploadS() {
 
   for (let i = 0; i < stations.length; i++) {
     const element = stations[i];
-    await db('stations').insert(element).returning('*');
+    await db('se_project.stations').insert(element).returning('*');
   }
 }
 async function uploadR() {
@@ -100,9 +119,9 @@ async function uploadR() {
 
   for (let i = 0; i < routes.length; i++) {
     const element = routes[i];
-    await db('routes').insert(element).returning('*');
+    await db('se_project.routes').insert(element).returning('*');
   }
 }
 //uploadS(); //first to run
-//uploadR(); second
-//uploadSR(); third
+//uploadR(); //second
+uploadSR(); //third
