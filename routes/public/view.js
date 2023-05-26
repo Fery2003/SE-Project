@@ -1,5 +1,5 @@
 
-const db = require('../../connectors/db');
+const db = require('../../connectors/knexDB');
 
 module.exports = function(app) {
   //Register HTTP endpoint to render /index page

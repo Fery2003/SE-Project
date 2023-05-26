@@ -1,6 +1,7 @@
 const { isEmpty } = require("lodash");
 const { v4 } = require("uuid");
-const db = require("../../connectors/db.js");
+const db = require("../../connectors/knexDB.js");
+const pool = require("../../connectors/poolDB.js");
 const roles = require("../../constants/roles");
 const { getSessionToken } = require('../../utils/session.js');
 const { compileFunction } = require("vm");
@@ -12,7 +13,7 @@ const getUser = async function (req) {
   console.log("hi", sessionToken);
   const user = await db
     .select("*")
-    .from("se_project.sessions")
+    .from("sessions")
     .where("token", sessionToken)
     .innerJoin(
       "se_project.users",
@@ -51,7 +52,7 @@ module.exports = function (app) {
 
   app.get('/', async (req, res) => {
     try {
-      const { rows } = await db.query('SELECT * FROM se_project.stations');
+      const { rows } = await pool.query('SELECT * FROM se_project.stations');
       res.json(rows);
     } catch (error) {
       console.error(error.message);
@@ -96,8 +97,9 @@ module.exports = function (app) {
   app.put('/api/v1/password/reset', async (req, res) => {
     try {
       const { email, password } = req.body;
-      const user = await db.query('UPDATE se_project.users SET password = $1 WHERE email = $2 RETURNING *', [password, email]);
+      const user = await pool.query('UPDATE se_project.users SET password = $1 WHERE email = $2 RETURNING *', [password, email]);
       res.json(user.rows[0]);
+      redirect('/login')
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -107,7 +109,7 @@ module.exports = function (app) {
   // Subscriptions endpoint(running but not testing)
   app.get('/subscriptions/api/v1/zones', async (req, res) => {
     try {
-      const zones = await db.query('SELECT * FROM se_project.zones');
+      const zones = await pool.query('SELECT * FROM se_project.zones');
       res.json(zones.rows);
     } catch (error) {
       console.error(error.message);
@@ -133,7 +135,7 @@ module.exports = function (app) {
   app.post('/tickets/api/v1/tickets/purchase/subscription', async (req, res) => {
     try {
       const { status, origin, destination, userid, ticketid, tripdate } = req.body;
-      const ticket = await db.query('INSERT INTO se_project.tickets (status, origin, destination, userid, ticketid, tripdate) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [status, origin, destination, userid, ticketid, tripdate]);
+      const ticket = await pool.query('INSERT INTO se_project.tickets (status, origin, destination, userid, ticketid, tripdate) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [status, origin, destination, userid, ticketid, tripdate]);
       res.json(ticket.rows[0]);
     } catch (error) {
       console.error(error.message);
@@ -173,7 +175,7 @@ module.exports = function (app) {
       const {source, dest, date} = req.body;
       const user = await getUser(req)
       const uid = user.userid;
-      const updatedRide = await db.query('UPDATE rides SET status = $1 WHERE origin = $2 and destination = $3 and userid = $4 and tripdate = $5 RETURNING *', ['completed', source, dest, uid, date]);
+      const updatedRide = await pool.query('UPDATE rides SET status = $1 WHERE origin = $2 and destination = $3 and userid = $4 and tripdate = $5 RETURNING *', ['completed', source, dest, uid, date]);
       console.log(updatedRide.rows[0]);
     } catch (error) {
       console.log(error.message);
@@ -188,7 +190,7 @@ module.exports = function (app) {
   app.put('/api/v1/password/reset', async (req, res) => {
     try {
       const { email, password } = req.body;
-      const user = await db.query('UPDATE se_project.users SET password = $1 WHERE email = $2 RETURNING *', [password, email]);
+      const user = await pool.query('UPDATE se_project.users SET password = $1 WHERE email = $2 RETURNING *', [password, email]);
       res.json(user.rows[0]);
     } catch (error) {
       console.error(error.message);
@@ -210,8 +212,9 @@ module.exports = function (app) {
   app.post('/manage/stations/api/v1/station', async (req, res) => {
     try {
       const { stationname, stationtype, stationposition, stationstatus } = req.body;
-      const newStation = await db.query('INSERT INTO se_project.stations (stationname, stationtype, stationposition, stationstatus) VALUES ($1, $2, $3, $4) RETURNING *', [stationname, stationtype, stationposition, stationstatus]);
+      const newStation = await pool.query('INSERT INTO se_project.stations (stationname, stationtype, stationposition, stationstatus) VALUES ($1, $2, $3, $4) RETURNING *', [stationname, stationtype, stationposition, stationstatus]);
       res.json(newStation.rows[0]);
+      redirect('/');
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -223,9 +226,11 @@ module.exports = function (app) {
     try {
       const stationId = req.params
       const { stationName } = req.body
-      const updateStation = await db.query("UPDATE stations SET stationname = $1 WHERE id = $2 RETURNING *", [stationName, stationId]);
+      const updateStation = await pool.query("UPDATE stations SET stationname = $1 WHERE id = $2 RETURNING *", [stationName, stationId]);
       res.json(updateStation.rows[0])
+      redirect('/');
     }
+    
     catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -234,6 +239,26 @@ module.exports = function (app) {
 
   // Delete station endpoint
   app.delete('/manage/stations/api/v1/station/:stationId', async (req, res) => {
+    try {
+      const stationid = req.params;
+      const station = await pool.query("SELECT * FROM stations WHERE id = $1", [stationid]);
+      console.log(station.rows[0])
+      if (station.stationtype == "normal")
+      {
+        if(station.stationposition == "start")
+        {
+          await pool.query('delete from routes where fromstationid = $1', [stationid]);
+        }
+        else if(station.stationposition == "end")
+        {
+          await pool.query('delete from routes where tostationid = $1', [stationid]);
+        }
+        const deleted = await pool.query("delete from stations where id = $1 redering *", [stationid])
+        console.log(deleted.rows[0]);
+      }
+    } catch (error) {
+      
+    }
 
   });
 
@@ -241,7 +266,7 @@ module.exports = function (app) {
   app.post('/manage/routes/api/v1/route', async (req, res) => {
     try {
       const { routename, fromStationid, toStationid } = req.body;
-      const newRoute = await db.query('INSERT INTO se_project.routes (routename, fromStationid, toStationid) VALUES ($1, $2, $3) RETURNING *', [routename, fromStationid, toStationid]);
+      const newRoute = await pool.query('INSERT INTO se_project.routes (routename, fromStationid, toStationid) VALUES ($1, $2, $3) RETURNING *', [routename, fromStationid, toStationid]);
       res.json(newRoute.rows[0]);
     } catch (error) {
       console.error(error.message);
@@ -264,7 +289,7 @@ module.exports = function (app) {
     try {
       const { newPrice } = req.body;
       const zoneId = req.params;
-      const updatedPrice = await db.query('UPDATE zones SET price = $1 WHERE id = $2 RETURNING *', [newPrice, zoneId]);
+      const updatedPrice = await pool.query('UPDATE zones SET price = $1 WHERE id = $2 RETURNING *', [newPrice, zoneId]);
       res.json(updatedPrice.rows[0]);
 
     } catch (error) {

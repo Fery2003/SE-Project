@@ -1,4 +1,4 @@
-const db = require('./db');
+const db = require('connectors/knexDB');
 async function uploadSR() {
   let SR = [
     { stationid: 1, routeid: 1 },
@@ -103,6 +103,6 @@ async function uploadR() {
     await db('routes').insert(element).returning('*');
   }
 }
-//uploadS(); first to run
+//uploadS(); //first to run
 //uploadR(); second
 //uploadSR(); third

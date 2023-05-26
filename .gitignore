@@ -2,7 +2,8 @@
 /views/User
 /views/Shared
 /node_modules
-/connectors/db.json
+/connectors/knexDB.js
+/connectors/poolDB.js
 /constants
 package.json
 package-lock.json
