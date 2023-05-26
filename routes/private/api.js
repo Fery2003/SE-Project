@@ -147,25 +147,41 @@ module.exports = function (app) {
   });
 
   // Get all rides endpoint
-  // app.get('/rides', async (req, res) => {
-  //     try {
-  //         const rides = await db.query('SELECT * FROM se_project.rides');
-  //         res.json(rides.rows);
-  //     } catch (error) {
-  //         console.error(error.message);
-  //         res.status(500).send('Server Error!');
-  //     }
-  // });
+app.get('/rides', async (req, res) => {
+    
+  try {
+      const rides = await pool.query('SELECT * FROM se_project.rides');
+      res.json(rides.rows);
+  } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+  }
+});
 
-  // Request ticket refund endpoint
-  app.post('/request/refund/api/v1/refund/:ticketId', async (req, res) => {
+// Request ticket refund endpoint
+app.post('/request/refund/api/v1/refund/:ticketId', async (req, res) => {
+try {
+  const { ticketId } = req.body;
+  const refund = await pool.query('INSERT INTO se_project.refunds (ticketid) VALUES ($1) RETURNING *', [ticketId]);
+  res.json(refund.rows[0]);
+} catch (error) {
+  console.error(error.message);
+  res.status(500).send('Server Error!');
+}
+});
 
-  });
+// Request senior ticket endpoint
+app.post('/request/senior/api/v1/senior/request', async (req, res) => {
+try {
+  const { ticketId } = req.body;
+  const senior = await pool.query('INSERT INTO se_project.seniors (ticketid) VALUES ($1) RETURNING *', [ticketId]);
+  res.json(senior.rows[0]);
+} catch (error) {
+  console.error(error.message);
+  res.status(500).send('Server Error!');
+}
+});
 
-  // Request senior ticket endpoint
-  app.post('/request/senior/api/v1/senior/request', async (req, res) => {
-
-  });
 
   // Simulate ride endpoint
   app.put('/rides/simulate/api/v1/ride/simulate', async (req, res) => {
