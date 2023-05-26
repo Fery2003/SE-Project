@@ -256,19 +256,47 @@ try {
     try {
       const stationid = req.params;
       const station = await pool.query("SELECT * FROM stations WHERE id = $1", [stationid]);
-      console.log(station.rows[0])
-      if (station.stationtype == "normal")
+      console.log(station.rows[0]);
+      if(station.length == 1)
       {
-        if(station.stationposition == "start")
+        if (station.stationtype == "normal")
         {
-          await pool.query('delete from routes where fromstationid = $1', [stationid]);
+          if(station.stationposition == "start")
+          {
+            let affectedRoute = await pool.query('select * from routes where fromstationid = $1', [stationid]);
+            //update the to station to become a start
+            await pool.query("update stations set stationposition = $1 where id = $2", ['start', affectedRoute.toStationid])
+            await pool.query("delete from stations where id = $1", [stationid]);
+          }
+          else if(station.stationposition == "end")
+          {
+            let affectedRoute = await pool.query('select * from routes where fromstationid = $1', [stationid]);
+            //update the to station to become an end
+            await pool.query("update stations set stationposition = $1 where id = $2", ['end', affectedRoute.toStationid])
+            
+            await pool.query('delete from stations where id = $1', [stationid]);
+          }
+          else if(station.stationposition == "middle")
+          {
+            let middleIsTo = await pool.query("select * from routes where toStationId = $1", [stationid])
+            let myFromStation = middleIsTo.fromStationid;
+            let middleIsFrom = await pool.query("select * from routes where fromStationId = $1", [stationid])
+            let myToStation = middleIsFrom.toStationid;
+            await pool.query("delete from stations where id = $1", [stationid]);
+            //update routes table with new entries
+            let newStationFromTo = await pool.query("insert into routes (routename, fromStationid, toStationid) values ($1, $2, $3)", ['newroute1', myFromStation, myToStation]);
+            let newStationToFrom = await pool.query("insert into routes (routename, fromStationid, toStationid) values ($1, $2, $3)", ['newroute1', myToStation, myFromStation]);
+            //add to SR table the new routes with their correspoding stations
+            let idnewStationFromTo = await pool.query("select id from routes where fromStationid = $1", myFromStation);
+            let idnewStationToFrom = await pool.query("select id from routes where fromStationid = $1", mytToStation);
+            let newSR1 = await pool.query("insert into stationRoutes (stationid, routeid) values ($1,$2)", [myFromStation, parseInt(idnewStationFromTo)]);
+            let newSR2 = await pool.query("insert into stationRoutes (stationid, routeid) values ($1,$2)", [myToStation, parseInt(idnewStationToFrom)]);
+          }
         }
-        else if(station.stationposition == "end")
+        else if(station.stationtype == "transfer")
         {
-          await pool.query('delete from routes where tostationid = $1', [stationid]);
+          //help
         }
-        const deleted = await pool.query("delete from stations where id = $1 redering *", [stationid])
-        console.log(deleted.rows[0]);
       }
     } catch (error) {
       
