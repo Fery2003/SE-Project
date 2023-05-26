@@ -1,3 +1,4 @@
+-- Active: 1679073997780@@127.0.0.1@5432@project@se_project
 -- DROP TABLE IF EXISTS se_project.users;
 
 -- DROP TABLE IF EXISTS roles;
@@ -21,14 +22,14 @@ CREATE TABLE
         lastname text NOT NULL,
         email text NOT NULL,
         password text NOT NULL,
-        roleid integer NOT NULL,
+        roleid INTEGER NOT NULL,
         CONSTRAINT users_pkey PRIMARY KEY (id)
     );
 
 CREATE TABLE
     IF NOT EXISTS se_project.sessions (
         id SERIAL NOT NULL,
-        userid integer NOT NULL,
+        userid INTEGER NOT NULL,
         token text NOT NULL,
         expiresat timestamp NOT NULL,
         CONSTRAINT sessions_pkey PRIMARY KEY (id)
@@ -55,7 +56,7 @@ CREATE TABLE
         id SERIAL NOT NULL,
         subtype text NOT NULL,
         --annual --month -- quarterly
-        zoneid Integer NOT NULL,
+        zoneid INTEGER NOT NULL,
         userid INTEGER NOT NULL,
         nooftickets INTEGER NOT NULL,
         CONSTRAINT subsription_pkey PRIMARY KEY (id),
@@ -83,7 +84,7 @@ CREATE TABLE
         origin text NOT NULL,
         destination text NOT NULL,
         userid INTEGER NOT NULL,
-        ticketid integer not null,
+        ticketid INTEGER not null,
         tripdate timestamp not null,
         FOREIGN KEY(userid) REFERENCES se_project.users,
         FOREIGN KEY(ticketid) REFERENCES se_project.tickets,
@@ -93,9 +94,11 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS se_project.transactions (
         id SERIAL NOT NULL,
-        amount INTEGER NOT NULL,
+        amount FLOAT NOT NULL,
         userid INTEGER NOT NULL,
         purchasedid text NOT NULL,
+        purchasetype text NOT NULL,
+        -- either ticket or subscription
         FOREIGN KEY(userid) REFERENCES se_project.users,
         CONSTRAINT transactions_pkey PRIMARY KEY (id)
     );
@@ -104,7 +107,7 @@ CREATE TABLE
     IF NOT EXISTS se_project.refund_requests (
         id SERIAL NOT NULL,
         status text NOT NULL,
-        userid Integer NOT NULL,
+        userid INTEGER NOT NULL,
         refundamount INTEGER not NULL,
         ticketid INTEGER NOT null,
         FOREIGN KEY(userid) REFERENCES se_project.users,
@@ -116,8 +119,8 @@ CREATE TABLE
     IF NOT EXISTS se_project.senior_requests (
         id SERIAL NOT NULL,
         status text NOT NULL,
-        userid Integer NOT NULL,
-        nationalid INTEGER not null,
+        userid INTEGER NOT NULL,
+        nationalid TEXT not null,
         FOREIGN KEY(userid) REFERENCES se_project.users,
         CONSTRAINT senior_requests_pkey PRIMARY KEY (id)
     );
