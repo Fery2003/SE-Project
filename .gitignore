@@ -5,5 +5,4 @@
 /constants
 package.json
 package-lock.json
-/connectors/scripts.sql
 node_modules/.package-lock.json

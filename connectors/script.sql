@@ -1,4 +1,4 @@
--- Active: 1679073997780@@127.0.0.1@5432@project@se_project
+-- Active: 1684831529052@@127.0.0.1@5432@se_project23@se_project
 -- DROP TABLE IF EXISTS se_project.users;
 
 -- DROP TABLE IF EXISTS roles;
