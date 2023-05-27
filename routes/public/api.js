@@ -8,21 +8,21 @@ module.exports = function (app) {
     // Check if user already exists in the system
     const userExists = await db
       .select("*")
-      .from("se_project.users")
+      .from("se_project.user")
       .where("email", req.body.email);
     if (!isEmpty(userExists)) {
       return res.status(400).send("user exists");
     }
 
     const newUser = {
-      firstname: req.body.firstName,
-      lastname: req.body.lastName,
+      first_name: req.body.firstName,
+      last_name: req.body.lastName,
       email: req.body.email,
       password: req.body.password,
-      roleid: roles.user,
+      role_id: roles.user,
     };
     try {
-      const user = await db("se_project.users").insert(newUser).returning("*");
+      const user = await db("se_project.user").insert(newUser).returning("*");
 
       return res.status(200).json(user);
     } catch (e) {
@@ -48,7 +48,7 @@ module.exports = function (app) {
     // if invalid, send an unauthorized code
     const user = await db
       .select("*")
-      .from("se_project.users")
+      .from("se_project.user")
       .where("email", email)
       .first();
     if (isEmpty(user)) {
@@ -71,11 +71,11 @@ module.exports = function (app) {
       expiresat,
     };
     try {
-      await db("se_project.sessions").insert(session);
+      await db("se_project.session").insert(session);
       // In the response, set a cookie on the client with the name "session_cookie"
       // and the value as the UUID we generated. We also set the expiration time.
       return res
-        .cookie("session_token", token, { expires: expiresat })
+        .cookie("session_token", token, { expires: expires_at })
         .status(200)
         .send("login successful");
     } catch (e) {
