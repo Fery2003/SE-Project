@@ -93,7 +93,6 @@ module.exports = function (app) {
   // go through logic again before implementing
   app.post('subscriptions/api/v1/payment/subscription', async (req, res) => {
     try{
-
       const {creditCardNumber, holderName, payedAmount, subType, zoneId} = req.body;
       const { purchaseid } = req.query;
       const {first_name, last_name} = await getUser(req);
