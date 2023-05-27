@@ -132,7 +132,7 @@ module.exports = function (app) {
 
   // Get ticket price endpoint
   app.get('/prices/api/v1/tickets/price/:originId', async (req, res) => {
-
+    
   });
 
   // Get all rides endpoint
@@ -377,8 +377,34 @@ module.exports = function (app) {
       
   });
   // Accept/Reject Senior
-  app.put('/manage/requests/seniors/api/v1/requests/senior/:requestId', async (req, res) => {
 
+  app.put('/manage/requests/seniors/api/v1/requests/senior/:requestId', async (req, res) => {
+    try{
+      const nationalid = getUser(req).nationalid;
+      yob = nationalid.substring(0,2); //get the first 2 no.s
+      if(yob < 99){
+        yob = '19' + yob;
+      }else{
+        yob = '20' + yob;
+      }
+      const year = new Date().getFullYear(); //this year
+      const age = year - yob; //age of the user
+      if(age < 60){
+        res.status(400).send('Cannot request a senior card if you are not a senior!');
+      }
+      else{
+        const { seniorstatus } = req.body;
+        const requestId = req.params;
+        const updatedSenior = await db
+        .from("se_project.senior_request")
+        .where("id", requestId)
+        .update({ seniorstatus: seniorstatus });
+        res.json(updatedSenior);
+      }
+    }catch(error){
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
   });
 
   //Update zone price
