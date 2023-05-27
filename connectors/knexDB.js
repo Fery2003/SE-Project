@@ -12,12 +12,12 @@ const config = {
     port: 5432,
     user: 'postgres',
     password: '1598753',
-    database: 'project',
+    database: 'project'
   }
 };
 
 // create the connection with postgres
-const db = knex(config);
+const db = new knex(config);
 
 
 
