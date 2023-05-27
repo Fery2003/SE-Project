@@ -55,6 +55,7 @@ module.exports = function (app) {
         // const userInfo = await pool.query('SELECT * FROM se_project.user WHERE id = $1', [user.id]);
         const userInfo = await db.select('*').from('se_project.user').where('id', user.id);
       }
+      // const userInfo = await db.select('*').from('se_project.user').where('id', user.id);
       res.json(userInfo);
     } catch (error) {
       console.error(error.message);
@@ -97,20 +98,19 @@ module.exports = function (app) {
   // pay for subscription endpoint
   // these next 2 require a purchase id from the query so use req.query.purchaseid
   // go through logic again before implementing
-  app.post('subscriptions/api/v1/payment/subscription', async (req, res) => {
+  app.post('api/v1/payment/subscription', async (req, res) => {
     try {
-      const { creditCardNumber, holderName, payedAmount, subType, zoneId } = req.body;
-      const { purchaseid } = req.query;
+      const { creditCardNumber, holderName, paidAmount, subType, zoneId } = req.body;
+      const { purchaseId } = req.query;
       const { first_name, last_name } = await getUser(req);
-      if (!creditCardNumber || !holderName || !payedAmount || !subType || !zoneId) {
+      if (!creditCardNumber || !holderName || !paidAmount || !subType || !zoneId) {
         return res.status(400).json({ msg: "Please enter all fields" });
       }
       if (first_name + last_name == req.body.holderName) {
         const ret = await db.from('se_project.transaction').insert({ user_id: user_id });
-        console.log("name matches");
-      }
-      else {
-        console.log("name does not match");
+        console.log('name matches');
+      } else {
+        console.log('name does not match');
       }
       res.json(ret.rows[0]);
     } catch (error) {
@@ -120,9 +120,7 @@ module.exports = function (app) {
   });
 
   // pay for ticket endpoint
-  app.post('/tickets/api/v1/payment/ticket', async (req, res) => {
-
-  });
+  app.post('/api/v1/payment/ticket', async (req, res) => { });
 
   // Purchase ticket with subscription endpoint
   app.post('/tickets/api/v1/tickets/purchase/subscription', async (req, res) => {
@@ -205,7 +203,7 @@ module.exports = function (app) {
       if (!source || !dest || !date) {
         return res.status(400).json({ msg: "Please enter all fields" });
       }
-      const checkRide = await db.from('se_project.ride').where('user_id', uid)
+      const checkRide = await db.from('se_project.ride').where('user_id', uid);
       const found = false;
       for (let i = 0; i < checkRide.length; i++) {
         if (checkRide[i].origin == source && checkRide[i].destination == dest && checkRide[i].trip_date == date) {
@@ -384,14 +382,13 @@ module.exports = function (app) {
       const updatedRoute = await pool.query('UPDATE routes SET routename = $1 WHERE id = $2 RETURNING *', [routename, fromStationid]);
       res.json(updatedRoute.rows[0]);
       redirect('/');
-
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
     }
   });
 
-  // Delete route 
+  // Delete route
   app.delete('/manage/routes/api/v1/route/:routeId', async (req, res) => {
     try {
       const routeId = req.params;
@@ -419,12 +416,10 @@ module.exports = function (app) {
         return res.status(400).json({ msg: 'Refund cannot be updated with empty status!' });
       }
       if (tripdate < Date.now()) {
-        res.status(400).send('Cannot refund a trip that has already happened!');
+        return res.status(400).json({ msg: 'Refund cannot be updated with empty status!' });
       }
-      else { //future dated == yes
-        const updatedRefund = await pool.query('UPDATE refundrequests SET refundstatus = $1 WHERE id = $2 RETURNING *', [refundstatus, requestId]);
-        res.json(updatedRefund.rows[0]);
-      }
+      const updatedRefund = await pool.query('UPDATE refundrequests SET refundstatus = $1 WHERE id = $2 RETURNING *', [refundstatus, requestId]);
+      res.json(updatedRefund.rows[0]);
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -432,8 +427,34 @@ module.exports = function (app) {
 
   });
   // Accept/Reject Senior
-  app.put('/manage/requests/seniors/api/v1/requests/senior/:requestId', async (req, res) => {
 
+  app.put('/manage/requests/seniors/api/v1/requests/senior/:requestId', async (req, res) => {
+    try {
+      const nationalid = getUser(req).nationalid;
+      yob = nationalid.substring(0, 2); //get the first 2 no.s
+      if (yob < 99) {
+        yob = '19' + yob;
+      } else {
+        yob = '20' + yob;
+      }
+      const year = new Date().getFullYear(); //this year
+      const age = year - yob; //age of the user
+      if (age < 60) {
+        res.status(400).send('Cannot request a senior card if you are not a senior!');
+      }
+      else {
+        const { seniorstatus } = req.body;
+        const requestId = req.params;
+        const updatedSenior = await db
+          .from("se_project.senior_request")
+          .where("id", requestId)
+          .update({ seniorstatus: seniorstatus });
+        res.json(updatedSenior);
+      }
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
   });
 
   //Update zone price
