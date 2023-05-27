@@ -17,7 +17,7 @@ const config = {
 };
 
 // create the connection with postgres
-const db = knex(config);
+const db = new knex(config);
 
 
 

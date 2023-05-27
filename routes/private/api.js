@@ -28,24 +28,24 @@ const getUser = async function (req) {
 
 module.exports = function (app) {
   //example
-  app.get("/test", async function (req, res) {
-    try {
-      const user = await getUser(req);
-      const users = await db.select('*').from("se_project.user")
+  // app.get('/test', async function (req, res) {
+  //   try {
+  //     const user = await getUser(req);
+  //     const users = await db.select('*').from('se_project.user');
 
-      return res.status(200).json(users);
-    } catch (e) {
-      console.log(e.message);
-      return res.status(400).send("Could not get users");
-    }
+  //     return res.status(200).json(users);
+  //   } catch (e) {
+  //     console.log(e.message);
+  //     return res.status(400).send("Could not get users");
+  //   }
 
-  });
+  // });
 
   //User stuff
 
   app.get('/dashboard', async (req, res) => {
     try {
-      const user = getUser(req);
+      const user = await getUser(req);
       // check role of user here and redirect to corresponding dashboard
       if (user.isAdmin) {
         const userInfo = await db.query('SELECT * FROM se_project.user');
@@ -59,23 +59,15 @@ module.exports = function (app) {
     }
   });
 
-  // app.get('/dashboard', async (req, res) => {
-  //   try {
-  //     const user = await getUser(req);
-  //     res.json(user);
-  //   } catch (error) {
-  //     console.error(error.message);
-  //     res.status(500).send('Server Error!');
-  //   }
-  // });
-
   // Reset password endpoint
   app.put('/api/v1/password/reset', async (req, res) => {
     try {
-      const user = await getUser(req);
-      const ret = await db.query('UPDATE se_project.user SET password = $1 WHERE id = $2', [req.body.password, user.id]);
-      res.json(ret.rows[0]);
-      redirect('/login');
+      const { id } = await getUser(req);
+      const password = req.body.newPassword;
+      // const ret = await pool.query('UPDATE se_project.user SET password = $1 WHERE id = $2', [password, id]);
+      const ret = await db.from('se_project.user').where('id', id).update({ password: password });
+      // res.json(ret);
+      res.json({ message: 'Password reset successfully' });
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -174,16 +166,16 @@ module.exports = function (app) {
   //Admin Stuff
 
   // Reset password endpoint
-  app.put('/api/v1/password/reset', async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      const user = await pool.query('UPDATE se_project.user SET password = $1 WHERE email = $2 RETURNING *', [password, email]);
-      res.json(user.rows[0]);
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send('Server Error!');
-    }
-  });
+  // app.put('/api/v1/password/reset', async (req, res) => {
+  //   try {
+  //     const { email, password } = req.body;
+  //     const user = await pool.query('UPDATE se_project.user SET password = $1 WHERE email = $2 RETURNING *', [password, email]);
+  //     res.json(user.rows[0]);
+  //   } catch (error) {
+  //     console.error(error.message);
+  //     res.status(500).send('Server Error!');
+  //   }
+  // });
 
   // app.get('/dashboard', async (req, res) => {
   //     try {
@@ -359,4 +351,4 @@ module.exports = function (app) {
       res.status(500).send('Server Error!');
     }
   });
-};
+}
