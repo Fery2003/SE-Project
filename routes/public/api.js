@@ -6,7 +6,7 @@ module.exports = function (app) {
   app.post("/api/v1/user", async function (req, res) {
 
     // Check if user already exists in the system
-    const userExists = await db
+    const userExists = await db("se_project23")
       .select("*")
       .from("se_project.users")
       .where("email", req.body.email);
@@ -46,7 +46,7 @@ module.exports = function (app) {
 
     // validate the provided password against the password in the database
     // if invalid, send an unauthorized code
-    const user = await db
+    const user = await db("se_project23")
       .select("*")
       .from("se_project.users")
       .where("email", email)
