@@ -5,6 +5,7 @@ const pool = require('../../connectors/poolDB.js');
 const roles = require('../../constants/roles');
 const { getSessionToken } = require('../../utils/session.js');
 const { compileFunction } = require('vm');
+const e = require('express');
 const getUser = async function (req) {
   const sessionToken = getSessionToken(req);
   if (!sessionToken) {
@@ -90,10 +91,30 @@ module.exports = function (app) {
   // pay for subscription endpoint
   // these next 2 require a purchase id from the query so use req.query.purchaseid
   // go through logic again before implementing
-  app.post('subscriptions/api/v1/payment/subscription', async (req, res) => {});
+  app.post('subscriptions/api/v1/payment/subscription', async (req, res) => {
+    try{
+
+      const { id, sub_type, zone_id, user_id, no_of_tickets} = req.body;
+      const { purchaseid } = req.query;
+      const {first_name, last_name} = await getUser(req);
+      if(first_name+last_name == req.body.holderName){
+        const ret = await db.from('se_project.transaction').insert({ user_id: user_id});
+        console.log("name matches");
+      }
+      else{
+        console.log("name does not match");
+      }
+      res.json(ret.rows[0]);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
+  });
 
   // pay for ticket endpoint
-  app.post('/tickets/api/v1/payment/ticket', async (req, res) => {});
+  app.post('/tickets/api/v1/payment/ticket', async (req, res) => {
+
+  });
 
   // Purchase ticket with subscription endpoint
   app.post('/tickets/api/v1/tickets/purchase/subscription', async (req, res) => {
@@ -111,7 +132,9 @@ module.exports = function (app) {
   });
 
   // Get ticket price endpoint
-  app.post('/prices/api/v1/tickets/price/:originId', async (req, res) => {});
+  app.get('/prices/api/v1/tickets/price/:originId', async (req, res) => {
+
+  });
 
   // Get all rides endpoint
   app.get('/rides', async (req, res) => {
@@ -291,16 +314,57 @@ module.exports = function (app) {
   });
 
   // Update route endpoint
-  app.put('/manage/routes/api/v1/route/:routeId', async (req, res) => {});
+  app.put('/manage/routes/api/v1/route/:routeId', async (req, res) => {
+    try {
+      const fromStationid = req.params;
+      const { routename } = req.body;
+      const updatedRoute = await pool.query('UPDATE routes SET routename = $1 WHERE id = $2 RETURNING *', [routename, fromStationid]);
+      res.json(updatedRoute.rows[0]);
+      redirect('/');
 
-  // Delete route endpoint
-  app.delete('/manage/routes/api/v1/route/:routeId', async (req, res) => {});
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
+  });
+
+  // Delete route 
+  app.delete('/manage/routes/api/v1/route/:routeId', async (req, res) => {
+    try {
+      const routeId = req.params;
+      const deleteRoute = await pool.query('DELETE FROM routes WHERE id = $1', [routeId]);
+      res.json('Route was deleted!');
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
+  });
 
   // Accept/Reject Refund
-  app.put('/manage/requests/refunds/api/v1/requests/refunds/:requestID', async (req, res) => {});
-
+  //Complete it after subscription and online payment are done.
+  app.put('/manage/requests/refunds/api/v1/requests/refunds/:requestID', async (req, res) => {
+    //refund status either is accepted or rejected
+    try{
+      const tripdate = getUser(req).tripdate;
+      const { refundstatus } = req.body;
+      const requestId = req.params;
+      if (tripdate < Date.now()) {
+        res.status(400).send('Cannot refund a trip that has already happened!');
+      }
+      else{ //future dated == yes
+        const updatedRefund = await pool.query('UPDATE refundrequests SET refundstatus = $1 WHERE id = $2 RETURNING *', [refundstatus, requestId]);
+        res.json(updatedRefund.rows[0]);
+      }
+    }catch(error){
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
+      
+  });
   // Accept/Reject Senior
-  app.put('/manage/requests/seniors/api/v1/requests/senior/:requestId', async (req, res) => {});
+  app.put('/manage/requests/seniors/api/v1/requests/senior/:requestId', async (req, res) => {
+
+  });
 
   //Update zone price
   app.post('/manage/zones/api/v1/zones/:zoneId', async (req, res) => {

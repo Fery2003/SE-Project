@@ -2,11 +2,11 @@
 -- Insert Roles
 -- READ THIS: CHANGE YOUR SCHEMA TO USE THE SCHEMA "se_project" FROM ABOVE BEFORE RUNNING THIS STUFF SO YOU DON'T GET ERRORS
 -- PRESS ON "Active Connection" ABOVE AND SELECT "your_db_name#se_project"
-INSERT INTO role("role")
+INSERT INTO se_project.role("role")
 	VALUES ('user');
-INSERT INTO role("role")
+INSERT INTO se_project.role("role")
 	VALUES ('admin');
-INSERT INTO role("role")
+INSERT INTO se_project.role("role")
 	VALUES ('senior');	
 -- Set user role as Admin
 UPDATE se_project.user
