@@ -5,6 +5,7 @@ const pool = require('../../connectors/poolDB.js');
 const roles = require('../../constants/roles');
 const { getSessionToken } = require('../../utils/session.js');
 const { compileFunction } = require('vm');
+const e = require('express');
 const getUser = async function (req) {
   const sessionToken = getSessionToken(req);
   if (!sessionToken) {
@@ -28,29 +29,30 @@ const getUser = async function (req) {
 
 module.exports = function (app) {
   //example
-  // app.get('/test', async function (req, res) {
-  //   try {
-  //     const user = await getUser(req);
-  //     const users = await db.select('*').from('se_project.user');
+  app.get('/test', async function (req, res) {
+    try {
+      const user = await getUser(req);
+      const users = await db.select('*').from('se_project.user');
 
-  //     return res.status(200).json(users);
-  //   } catch (e) {
-  //     console.log(e.message);
-  //     return res.status(400).send("Could not get users");
-  //   }
-
-  // });
+      return res.status(200).json(users);
+    } catch (e) {
+      console.log(e.message);
+      return res.status(400).send('Could not get users');
+    }
+  });
 
   //User stuff
 
   app.get('/dashboard', async (req, res) => {
     try {
-      const { roleid } = await getUser(req);
+      const user = await getUser(req);
       // check role of user here and redirect to corresponding dashboard
       if (user.isAdmin) {
-        const userInfo = await db.query('SELECT * FROM se_project.user');
+        // const userInfo = await pool.query('SELECT * FROM se_project.user');
+        const userInfo = await db.select('*').from('se_project.user');
       } else if (user.isNormal || user.isSenior) {
-        const userInfo = await db.query('SELECT * FROM se_project.user WHERE id = $1', [user.id]);
+        // const userInfo = await pool.query('SELECT * FROM se_project.user WHERE id = $1', [user.id]);
+        const userInfo = await db.select('*').from('se_project.user').where('id', user.id);
       }
       res.json(userInfo);
     } catch (error) {
@@ -77,8 +79,9 @@ module.exports = function (app) {
   // Subscriptions endpoint(running but not testing)
   app.get('/api/v1/zones', async (req, res) => {
     try {
-      const zones = await pool.query('SELECT * FROM se_project.zone');
-      res.json(zones.rows);
+      // const zones = await pool.query('SELECT * FROM se_project.zone');
+      const zones = await db.select('*').from('se_project.zone');
+      res.json(zones);
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -88,10 +91,30 @@ module.exports = function (app) {
   // pay for subscription endpoint
   // these next 2 require a purchase id from the query so use req.query.purchaseid
   // go through logic again before implementing
-  app.post('subscriptions/api/v1/payment/subscription', async (req, res) => {});
+  app.post('subscriptions/api/v1/payment/subscription', async (req, res) => {
+    try{
+
+      const { id, sub_type, zone_id, user_id, no_of_tickets} = req.body;
+      const { purchaseid } = req.query;
+      const {first_name, last_name} = await getUser(req);
+      if(first_name+last_name == req.body.holderName){
+        const ret = await db.from('se_project.transaction').insert({ user_id: user_id});
+        console.log("name matches");
+      }
+      else{
+        console.log("name does not match");
+      }
+      res.json(ret.rows[0]);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
+  });
 
   // pay for ticket endpoint
-  app.post('/tickets/api/v1/payment/ticket', async (req, res) => {});
+  app.post('/tickets/api/v1/payment/ticket', async (req, res) => {
+
+  });
 
   // Purchase ticket with subscription endpoint
   app.post('/tickets/api/v1/tickets/purchase/subscription', async (req, res) => {
@@ -109,7 +132,9 @@ module.exports = function (app) {
   });
 
   // Get ticket price endpoint
-  app.post('/prices/api/v1/tickets/price/:originId', async (req, res) => {});
+  app.get('/prices/api/v1/tickets/price/:originId', async (req, res) => {
+
+  });
 
   // Get all rides endpoint
   app.get('/rides', async (req, res) => {
@@ -270,61 +295,22 @@ module.exports = function (app) {
               myFromStation
             ]);
             //add to SR table the new routes with their correspoding stations
-            let idnewStationFromTo = await pool.query('select id from route where fromStationid = $1', myFromStation);
-            let idnewStationToFrom = await pool.query('select id from route where fromStationid = $1', mytToStation);
+            let idnewStationFromTo = await pool.query('select id from routes where fromStationid = $1', myFromStation);
+            let idnewStationToFrom = await pool.query('select id from routes where fromStationid = $1', mytToStation);
             let newSR1 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
               myFromStation,
               parseInt(idnewStationFromTo)
             ]);
             let newSR2 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
-              myFromStation,
-              parseInt(idnewStationToFrom)
-            ]);
-            let newSR3 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
               myToStation,
               parseInt(idnewStationToFrom)
-            ]);
-            let newSR4 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
-              myToStation,
-              parseInt(idnewStationFromTo)
             ]);
           }
         } else if (station.stationtype == 'transfer') {
-          let transferRoutes = await pool.query('select * from route where from_station_id = $1', [stationid])
-          let myNewTransfer = await pool.query('select from_station_id from route where to_station_id = $1', [stationid])
-          for(let i = 0; i<transferRoutes.length; i++)
-          {
-            let toStation = transferRoutes[i].to_station_id;
-            await pool.query ('insert into route (route_name, from_station_id, to_station_id) values ($1, $2, $3)', [ myNewTransfer+' '+toStation, myNewTransfer, toStation]);
-            await pool.query ('insert into route (route_name, from_station_id, to_station_id) values ($1, $2, $3)', [ toStationr+' '+myNewTransfer, toStation, myNewTransfer]);
-            let newRouteIdTransferToStation = await pool.query('select id from route where from_station_id = $1 and to_station_id = $2', [myNewTransfer, toStation]);
-            let newRouteIdToStationToTransfer = await pool.query('select id from route where from_station_id = $1 and to_station_id = $2', [toStation, myNewTransfer]);
-            let newSR5 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
-              toStation,
-              parseInt(newRouteIdTransferToStation)
-            ]);
-            let newSR6 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
-              toStation,
-              parseInt(newRouteIdToStationToTransfer)
-            ]);
-            let newSR7 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
-              myNewTransfer,
-              parseInt(newRouteIdToStationToTransfer)
-            ]);
-            let newSR8 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
-              myNewTransfer,
-              parseInt(newRouteIdTransferToStation)
-            ]);
-          }
-          await pool.query('update station set station_type = $1 where id = $2', ['transfer', myNewTransfer]);
-          await pool.query('delete station where id = $1', [stationid]);
-          res.status(200).send('station deleted');
+          //help
         }
       }
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).send('Server not Found!');
-    }
+    } catch (error) {}
   });
 
   // Create new route endpoint
@@ -344,16 +330,57 @@ module.exports = function (app) {
   });
 
   // Update route endpoint
-  app.put('/manage/routes/api/v1/route/:routeId', async (req, res) => {});
+  app.put('/manage/routes/api/v1/route/:routeId', async (req, res) => {
+    try {
+      const fromStationid = req.params;
+      const { routename } = req.body;
+      const updatedRoute = await pool.query('UPDATE routes SET routename = $1 WHERE id = $2 RETURNING *', [routename, fromStationid]);
+      res.json(updatedRoute.rows[0]);
+      redirect('/');
 
-  // Delete route endpoint
-  app.delete('/manage/routes/api/v1/route/:routeId', async (req, res) => {});
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
+  });
+
+  // Delete route 
+  app.delete('/manage/routes/api/v1/route/:routeId', async (req, res) => {
+    try {
+      const routeId = req.params;
+      const deleteRoute = await pool.query('DELETE FROM routes WHERE id = $1', [routeId]);
+      res.json('Route was deleted!');
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
+  });
 
   // Accept/Reject Refund
-  app.put('/manage/requests/refunds/api/v1/requests/refunds/:requestID', async (req, res) => {});
-
+  //Complete it after subscription and online payment are done.
+  app.put('/manage/requests/refunds/api/v1/requests/refunds/:requestID', async (req, res) => {
+    //refund status either is accepted or rejected
+    try{
+      const tripdate = getUser(req).tripdate;
+      const { refundstatus } = req.body;
+      const requestId = req.params;
+      if (tripdate < Date.now()) {
+        res.status(400).send('Cannot refund a trip that has already happened!');
+      }
+      else{ //future dated == yes
+        const updatedRefund = await pool.query('UPDATE refundrequests SET refundstatus = $1 WHERE id = $2 RETURNING *', [refundstatus, requestId]);
+        res.json(updatedRefund.rows[0]);
+      }
+    }catch(error){
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
+      
+  });
   // Accept/Reject Senior
-  app.put('/manage/requests/seniors/api/v1/requests/senior/:requestId', async (req, res) => {});
+  app.put('/manage/requests/seniors/api/v1/requests/senior/:requestId', async (req, res) => {
+
+  });
 
   //Update zone price
   app.post('/manage/zones/api/v1/zones/:zoneId', async (req, res) => {
@@ -367,4 +394,4 @@ module.exports = function (app) {
       res.status(500).send('Server Error!');
     }
   });
-}
+};
