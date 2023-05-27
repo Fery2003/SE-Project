@@ -75,7 +75,7 @@ module.exports = function (app) {
   });
 
   // Subscriptions endpoint(running but not testing)
-  app.get('/subscriptions/api/v1/zones', async (req, res) => {
+  app.get('/api/v1/zones', async (req, res) => {
     try {
       const zones = await pool.query('SELECT * FROM se_project.zone');
       res.json(zones.rows);
@@ -152,11 +152,27 @@ module.exports = function (app) {
       const { source, dest, date } = req.body;
       const user = await getUser(req);
       const uid = user.user_id;
-      const updatedRide = await pool.query(
-        'UPDATE ride SET status = $1 WHERE origin = $2 and destination = $3 and user_id = $4 and trip_date = $5 RETURNING *',
-        ['completed', source, dest, uid, date]
-      );
-      console.log(updatedRide.rows[0]);
+      const checkRide = await db.from('se_project.ride').where('user_id', uid)
+      const found = false;
+      for(let i = 0; i < checkRide.length; i++)
+      {
+        if(checkRide[i].origin == source && checkRide[i].destination == dest && checkRide[i].trip_date == date)
+        {
+          found = true 
+        }
+      }
+      if(found == true)
+      {
+        await db.from('se_project.ride').where('origin', source)
+        .andWhere('destination', dest).andWhere('trip_date', date)
+        .andWhere('user_id', uid).update('status', 'complete');
+
+        res.send('Ride is now completed!');
+      }
+      else
+      {
+        res.send('No such ride exists.');
+      }
     } catch (error) {
       console.log(error.message);
       res.status(500).send('Server Error!');
