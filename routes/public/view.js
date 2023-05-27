@@ -1,14 +1,13 @@
+const db = require('../../connectors/knexdb');
 
-const db = require('../../connectors/knexDB');
-
-module.exports = function(app) {
+module.exports = function (app) {
   //Register HTTP endpoint to render /index page
-  app.get('/', function(req, res) {
+  app.get('/', function (req, res) {
     return res.render('index');
   });
-// example of passing variables with a page
-  app.get('/register', async function(req, res) {
-    const stations = await db.select('*').from('se_project.stations');
+  // example of passing variables with a page
+  app.get('/register', async function (req, res) {
+    const stations = await db.select('*').from('se_project.station');
     return res.render('register', { stations });
   });
 };

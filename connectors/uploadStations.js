@@ -11,8 +11,8 @@ const config = {
     host: 'localhost',
     port: 5432,
     user: 'postgres',
-    password: '86032125',
-    database: 'se_project23',
+    password: '1598753',
+    database: 'project',
   }
 };
 
@@ -20,106 +20,106 @@ const config = {
 const db = knex(config);
 async function uploadSR() {
   let SR = [
-    { stationid: 1, routeid: 1 },
-    { stationid: 1, routeid: 2 },
-    { stationid: 2, routeid: 1 },
-    { stationid: 2, routeid: 2 },
-    { stationid: 2, routeid: 3 },
-    { stationid: 2, routeid: 4 },
-    { stationid: 3, routeid: 3 },
-    { stationid: 3, routeid: 4 },
-    { stationid: 3, routeid: 5 },
-    { stationid: 3, routeid: 6 },
-    { stationid: 3, routeid: 7 },
-    { stationid: 3, routeid: 8 },
-    { stationid: 4, routeid: 5 },
-    { stationid: 4, routeid: 6 },
-    { stationid: 4, routeid: 9 },
-    { stationid: 4, routeid: 10 },
-    { stationid: 5, routeid: 9 },
-    { stationid: 5, routeid: 10 },
-    { stationid: 6, routeid: 7 },
-    { stationid: 6, routeid: 8 },
-    { stationid: 6, routeid: 11 },
-    { stationid: 6, routeid: 12 },
-    { stationid: 7, routeid: 11 },
-    { stationid: 7, routeid: 12 }
+    { station_id: 1, route_id: 1 },
+    { station_id: 1, route_id: 2 },
+    { station_id: 2, route_id: 1 },
+    { station_id: 2, route_id: 2 },
+    { station_id: 2, route_id: 3 },
+    { station_id: 2, route_id: 4 },
+    { station_id: 3, route_id: 3 },
+    { station_id: 3, route_id: 4 },
+    { station_id: 3, route_id: 5 },
+    { station_id: 3, route_id: 6 },
+    { station_id: 3, route_id: 7 },
+    { station_id: 3, route_id: 8 },
+    { station_id: 4, route_id: 5 },
+    { station_id: 4, route_id: 6 },
+    { station_id: 4, route_id: 9 },
+    { station_id: 4, route_id: 10 },
+    { station_id: 5, route_id: 9 },
+    { station_id: 5, route_id: 10 },
+    { station_id: 6, route_id: 7 },
+    { station_id: 6, route_id: 8 },
+    { station_id: 6, route_id: 11 },
+    { station_id: 6, route_id: 12 },
+    { station_id: 7, route_id: 11 },
+    { station_id: 7, route_id: 12 }
   ];
   for (let i = 0; i < SR.length; i++) {
     const element = SR[i];
-    await db('se_project.stationroutes').insert(element).returning('*');
+    await db('se_project.station_route').insert(element).returning('*');
   }
 }
 async function uploadS() {
   let stations = [
     {
-      stationname: 's1',
-      stationtype: 'normal',
-      stationposition: 'start',
-      stationstatus: 'old'
+      station_name: 's1',
+      station_type: 'normal',
+      station_position: 'start',
+      station_status: 'old'
     },
     {
-      stationname: 's2',
-      stationtype: 'normal',
-      stationposition: 'middle',
-      stationstatus: 'old'
+      station_name: 's2',
+      station_type: 'normal',
+      station_position: 'middle',
+      station_status: 'old'
     },
     {
-      stationname: 's3',
-      stationtype: 'transfer',
-      stationposition: 'middle',
-      stationstatus: 'old'
+      station_name: 's3',
+      station_type: 'transfer',
+      station_position: 'middle',
+      station_status: 'old'
     },
     {
-      stationname: 's4',
-      stationtype: 'normal',
-      stationposition: 'middle',
-      stationstatus: 'old'
+      station_name: 's4',
+      station_type: 'normal',
+      station_position: 'middle',
+      station_status: 'old'
     },
     {
-      stationname: 's5',
-      stationtype: 'normal',
-      stationposition: 'end',
-      stationstatus: 'old'
+      station_name: 's5',
+      station_type: 'normal',
+      station_position: 'end',
+      station_status: 'old'
     },
     {
-      stationname: 's6',
-      stationtype: 'normal',
-      stationposition: 'middle',
-      stationstatus: 'old'
+      station_name: 's6',
+      station_type: 'normal',
+      station_position: 'middle',
+      station_status: 'old'
     },
     {
-      stationname: 's7',
-      stationtype: 'normal',
-      stationposition: 'end',
-      stationstatus: 'old'
+      station_name: 's7',
+      station_type: 'normal',
+      station_position: 'end',
+      station_status: 'old'
     }
   ];
 
   for (let i = 0; i < stations.length; i++) {
     const element = stations[i];
-    await db('se_project.stations').insert(element).returning('*');
+    await db('se_project.station').insert(element).returning('*');
   }
 }
 async function uploadR() {
   let routes = [
-    { routename: 'hi12', fromstationid: 1, tostationid: 2 },
-    { routename: 'hi21', fromstationid: 2, tostationid: 1 },
-    { routename: 'hi23', fromstationid: 2, tostationid: 3 },
-    { routename: 'hi32', fromstationid: 3, tostationid: 2 },
-    { routename: 'hi34', fromstationid: 3, tostationid: 4 },
-    { routename: 'hi43', fromstationid: 4, tostationid: 3 },
-    { routename: 'hi36', fromstationid: 3, tostationid: 6 },
-    { routename: 'hi63', fromstationid: 6, tostationid: 3 },
-    { routename: 'hi45', fromstationid: 4, tostationid: 5 },
-    { routename: 'hi54', fromstationid: 5, tostationid: 4 },
-    { routename: 'hi76', fromstationid: 7, tostationid: 6 },
-    { routename: 'hi67', fromstationid: 6, tostationid: 7 }
+    { route_name: 'hi12', from_station_id: 1, to_station_id: 2 },
+    { route_name: 'hi21', from_station_id: 2, to_station_id: 1 },
+    { route_name: 'hi23', from_station_id: 2, to_station_id: 3 },
+    { route_name: 'hi32', from_station_id: 3, to_station_id: 2 },
+    { route_name: 'hi34', from_station_id: 3, to_station_id: 4 },
+    { route_name: 'hi43', from_station_id: 4, to_station_id: 3 },
+    { route_name: 'hi36', from_station_id: 3, to_station_id: 6 },
+    { route_name: 'hi63', from_station_id: 6, to_station_id: 3 },
+    { route_name: 'hi45', from_station_id: 4, to_station_id: 5 },
+    { route_name: 'hi54', from_station_id: 5, to_station_id: 4 },
+    { route_name: 'hi76', from_station_id: 7, to_station_id: 6 },
+    { route_name: 'hi67', from_station_id: 6, to_station_id: 7 }
   ];
 
   for (let i = 0; i < routes.length; i++) {
     const element = routes[i];
-    await db('se_project.routes').insert(element).returning('*');
+    await db('se_project.route').insert(element).returning('*');
   }
 }
 //uploadS(); //first to run

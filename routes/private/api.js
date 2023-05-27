@@ -12,10 +12,10 @@ const getUser = async function (req) {
   }
   console.log('hi', sessionToken);
   const user = await db
-    .from('se_project.sessions')
+    .from('se_project.session')
     .where('token', sessionToken)
-    .innerJoin('se_project.users', 'se_project.sessions.userid', 'se_project.users.id')
-    .innerJoin('se_project.roles', 'se_project.users.roleid', 'se_project.roles.id')
+    .innerJoin('se_project.user', 'se_project.session.user_id', 'se_project.user.id')
+    .innerJoin('se_project.role', 'se_project.user.role_id', 'se_project.role.id')
     .first();
 
   console.log('user =>', user);
@@ -28,18 +28,18 @@ const getUser = async function (req) {
 
 module.exports = function (app) {
   //example
-  app.get("/test", async function (req, res) {
-    try {
-      const user = await getUser(req);
-      const users = await db.select('*').from("se_project.users")
+  // app.get("/test", async function (req, res) {
+  //   try {
+  //     const user = await getUser(req);
+  //     const users = await db.select('*').from("se_project.users")
 
-      return res.status(200).json(users);
-    } catch (e) {
-      console.log(e.message);
-      return res.status(400).send("Could not get users");
-    }
+  //     return res.status(200).json(users);
+  //   } catch (e) {
+  //     console.log(e.message);
+  //     return res.status(400).send("Could not get users");
+  //   }
 
-  });
+  // });
 
   //User stuff
 
