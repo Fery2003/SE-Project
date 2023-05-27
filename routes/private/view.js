@@ -1,4 +1,4 @@
-const db = require('../../connectors/knexDB');
+const db = require('../../connectors/knexdb');
 const roles = require('../../constants/roles');
 const { getSessionToken } = require('../../utils/session');
 
@@ -9,10 +9,10 @@ const getUser = async function(req) {
   }
 
   const user = await db.select('*')
-    .from('se_project.sessions')
+    .from('se_project.session')
     .where('token', sessionToken)
-    .innerJoin('se_project.users', 'se_project.sessions.userid', 'se_project.users.id')
-    .innerJoin('se_project.roles', 'se_project.users.roleid', 'se_project.roles.id')
+    .innerJoin('se_project.user', 'se_project.session.user_id', 'se_project.user.id')
+    .innerJoin('se_project.role', 'se_project.user.role_id', 'se_project.role.id')
     .first();
   
   console.log('user =>', user)
@@ -32,14 +32,14 @@ module.exports = function(app) {
 
   // Register HTTP endpoint to render /users page
   app.get('/users', async function(req, res) {
-    const users = await db.select('*').from('se_project.users');
+    const users = await db.select('*').from('se_project.user');
     return res.render('users', { users });
   });
 
   // Register HTTP endpoint to render /courses page
   app.get('/stations', async function(req, res) {
     const user = await getUser(req);
-    const stations = await db.select('*').from('se_project.stations');
+    const stations = await db.select('*').from('se_project.station');
     return res.render('stations_example', { ...user, stations });
   });
 

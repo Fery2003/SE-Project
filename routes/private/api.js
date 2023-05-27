@@ -1,6 +1,6 @@
 const { isEmpty } = require('lodash');
 const { v4 } = require('uuid');
-const db = require('../../connectors/knexDB.js');
+const db = require('../../connectors/knexdb');
 const pool = require('../../connectors/poolDB.js');
 const roles = require('../../constants/roles');
 const { getSessionToken } = require('../../utils/session.js');
@@ -12,10 +12,10 @@ const getUser = async function (req) {
   }
   console.log('hi', sessionToken);
   const user = await db
-    .from('se_project.sessions')
+    .from('se_project.session')
     .where('token', sessionToken)
-    .innerJoin('se_project.users', 'se_project.sessions.userid', 'se_project.users.id')
-    .innerJoin('se_project.roles', 'se_project.users.roleid', 'se_project.roles.id')
+    .innerJoin('se_project.user', 'se_project.session.user_id', 'se_project.user.id')
+    .innerJoin('se_project.role', 'se_project.user.role_id', 'se_project.role.id')
     .first();
 
   console.log('user =>', user);
@@ -28,40 +28,46 @@ const getUser = async function (req) {
 
 module.exports = function (app) {
   //example
-  app.get("/test", async function (req, res) {
-    try {
-      const user = await getUser(req);
-      const users = await db.select('*').from("se_project.users")
+  // app.get("/test", async function (req, res) {
+  //   try {
+  //     const user = await getUser(req);
+  //     const users = await db.select('*').from("se_project.users")
 
-      return res.status(200).json(users);
-    } catch (e) {
-      console.log(e.message);
-      return res.status(400).send("Could not get users");
-    }
+  //     return res.status(200).json(users);
+  //   } catch (e) {
+  //     console.log(e.message);
+  //     return res.status(400).send("Could not get users");
+  //   }
 
-  });
+  // });
 
   //User stuff
 
   app.get('/dashboard', async (req, res) => {
     try {
-      const user = await db.query('SELECT * FROM se_project.user WHERE id = $1', [req.user]);
-      res.json(user.rows[0]);
+      const user = getUser(req);
+      // check role of user here and redirect to corresponding dashboard
+      if (user.isAdmin) {
+        const userInfo = await db.query('SELECT * FROM se_project.user');
+      } else if (user.isNormal || user.isSenior) {
+        const userInfo = await db.query('SELECT * FROM se_project.user WHERE id = $1', [user.id]);
+      }
+      res.json(userInfo.rows[0]);
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
     }
   });
 
-  app.get('/dashboard', async (req, res) => {
-    try {
-      const user = await getUser(req);
-      res.json(user);
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send('Server Error!');
-    }
-  });
+  // app.get('/dashboard', async (req, res) => {
+  //   try {
+  //     const user = await getUser(req);
+  //     res.json(user);
+  //   } catch (error) {
+  //     console.error(error.message);
+  //     res.status(500).send('Server Error!');
+  //   }
+  // });
 
   // Reset password endpoint
   app.put('/api/v1/password/reset', async (req, res) => {
