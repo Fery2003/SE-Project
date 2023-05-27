@@ -6,11 +6,11 @@
 
 -- PRESS ON "Active Connection" ABOVE AND SELECT "your_db_name#se_project"
 
-INSERT INTO role("role") VALUES ('user');
+INSERT INTO se_project.role("role") VALUES ('user');
 
-INSERT INTO role("role") VALUES ('admin');
+INSERT INTO se_project.role("role") VALUES ('admin');
 
-INSERT INTO role("role") VALUES ('senior');
+INSERT INTO se_project.role("role") VALUES ('senior');
 
 -- Set user role as Admin
 
@@ -72,7 +72,7 @@ VALUES ('rita', 'amr', 'ra', '123', 2);
 --TICKET--
 
 INSERT INTO
-    user(
+    se_project.user(
         "first_name",
         "last_name",
         "email",
@@ -81,12 +81,20 @@ INSERT INTO
     )
 VALUES ('rita', 'amr', 'ra', '123', 2);
 
+--ZONES--
+
+INSERT INTO se_project.zone("zone_type","price") VALUES ('9', '9');
+
+INSERT INTO se_project.zone("zone_type","price") VALUES ('10', '10');
+
+INSERT INTO se_project.zone("zone_type","price") VALUES ('16', '16');
+
 --SUBSCRIPTIONS--
 
 --ANNUAL QUARTLERY W MONTHLY
 
 INSERT INTO
-    subscription(
+    se_project.subscription(
         "sub_type",
         "zone_id",
         "user_id",
@@ -95,13 +103,22 @@ INSERT INTO
 VALUES ('annual', 1, 1, 100);
 
 INSERT INTO
-    subscription(
+    se_project.subscription(
         "sub_type",
         "zone_id",
         "user_id",
         "no_of_tickets"
     )
 VALUES ('quarterly', 2, 2, 50);
+
+INSERT INTO
+    se_project.subscription(
+        "sub_type",
+        "zone_id",
+        "user_id",
+        "no_of_tickets"
+    )
+VALUES ('monthly', 3, 4, 10);
 
 INSERT INTO
     subscription(
@@ -111,18 +128,6 @@ INSERT INTO
         "no_of_tickets"
     )
 VALUES ('monthly', 3, 4, 10);
-
---ZONES--
-
-INSERT INTO
-    zone("zone_type", "price")
-VALUES ('9', '9')
-INSERT INTO
-    zone("zone_type", "price")
-VALUES ('10', '10')
-INSERT INTO
-    zone("zone_type", "price")
-VALUES ('16', '16');
 
 insert into
     se_project.station(
