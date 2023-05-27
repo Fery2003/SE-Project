@@ -92,7 +92,7 @@ module.exports = function (app) {
   app.post('subscriptions/api/v1/payment/subscription', async (req, res) => {
     try{
 
-      const { id, sub_type, zone_id, user_id, no_of_tickets} = req.body;
+      const {creditCardNumber, holderName, payedAmount, subType, zoneId} = req.body;
       const { purchaseid } = req.query;
       const {first_name, last_name} = await getUser(req);
       if(first_name+last_name == req.body.holderName){
