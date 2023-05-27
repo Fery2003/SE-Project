@@ -11,150 +11,150 @@
 
 -- DROP TABLE IF EXISTS enrollments;
 
---- Note in pgadmin columns name will be lowerCase
+--- NOTE in pgadmin columns name will be lowerCase
 
 --so either change them from pgadmin or change in the code to lower
 
 CREATE TABLE
-    IF NOT EXISTS se_project.users (
+    IF NOT EXISTS se_project.user (
         id SERIAL NOT NULL,
-        firstname text NOT NULL,
-        lastname text NOT NULL,
-        email text NOT NULL,
-        password text NOT NULL,
-        roleid INTEGER NOT NULL,
-        CONSTRAINT users_pkey PRIMARY KEY (id)
+        first_name TEXT NOT NULL,
+        last_name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        password TEXT NOT NULL,
+        role_id INTEGER NOT NULL,
+        CONSTRAINT user_pkey PRIMARY KEY (id)
     );
 
 CREATE TABLE
-    IF NOT EXISTS se_project.sessions (
+    IF NOT EXISTS se_project.session (
         id SERIAL NOT NULL,
-        userid INTEGER NOT NULL,
-        token text NOT NULL,
-        expiresat timestamp NOT NULL,
-        CONSTRAINT sessions_pkey PRIMARY KEY (id)
+        user_id INTEGER NOT NULL,
+        token TEXT NOT NULL,
+        expires_at TIMESTAMP NOT NULL,
+        CONSTRAINT session_pkey PRIMARY KEY (id)
     );
 
 CREATE TABLE
-    IF NOT EXISTS se_project.roles (
+    IF NOT EXISTS se_project.role (
         id SERIAL NOT NULL,
-        role text NOT NULL,
-        CONSTRAINT roles_pkey PRIMARY KEY (id)
+        role TEXT NOT NULL,
+        CONSTRAINT role_pkey PRIMARY KEY (id)
     );
 
 CREATE TABLE
-    IF NOT EXISTS se_project.zones (
+    IF NOT EXISTS se_project.zone (
         id SERIAL NOT NULL,
-        zonetype text NOT NULL,
+        zone_type TEXT NOT NULL,
         -- 9 stations/ 10-16/16
         price INTEGER NOT NULL,
-        CONSTRAINT zones_pkey PRIMARY KEY (id)
+        CONSTRAINT zone_pkey PRIMARY KEY (id)
     );
 
 CREATE TABLE
-    IF NOT EXISTS se_project.subsription (
+    IF NOT EXISTS se_project.subscription (
         id SERIAL NOT NULL,
-        subtype text NOT NULL,
+        sub_type TEXT NOT NULL,
         --annual --month -- quarterly
-        zoneid INTEGER NOT NULL,
-        userid INTEGER NOT NULL,
-        nooftickets INTEGER NOT NULL,
-        CONSTRAINT subsription_pkey PRIMARY KEY (id),
-        FOREIGN KEY(userid) REFERENCES se_project.users,
-        FOREIGN KEY(zoneid) REFERENCES se_project.zones
+        zone_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        no_of_tickets INTEGER NOT NULL,
+        CONSTRAINT subscription_pkey PRIMARY KEY (id),
+        FOREIGN KEY(user_id) REFERENCES se_project.user,
+        FOREIGN KEY(zone_id) REFERENCES se_project.zone
     );
 
 CREATE TABLE
-    IF NOT EXISTS se_project.tickets (
+    IF NOT EXISTS se_project.ticket (
         id SERIAL NOT NULL,
-        origin text NOT NULL,
-        destination text NOT NULL,
-        userid INTEGER NOT Null,
-        subiD INTEGER,
-        tripdate timestamp not Null,
-        FOREIGN KEY(userid) REFERENCES se_project.users,
-        FOREIGN KEY(subid) REFERENCES se_project.subsription,
-        CONSTRAINT tickets_pkey PRIMARY KEY (id)
+        origin TEXT NOT NULL,
+        destination TEXT NOT NULL,
+        user_id INTEGER NOT NULL,
+        sub_id INTEGER,
+        trip_date TIMESTAMP NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES se_project.user,
+        FOREIGN KEY(sub_id) REFERENCES se_project.subsription,
+        CONSTRAINT ticket_pkey PRIMARY KEY (id)
     );
 
 CREATE TABLE
-    IF NOT EXISTS se_project.rides (
+    IF NOT EXISTS se_project.ride (
         id SERIAL NOT NULL,
-        status text NOT NULL,
-        origin text NOT NULL,
-        destination text NOT NULL,
-        userid INTEGER NOT NULL,
-        ticketid INTEGER not null,
-        tripdate timestamp not null,
-        FOREIGN KEY(userid) REFERENCES se_project.users,
-        FOREIGN KEY(ticketid) REFERENCES se_project.tickets,
-        CONSTRAINT rides_pkey PRIMARY KEY (id)
+        status TEXT NOT NULL,
+        origin TEXT NOT NULL,
+        destination TEXT NOT NULL,
+        user_id INTEGER NOT NULL,
+        ticket_id INTEGER NOT NULL,
+        trip_date TIMESTAMP NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES se_project.user,
+        FOREIGN KEY(ticket_id) REFERENCES se_project.ticket,
+        CONSTRAINT ride_pkey PRIMARY KEY (id)
     );
 
 CREATE TABLE
-    IF NOT EXISTS se_project.transactions (
+    IF NOT EXISTS se_project.transaction (
         id SERIAL NOT NULL,
         amount FLOAT NOT NULL,
-        userid INTEGER NOT NULL,
-        purchasedid text NOT NULL,
-        purchasetype text NOT NULL,
+        user_id INTEGER NOT NULL,
+        purchase_id TEXT NOT NULL,
+        purchase_type TEXT NOT NULL,
         -- either ticket or subscription
-        FOREIGN KEY(userid) REFERENCES se_project.users,
-        CONSTRAINT transactions_pkey PRIMARY KEY (id)
+        FOREIGN KEY(user_id) REFERENCES se_project.user,
+        CONSTRAINT transaction_pkey PRIMARY KEY (id)
     );
 
 CREATE TABLE
-    IF NOT EXISTS se_project.refund_requests (
+    IF NOT EXISTS se_project.refund_request (
         id SERIAL NOT NULL,
-        status text NOT NULL,
-        userid INTEGER NOT NULL,
-        refundamount INTEGER not NULL,
-        ticketid INTEGER NOT null,
-        FOREIGN KEY(userid) REFERENCES se_project.users,
-        FOREIGN KEY(ticketid) REFERENCES se_project.tickets,
-        CONSTRAINT refund_requests_pkey PRIMARY KEY (id)
+        status TEXT NOT NULL,
+        user_id INTEGER NOT NULL,
+        refund_amount INTEGER NOT NULL,
+        ticket_id INTEGER NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES se_project.user,
+        FOREIGN KEY(ticket_id) REFERENCES se_project.ticket,
+        CONSTRAINT refund_request_pkey PRIMARY KEY (id)
     );
 
 CREATE TABLE
-    IF NOT EXISTS se_project.senior_requests (
+    IF NOT EXISTS se_project.senior_request (
         id SERIAL NOT NULL,
-        status text NOT NULL,
-        userid INTEGER NOT NULL,
-        nationalid TEXT not null,
-        FOREIGN KEY(userid) REFERENCES se_project.users,
-        CONSTRAINT senior_requests_pkey PRIMARY KEY (id)
+        status TEXT NOT NULL,
+        user_id INTEGER NOT NULL,
+        national_id TEXT NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES se_project.user,
+        CONSTRAINT senior_request_pkey PRIMARY KEY (id)
     );
 
 CREATE TABLE
-    IF NOT EXISTS se_project.stations (
+    IF NOT EXISTS se_project.station (
         id SERIAL NOT NULL,
-        stationname text NOT NULL,
-        stationtype text NOT NULL,
+        station_name TEXT NOT NULL,
+        station_type TEXT NOT NULL,
         -- normal or transfer
-        stationposition text,
+        station_position TEXT,
         -- start middle end
-        stationstatus text not null,
-        -- new created or not
-        CONSTRAINT stations_pkey PRIMARY KEY (id)
+        station_status TEXT NOT NULL,
+        -- new created or NOT
+        CONSTRAINT station_pkey PRIMARY KEY (id)
     );
 
 CREATE TABLE
-    IF NOT EXISTS se_project.routes (
+    IF NOT EXISTS se_project.route (
         id SERIAL NOT NULL,
-        routename text Not null,
-        fromStationid INTEGER NOT NULL,
-        toStationid INTEGER NOT NULL,
-        CONSTRAINT routes_pkey PRIMARY KEY (id),
-        FOREIGN KEY(fromStationid) REFERENCES se_project.stations on DELETE CASCADE on UPDATE CASCADE,
-        FOREIGN KEY(toStationid) REFERENCES se_project.stations on DELETE CASCADE on UPDATE CASCADE
+        route_name TEXT NOT NULL,
+        from_station_id INTEGER NOT NULL,
+        to_station_id INTEGER NOT NULL,
+        CONSTRAINT route_pkey PRIMARY KEY (id),
+        FOREIGN KEY(from_station_id) REFERENCES se_project.station ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY(to_station_id) REFERENCES se_project.station ON DELETE CASCADE ON UPDATE CASCADE
     );
 
 CREATE TABLE
-    IF NOT EXISTS se_project.stationRoutes (
+    IF NOT EXISTS se_project.station_route (
         id SERIAL NOT NULL,
-        stationid INTEGER NOT NULL,
-        routeid INTEGER NOT NULL,
-        CONSTRAINT stationRoutes_pkey PRIMARY KEY (id),
-        FOREIGN KEY(stationid) REFERENCES se_project.stations on DELETE CASCADE on UPDATE CASCADE,
-        FOREIGN KEY(routeid) REFERENCES se_project.routes on DELETE CASCADE on UPDATE CASCADE
+        station_id INTEGER NOT NULL,
+        route_id INTEGER NOT NULL,
+        CONSTRAINT station_route_pkey PRIMARY KEY (id),
+        FOREIGN KEY(station_id) REFERENCES se_project.station ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY(route_id) REFERENCES se_project.route ON DELETE CASCADE ON UPDATE CASCADE
     );

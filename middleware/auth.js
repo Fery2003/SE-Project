@@ -1,5 +1,5 @@
 const { v4 } = require('uuid');
-const db = require('../connectors/knexDB');
+const db = require('../connectors/knexdb');
 const roles = require('../constants/roles');
 const { getSessionToken } = require('../utils/session');
 
