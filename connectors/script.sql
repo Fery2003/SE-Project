@@ -73,7 +73,7 @@ CREATE TABLE
         sub_id INTEGER,
         trip_date TIMESTAMP NOT NULL,
         FOREIGN KEY(user_id) REFERENCES se_project.user,
-        FOREIGN KEY(sub_id) REFERENCES se_project.subsription,
+        FOREIGN KEY(sub_id) REFERENCES se_project.subscription,
         CONSTRAINT ticket_pkey PRIMARY KEY (id)
     );
 
