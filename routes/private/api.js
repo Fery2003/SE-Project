@@ -87,10 +87,10 @@ module.exports = function (app) {
   // pay for subscription endpoint
   // these next 2 require a purchase id from the query so use req.query.purchaseid
   // go through logic again before implementing
-  app.post('subscriptions/api/v1/payment/subscription', async (req, res) => {});
+  app.post('subscriptions/api/v1/payment/subscription', async (req, res) => { });
 
   // pay for ticket endpoint
-  app.post('/tickets/api/v1/payment/ticket', async (req, res) => {});
+  app.post('/tickets/api/v1/payment/ticket', async (req, res) => { });
 
   // Purchase ticket with subscription endpoint
   app.post('/tickets/api/v1/tickets/purchase/subscription', async (req, res) => {
@@ -108,7 +108,7 @@ module.exports = function (app) {
   });
 
   // Get ticket price endpoint
-  app.post('/prices/api/v1/tickets/price/:originId', async (req, res) => {});
+  app.post('/prices/api/v1/tickets/price/:originId', async (req, res) => { });
 
   // Get all rides endpoint
   app.get('/rides', async (req, res) => {
@@ -268,36 +268,40 @@ module.exports = function (app) {
           //help
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   });
 
   // Create new route endpoint
   app.post('/manage/routes/api/v1/route', async (req, res) => {
-    try {
-      const { routename, fromStationid, toStationid } = req.body;
-      const newRoute = await pool.query('INSERT INTO se_project.routes (routename, fromStationid, toStationid) VALUES ($1, $2, $3) RETURNING *', [
-        routename,
-        fromStationid,
-        toStationid
-      ]);
-      res.json(newRoute.rows[0]);
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send('Server Error!');
+    const newRoute = {
+      routeName: req.body.route_name,
+      fromStationId: req.body.from_station_id,
+      toStationId: req.body.to_station_id
+    };
+    if (newRoute.fromStationId === newRoute.toStationId) {
+      return res.status(400).json({ msg: 'Route cannot be created with the same station!' });
     }
+    if (newRoute.fromStationId === undefined || newRoute.toStationId === undefined) {
+      return res.status(400).json({ msg: 'Route cannot be created with undefined stations!' });
+    }
+    if (newRoute.routeName.length === 0) {
+      return res.status(400).json({ msg: 'Route cannot be created with empty name!' });
+    }
+
+
   });
 
   // Update route endpoint
-  app.put('/manage/routes/api/v1/route/:routeId', async (req, res) => {});
+  app.put('/manage/routes/api/v1/route/:routeId', async (req, res) => { });
 
   // Delete route endpoint
-  app.delete('/manage/routes/api/v1/route/:routeId', async (req, res) => {});
+  app.delete('/manage/routes/api/v1/route/:routeId', async (req, res) => { });
 
   // Accept/Reject Refund
-  app.put('/manage/requests/refunds/api/v1/requests/refunds/:requestID', async (req, res) => {});
+  app.put('/manage/requests/refunds/api/v1/requests/refunds/:requestID', async (req, res) => { });
 
   // Accept/Reject Senior
-  app.put('/manage/requests/seniors/api/v1/requests/senior/:requestId', async (req, res) => {});
+  app.put('/manage/requests/seniors/api/v1/requests/senior/:requestId', async (req, res) => { });
 
   //Update zone price
   app.post('/manage/zones/api/v1/zones/:zoneId', async (req, res) => {
