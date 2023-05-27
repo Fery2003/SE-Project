@@ -44,14 +44,14 @@ module.exports = function (app) {
 
   app.get('/dashboard', async (req, res) => {
     try {
-      const user = await getUser(req);
+      const { roleid } = await getUser(req);
       // check role of user here and redirect to corresponding dashboard
       if (user.isAdmin) {
         const userInfo = await db.query('SELECT * FROM se_project.user');
       } else if (user.isNormal || user.isSenior) {
         const userInfo = await db.query('SELECT * FROM se_project.user WHERE id = $1', [user.id]);
       }
-      res.json(userInfo.rows[0]);
+      res.json(userInfo);
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
