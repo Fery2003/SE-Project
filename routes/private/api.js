@@ -1,4 +1,4 @@
-const { isEmpty } = require('lodash');
+const { isEmpty, get } = require('lodash');
 const { v4 } = require('uuid');
 const db = require('../../connectors/knexdb');
 const pool = require('../../connectors/poolDB.js');
@@ -6,6 +6,7 @@ const roles = require('../../constants/roles');
 const { getSessionToken } = require('../../utils/session.js');
 const { compileFunction } = require('vm');
 const e = require('express');
+const { type } = require('os');
 const getUser = async function (req) {
   const sessionToken = getSessionToken(req);
   if (!sessionToken) {
@@ -54,6 +55,7 @@ module.exports = function (app) {
         // const userInfo = await pool.query('SELECT * FROM se_project.user WHERE id = $1', [user.id]);
         const userInfo = await db.select('*').from('se_project.user').where('id', user.id);
       }
+      // const userInfo = await db.select('*').from('se_project.user').where('id', user.id);
       res.json(userInfo);
     } catch (error) {
       console.error(error.message);
@@ -66,8 +68,13 @@ module.exports = function (app) {
     try {
       const { id } = await getUser(req);
       const password = req.body.newPassword;
-      // const ret = await pool.query('UPDATE se_project.user SET password = $1 WHERE id = $2', [password, id]);
-      const ret = await db.from('se_project.user').where('id', id).update({ password: password }).returning('*');
+      if (!password) {
+        return res.status(400).json({ msg: "Please enter a password" });
+      }
+      if (password.length < 0) {
+        return res.status(400).json({ msg: "Password must be at empty" });
+      }
+      const ret = await db.from('se_project.user').where('id', id).update({ password: password });
       // res.json(ret);
       res.json({ message: 'Password reset successfully' });
     } catch (error) {
@@ -91,18 +98,19 @@ module.exports = function (app) {
   // pay for subscription endpoint
   // these next 2 require a purchase id from the query so use req.query.purchaseid
   // go through logic again before implementing
-  app.post('/api/v1/payment/subscription', async (req, res) => {
-    try{
-
-      const { id, sub_type, zone_id, user_id, no_of_tickets} = req.body;
-      const { purchaseid } = req.query;
-      const {first_name, last_name} = await getUser(req);
-      if(first_name+last_name == req.body.holderName){
-        const ret = await db.from('se_project.transaction').insert({ user_id: user_id}).returning('*');
-        console.log("name matches");
+  app.post('api/v1/payment/subscription', async (req, res) => {
+    try {
+      const { creditCardNumber, holderName, paidAmount, subType, zoneId } = req.body;
+      const { purchaseId } = req.query;
+      const { first_name, last_name } = await getUser(req);
+      if (!creditCardNumber || !holderName || !paidAmount || !subType || !zoneId) {
+        return res.status(400).json({ msg: "Please enter all fields" });
       }
-      else{
-        console.log("name does not match");
+      if (first_name + last_name == req.body.holderName) {
+        const ret = await db.from('se_project.transaction').insert({ user_id: user_id });
+        console.log('name matches');
+      } else {
+        console.log('name does not match');
       }
       res.json(ret);
     } catch (error) {
@@ -112,22 +120,31 @@ module.exports = function (app) {
   });
 
   // pay for ticket endpoint
-  app.post('/api/v1/payment/ticket', async (req, res) => {
-
-  });
+  app.post('/api/v1/payment/ticket', async (req, res) => { });
 
   // Purchase ticket with subscription endpoint
   app.post('/api/v1/tickets/purchase/subscription', async (req, res) => {
     try {
-      const { origin, destination, user_id, sub_id, trip_date } = req.body;
-      //const ticket = await pool.query(
-        //'INSERT INTO se_project.ticket (origin, destination, user_id, sub_id, trip_date) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        //[origin, destination, user_id, sub_id, trip_date]);
-      
-      res.json(ticket[0]);
-    } catch (error) {
-      console.error(error.message);
+      const { id } = await getUser(req);
+      const ticket = {
+        origin: req.body.origin,
+        destination: req.body.destination,
+        user_id: id,
+        sub_id: req.body.sub_id,
+        trip_date: req.body.trip_date
+      }
+      if (!ticket.origin || !ticket.destination || !ticket.sub_id || !ticket.trip_date) {
+        return res.status(400).json({ msg: "Please enter all fields" });
+      }
+      if (ticket.trip_date < Date.now()) {
+        return res.status(400).json({ msg: "Please enter a valid date" });
+      }
+      const newTicket = await db.from('se_project.ticket').insert(ticket).returning('*');
+      res.json(newTicket);
+    } catch (err) {
+      console.error(err.message);
       res.status(500).send('Server Error!');
+
     }
   });
 
@@ -152,6 +169,9 @@ module.exports = function (app) {
   app.post('/api/v1/refund/:ticketId', async (req, res) => {
     try {
       const { ticket_id } = req.params;
+      if (!ticket_id) {
+        return res.status(400).json({ msg: "Please enter all fields" });
+      }
       const user_id = await getUser(req).id
       //const refund = await pool.query('INSERT INTO se_project.refund (ticket_id) VALUES ($1) RETURNING *', [ticket_id]);
       const purchaseType = await db.select('purchase_type').from('se_project.transaction')
@@ -180,6 +200,9 @@ module.exports = function (app) {
     try {
       const { nationalId } = req.body;
       const uid = await getUser(req).id;
+      if (!nationalId) {
+        return res.status(400).json({ msg: "Please enter all fields" });
+      }
       //const senior = await pool.query('INSERT INTO se_project.senior (ticket_id) VALUES ($1) RETURNING *', [ticket_id]);
       const requestS = await db.insert([{status : 'pending'}, {user_id: uid}, {national_id: nationalId}])
       .into('se_project.senior_request').returning('*');
@@ -197,13 +220,26 @@ module.exports = function (app) {
       const { source, dest, date } = req.body;
       const user = await getUser(req);
       const uid = user.user_id;
-      //const updatedRide = await pool.query(
-        //'UPDATE ride SET status = $1 WHERE origin = $2 and destination = $3 and user_id = $4 and trip_date = $5 RETURNING *',
-        //['completed', source, dest, uid, date]);
-      const updatedRide = await db('se_project.ride').where('origin', source).andWhere('destination', dest).andWhere('trip_date', date)
-      .andWhere('user_id', uid).update('status', 'complete').returning('*');
-      res.json(updatedRide);
-      res.send('Ride completed!');
+      if (!source || !dest || !date) {
+        return res.status(400).json({ msg: "Please enter all fields" });
+      }
+      const checkRide = await db.from('se_project.ride').where('user_id', uid);
+      const found = false;
+      for (let i = 0; i < checkRide.length; i++) {
+        if (checkRide[i].origin == source && checkRide[i].destination == dest && checkRide[i].trip_date == date) {
+          found = true
+        }
+      }
+      if (found == true) {
+        await db.from('se_project.ride').where('origin', source)
+          .andWhere('destination', dest).andWhere('trip_date', date)
+          .andWhere('user_id', uid).update('status', 'complete');
+
+        res.send('Ride is now completed!');
+      }
+      else {
+        res.send('No such ride exists.');
+      }
     } catch (error) {
       console.log(error.message);
       res.status(500).send('Server Error!');
@@ -238,6 +274,9 @@ module.exports = function (app) {
   app.post('/api/v1/station', async (req, res) => {
     try {
       const { stationName } = req.body;
+      if (!stationname) {
+        return res.status(400).json({ msg: "Please enter all fields" });
+      }
       //const newStation = await pool.query(
         //'INSERT INTO se_project.station (station_name, station_type, station_position, station_status) VALUES ($1, $2, $3, $4) RETURNING *',
         //[stationname, stationtype, stationposition, stationstatus]);
@@ -256,6 +295,9 @@ module.exports = function (app) {
     try {
       const stationId = req.params;
       const { stationName } = req.body;
+      if (!stationName) {
+        return res.status(400).json({ msg: "Please enter all fields" });
+      }
       //const updateStation = await pool.query('UPDATE stations SET stationname = $1 WHERE id = $2 RETURNING *', [stationName, stationId]);
       const updateStation = await db('se_project.station').where('id', stationId).update('station_name', stationName).returning('*');
       res.json(updateStation);
@@ -273,6 +315,10 @@ module.exports = function (app) {
       const stationid = req.params;
       //const station = await pool.query('SELECT * FROM stations WHERE id = $1', [stationid]);
       const station = await db.select('*').from('se_project.station').where('id', stationid);
+      const { id } = getUser(req).roleid;
+      if (id != 2) {
+        return res.status(401).json({ msg: "You are not authorized to delete a station" });
+      }
       console.log(station.rows[0]);
       if (station.length == 1) {
         if (station.station_type == 'normal') {
@@ -385,20 +431,33 @@ module.exports = function (app) {
 
   // Create new route endpoint
   app.post('/api/v1/route', async (req, res) => {
+    const newRoute = {
+      route_name: req.body.route_name, //not sure if namings here are correct ya yahia -Mariam
+      from_station_id: req.body.from_station_id,
+      to_station_id: req.body.to_station_id
+    };
+    if (newRoute.from_station_id === newRoute.to_station_id) {
+      return res.status(400).json({ msg: 'Route cannot be created with the same station!' });
+    }
+    if (newRoute.from_station_id === undefined || newRoute.to_station_id === undefined) {
+      return res.status(400).json({ msg: 'Route cannot be created with undefined stations!' });
+    }
+    if (newRoute.route_name.length === 0) {
+      return res.status(400).json({ msg: 'Route cannot be created with empty name!' });
+    }
     try {
-      const {fromStationid, toStationid, routename} = req.body;
       // const newRoute = await pool.query('INSERT INTO se_project.routes (routename, fromStationid, toStationid) VALUES ($1, $2, $3) RETURNING *', [
       //   routename,
       //   fromStationid,
       //   toStationid
       // ]);
-      const newRoute  = await db.insert([{'route_name': routename}, {'from_station_id': fromStationid}, {'to_station_id': toStationid}]).into('se_project.route').returning('*');
-      res.json(newRoute[0]);
-      res.send('New route created!');
+      const new_Route = await db.from('se_project.route').insert(newRoute).returning('*');
+      res.json(new_Route);
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
     }
+
   });
 
   // Update route endpoint
@@ -406,6 +465,9 @@ module.exports = function (app) {
     try {
       const fromStationid = req.params;
       const { routename } = req.body;
+      if (routename.length === 0) {
+        return res.status(400).json({ msg: 'Route cannot be updated with empty name!' });
+      }
       //const updatedRoute = await pool.query('UPDATE routes SET routename = $1 WHERE id = $2 RETURNING *', [routename, fromStationid]);
       const updatedRoute = await db('se_project.route').where('id', fromStationid).update('route_name', routename).returning('*');
       res.json(updatedRoute[0]);
@@ -421,6 +483,10 @@ module.exports = function (app) {
   app.delete('/api/v1/route/:routeId', async (req, res) => {
     try {
       const routeId = req.params;
+      const { roleid } = getUser(req).roleid;
+      if (roleid !== 2) {
+        return res.status(401).json({ msg: 'User not authorized!' });
+      }
       //const deleteRoute = await pool.query('DELETE FROM routes WHERE id = $1', [routeId]);
       const deleteRoute = await db('se_project.route').where('id', routeId).del();
       res.json('Route was deleted!');
@@ -434,12 +500,15 @@ module.exports = function (app) {
   //Complete it after subscription and online payment are done.
   app.put('/api/v1/requests/refunds/:requestID', async (req, res) => {
     //refund status either is accepted or rejected
-    try{
+    try {
       const tripdate = getUser(req).tripdate;
       const { refundstatus } = req.body;
       const requestId = req.params;
+      if (refundstatus.length === 0) {
+        return res.status(400).json({ msg: 'Refund cannot be updated with empty status!' });
+      }
       if (tripdate < Date.now()) {
-        res.status(400).send('Cannot refund a trip that has already happened!');
+        return res.status(400).json({ msg: 'Refund cannot be updated with empty status!' });
       }
       else{ //future dated == yes
         //const updatedRefund = await pool.query('UPDATE refundrequests SET refundstatus = $1 WHERE id = $2 RETURNING *', [refundstatus, requestId]);
@@ -451,18 +520,50 @@ module.exports = function (app) {
       console.error(error.message);
       res.status(500).send('Server Error!');
     }
-      
+
   });
   // Accept/Reject Senior
   app.put('/api/v1/requests/senior/:requestId', async (req, res) => {
-
+    try {
+      const nationalid = getUser(req).nationalid;
+      yob = nationalid.substring(0, 2); //get the first 2 no.s
+      if (yob < 99) {
+        yob = '19' + yob;
+      } else {
+        yob = '20' + yob;
+      }
+      const year = new Date().getFullYear(); //this year
+      const age = year - yob; //age of the user
+      if (age < 60) {
+        res.status(400).send('Cannot request a senior card if you are not a senior!');
+      }
+      else {
+        const { seniorstatus } = req.body;
+        const requestId = req.params;
+        const updatedSenior = await db
+          .from("se_project.senior_request")
+          .where("id", requestId)
+          .update({ seniorstatus: seniorstatus });
+        res.json(updatedSenior);
+      }
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
   });
 
   //Update zone price
   app.post('/api/v1/zones/:zoneId', async (req, res) => {
     try {
       const { newPrice } = req.body;
+      const { roleid } = getUser(req).roleid;
       const zoneId = req.params;
+      if (roleid !== 2) {
+        return res.status(401).json({ msg: 'User not authorized!' });
+      }
+      if (newPrice.length === 0) {
+        return res.status(400).json({ msg: 'Zone cannot be updated with empty price!' });
+      }
       //const updatedPrice = await pool.query('UPDATE zones SET price = $1 WHERE id = $2 RETURNING *', [newPrice, zoneId]);
       const updatedPrice = await db('se_project.zone').where('id', zoneId).update('price', newPrice).returning('*');
       res.json(updatedPrice[0]);

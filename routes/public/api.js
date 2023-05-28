@@ -6,9 +6,9 @@ module.exports = function (app) {
   app.post('/api/v1/users/register', async function (req, res) {
     // Check if user already exists in the system
     const userExists = await db('se_project')
-    .select('*')
-    .from('se_project.user')
-    .where('email', req.body.email);
+      .select('*')
+      .from('se_project.user')
+      .where('email', req.body.email);
 
     if (!isEmpty(userExists)) {
       return res.status(400).send('user exists');
@@ -24,8 +24,8 @@ module.exports = function (app) {
 
     try {
       const user = await db('se_project.user')
-      .insert(newUser)
-      .returning('*');
+        .insert(newUser)
+        .returning('*');
 
       return res.status(200).json(user);
     } catch (e) {
