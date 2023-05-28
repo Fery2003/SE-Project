@@ -1,7 +1,6 @@
 const { isEmpty, get } = require('lodash');
 const { v4 } = require('uuid');
 const db = require('../../connectors/knexdb');
-const pool = require('../../connectors/poolDB.js');
 const roles = require('../../constants/roles');
 const { getSessionToken } = require('../../utils/session.js');
 const { compileFunction } = require('vm');
@@ -100,15 +99,25 @@ module.exports = function (app) {
   // go through logic again before implementing
   app.post('api/v1/payment/subscription', async (req, res) => {
     try {
+      console.log('here')
       const { creditCardNumber, holderName, paidAmount, subType, zoneId } = req.body;
       const { purchaseId } = req.query;
-      const { first_name, last_name } = await getUser(req);
+      const { first_name, last_name, id } = await getUser(req);
+      // input into transaction table (amount, user_id, purchase_id, purchase_type)
+      // purchase_type is subscription
+      // check first if he has a subscription
+      const checkIfSubbed = await db.select('*').from('se_project.subscription').where('user_id', id);
+      if (checkIfSubbed.length > 0) {
+        return res.status(400).json({ msg: "You already have a subscription" });
+      }
       if (!creditCardNumber || !holderName || !paidAmount || !subType || !zoneId) {
         return res.status(400).json({ msg: "Please enter all fields" });
       }
-      if (first_name + last_name == req.body.holderName) {
-        const ret = await db.from('se_project.transaction').insert({ user_id: user_id });
+      if (`${first_name} ${last_name}` === holderName) {
         console.log('name matches');
+        const ret = await db.from('se_project.transaction').insert({amount: paidAmount, user_id: id, purchase_id: purchaseId, purchaseType: 'subscription'});
+        // input into subscription table (user_id, zone_id, sub_type)
+        const sub = await db.from('se_project.subscription').insert({ user_id: id, zone_id: zoneId, sub_type: subType });
       } else {
         console.log('name does not match');
       }
