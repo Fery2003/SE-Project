@@ -133,7 +133,7 @@ module.exports = function (app) {
         console.log('name does not match');
       }
       // res.json(ret);
-      res.json({msg: `successfully subbed ${subType}`})
+      res.json({ msg: `successfully subbed ${subType}` })
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -141,10 +141,11 @@ module.exports = function (app) {
   });
 
   // pay for ticket endpoint
-  app.post('/api/v1/payment/ticket', async (req, res) => {});
+  app.post('/api/v1/payment/ticket', async (req, res) => { });
 
   // Purchase ticket with subscription endpoint
   app.post('/api/v1/tickets/purchase/subscription', async (req, res) => {
+    const { userRemainingTickets } = getUser(req).numOfTickets;
     try {
       const { id } = await getUser(req);
       const ticket = {
@@ -154,6 +155,9 @@ module.exports = function (app) {
         sub_id: req.body.sub_id,
         trip_date: req.body.trip_date
       };
+      if (userRemainingTickets <= 0) {
+        return res.status(400).json({ msg: 'You have no remaining tickets' });
+      }
       if (!ticket.origin || !ticket.destination || !ticket.sub_id || !ticket.trip_date) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
@@ -161,6 +165,7 @@ module.exports = function (app) {
         return res.status(400).json({ msg: 'Please enter a valid date' });
       }
       const newTicket = await db.from('se_project.ticket').insert(ticket).returning('*');
+      getUser(req).numOfTickets--;
       res.json(newTicket);
     } catch (err) {
       console.error(err.message);
@@ -170,11 +175,11 @@ module.exports = function (app) {
 
   // Get ticket price endpoint
   app.get('/api/v1/tickets/price/:originId', async (req, res) => {
-//Users can check the price of the ticket by specifying the origin and destination.
-// So, you have to figure a way through the three tables(stations, routes, stationRoutes)
-// Hint visited stations array
-     try {
-      const {fromStation, toStation} = req.body //
+    //Users can check the price of the ticket by specifying the origin and destination.
+    // So, you have to figure a way through the three tables(stations, routes, stationRoutes)
+    // Hint visited stations array
+    try {
+      const { fromStation, toStation } = req.body //
       //requesting from the table the column station_name where the id is equal to the fromStation and looping till i find it:
       const fromStationName = await db.select('station_name').from('se_project.station');//.where('id', fromStation);
       //requesting from the table the column station_name where the id is equal to the toStation and looping till i find it:
@@ -198,22 +203,22 @@ module.exports = function (app) {
       const routeID = await db.select('id').from('se_project.route').where('from_station_id', fromstID).andWhere('to_station_id', tostID);
       //now we check route_id in station_route table is equal to routeID:
       const stationRouteID = await db.select('route_id').from('se_project.station_route').where('route_id', routeID);
-      if(zones < 10){
+      if (zones < 10) {
         const price = await db.select('price').from('se_project.zone').where('zone_type', 9);
         res.json(price);
       }
-      else if((zones < 16) && (zones >= 10)){
+      else if ((zones < 16) && (zones >= 10)) {
         const price = await db.select('price').from('se_project.zone').where('zone_type', 10);
         res.json(price);
       }
-      else{
+      else {
         const price = await db.select('price').from('se_project.zone').where('zone_type', 16);
         res.json(price);
       }
-    }catch (error) {
-        console.error(error.message);
-        res.status(500).send('Server Error!');
-   }
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
 
   });
 
