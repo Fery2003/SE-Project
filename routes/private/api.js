@@ -97,12 +97,12 @@ module.exports = function (app) {
   // pay for subscription endpoint
   // these next 2 require a purchase id from the query so use req.query.purchaseid
   // go through logic again before implementing
-  app.post('api/v1/payment/subscription', async (req, res) => {
+  app.post('/api/v1/payment/subscription', async (req, res) => {
     try {
-      console.log('here')
+      // console.log('here')
+      const { first_name, last_name, id } = await getUser(req);
       const { creditCardNumber, holderName, paidAmount, subType, zoneId } = req.body;
       const { purchaseId } = req.query;
-      const { first_name, last_name, id } = await getUser(req);
       // input into transaction table (amount, user_id, purchase_id, purchase_type)
       // purchase_type is subscription
       // check first if he has a subscription
@@ -113,7 +113,7 @@ module.exports = function (app) {
       if (!creditCardNumber || !holderName || !paidAmount || !subType || !zoneId) {
         return res.status(400).json({ msg: "Please enter all fields" });
       }
-      if (`${first_name} ${last_name}` === holderName) {
+      if (`${first_name} ${last_name}` == holderName) {
         console.log('name matches');
         const ret = await db.from('se_project.transaction').insert({amount: paidAmount, user_id: id, purchase_id: purchaseId, purchaseType: 'subscription'});
         // input into subscription table (user_id, zone_id, sub_type)
