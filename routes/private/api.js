@@ -65,15 +65,15 @@ module.exports = function (app) {
   // Reset password endpoint
   app.put('/api/v1/password/reset', async (req, res) => {
     try {
-      const { id } = await getUser(req);
+      const { user_id } = await getUser(req);
       const password = req.body.newPassword;
       if (!password) {
         return res.status(400).json({ msg: "Please enter a password" });
       }
-      if (password.length < 0) {
-        return res.status(400).json({ msg: "Password must be at empty" });
+      if (password.length < 0) { //eh lazmeto ya yahia? what case should be inserted for this to actually happpen?
+        return res.status(400).json({ msg: "Password must mot be empty" });
       }
-      const ret = await db.from('se_project.user').where('id', id).update({ password: password });
+      const ret = await db.from('se_project.user').where('id', user_id).update({ password: password });
       // res.json(ret);
       res.json({ message: 'Password reset successfully' });
     } catch (error) {
@@ -99,10 +99,10 @@ module.exports = function (app) {
   // go through logic again before implementing
   app.post('/api/v1/payment/subscription', async (req, res) => {
     try {
-      console.log('here')
+      // console.log('here')
+      const { first_name, last_name, id } = await getUser(req);
       const { creditCardNumber, holderName, paidAmount, subType, zoneId } = req.body;
       const { purchaseId } = req.query;
-      const { first_name, last_name, id } = await getUser(req);
       // input into transaction table (amount, user_id, purchase_id, purchase_type)
       // purchase_type is subscription
       // check first if he has a subscription
@@ -113,7 +113,7 @@ module.exports = function (app) {
       if (!creditCardNumber || !holderName || !paidAmount || !subType || !zoneId) {
         return res.status(400).json({ msg: "Please enter all fields" });
       }
-      if (`${first_name} ${last_name}` === holderName) {
+      if (`${first_name} ${last_name}` == holderName) {
         console.log('name matches');
         const ret = await db.from('se_project.transaction').insert({amount: paidAmount, user_id: id, purchase_id: purchaseId, purchaseType: 'subscription'});
         // input into subscription table (user_id, zone_id, sub_type)
@@ -252,12 +252,15 @@ module.exports = function (app) {
   app.post('/api/v1/senior/request', async (req, res) => {
     try {
       const { nationalId } = req.body;
-      const uid = await getUser(req).id;
+      const uid = (await getUser(req)).user_id;
       if (!nationalId) {
         return res.status(400).json({ msg: "Please enter all fields" });
       }
+      else if (nationalId.length < 14) {
+        return res.status(400).json({ msg: "Please enter 14 digits" });
+      }
       //const senior = await pool.query('INSERT INTO se_project.senior (ticket_id) VALUES ($1) RETURNING *', [ticket_id]);
-      const requestS = await db.insert([{status : 'pending'}, {user_id: uid}, {national_id: nationalId}])
+      const requestS = await db.insert([{national_id: nationalId},{"status":'pending'}, {user_id: uid}])
       .into('se_project.senior_request').returning('*');
       res.json(requestS);
       res.send('Senior request has been made.');
@@ -327,14 +330,14 @@ module.exports = function (app) {
   app.post('/api/v1/station', async (req, res) => {
     try {
       const { stationName } = req.body;
-      if (!stationname) {
+      if (!stationName) {
         return res.status(400).json({ msg: "Please enter all fields" });
       }
       //const newStation = await pool.query(
         //'INSERT INTO se_project.station (station_name, station_type, station_position, station_status) VALUES ($1, $2, $3, $4) RETURNING *',
         //[stationname, stationtype, stationposition, stationstatus]);
-      const newStation = await db.insert([{'station_name': stationName},{'station_type': 'normal'}, {'station_status' : 'new'} ])
-      .into('se_project.station').returning('*');
+      const newStation = await db.insert([{'station_name': stationName}, {station_type: 'normal'}, {station_status: 'new'}])
+      .into('se_project.station');
       res.json(newStation);
       res.send('Station created.');
     } catch (error) {
@@ -351,10 +354,12 @@ module.exports = function (app) {
       if (!stationName) {
         return res.status(400).json({ msg: "Please enter all fields" });
       }
+      else{
       //const updateStation = await pool.query('UPDATE stations SET stationname = $1 WHERE id = $2 RETURNING *', [stationName, stationId]);
-      const updateStation = await db('se_project.station').where('id', stationId).update('station_name', stationName).returning('*');
+      const updateStation = await db('se_project.station').where('id', Number.parseInt(stationId.stationId)).update('station_name', stationName).returning('*');
       res.json(updateStation);
       res.send('Station updated.');
+      }
       //redirect('/');
     } catch (error) {
       console.error(error.message);
@@ -522,7 +527,7 @@ module.exports = function (app) {
         return res.status(400).json({ msg: 'Route cannot be updated with empty name!' });
       }
       //const updatedRoute = await pool.query('UPDATE routes SET routename = $1 WHERE id = $2 RETURNING *', [routename, fromStationid]);
-      const updatedRoute = await db('se_project.route').where('id', fromStationid).update('route_name', routename).returning('*');
+      const updatedRoute = await db('se_project.route').where('id', fromStationid.routeId).update('route_name', routename).returning('*');
       res.json(updatedRoute[0]);
       res.send('Route was updated!');
 
@@ -536,13 +541,16 @@ module.exports = function (app) {
   app.delete('/api/v1/route/:routeId', async (req, res) => {
     try {
       const routeId = req.params;
-      const { roleid } = getUser(req).roleid;
-      if (roleid !== 2) {
+      const user = await getUser(req);
+      const { role_id } = user.role_id;
+      if (role_id !== 2) {
         return res.status(401).json({ msg: 'User not authorized!' });
       }
+      else{
       //const deleteRoute = await pool.query('DELETE FROM routes WHERE id = $1', [routeId]);
-      const deleteRoute = await db('se_project.route').where('id', routeId).del();
+      const deleteRoute = await db('se_project.route').where('id', routeId.routeId).del();
       res.json('Route was deleted!');
+      }
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -586,7 +594,7 @@ module.exports = function (app) {
         yob = '20' + yob;
       }
       const year = new Date().getFullYear(); //this year
-      const age = year - yob; //age of the user
+      const age = year - pasrInt(yob); //age of the user
       if (age < 60) {
         res.status(400).send('Cannot request a senior card if you are not a senior!');
       }
@@ -606,19 +614,19 @@ module.exports = function (app) {
   });
 
   //Update zone price
-  app.post('/api/v1/zones/:zoneId', async (req, res) => {
+  app.put('/api/v1/zones/:zoneId', async (req, res) => {
     try {
       const { newPrice } = req.body;
-      const { roleid } = getUser(req).roleid;
+      const { role_id } = (await getUser(req)).role_id;
       const zoneId = req.params;
-      if (roleid !== 2) {
-        return res.status(401).json({ msg: 'User not authorized!' });
-      }
+      //if (role_id !== 2) {
+      //  return res.status(401).json({ msg: 'User not authorized!' });
+      //}
       if (newPrice.length === 0) {
         return res.status(400).json({ msg: 'Zone cannot be updated with empty price!' });
       }
       //const updatedPrice = await pool.query('UPDATE zones SET price = $1 WHERE id = $2 RETURNING *', [newPrice, zoneId]);
-      const updatedPrice = await db('se_project.zone').where('id', zoneId).update('price', newPrice).returning('*');
+      const updatedPrice = await db('se_project.zone').where('id', zoneId.zoneId).update('price', newPrice).returning('*');
       res.json(updatedPrice[0]);
       res.send('Zone price updated!');
     } catch (error) {
