@@ -97,7 +97,7 @@ module.exports = function (app) {
   // pay for subscription endpoint
   // these next 2 require a purchase id from the query so use req.query.purchaseid
   // go through logic again before implementing
-  app.post('api/v1/payment/subscription', async (req, res) => {
+  app.post('/api/v1/payment/subscription', async (req, res) => {
     try {
       console.log('here')
       const { creditCardNumber, holderName, paidAmount, subType, zoneId } = req.body;
@@ -159,6 +159,50 @@ module.exports = function (app) {
 
   // Get ticket price endpoint
   app.get('/api/v1/tickets/price/:originId', async (req, res) => {
+//Users can check the price of the ticket by specifying the origin and destination.
+// So, you have to figure a way through the three tables(stations, routes, stationRoutes)
+// Hint visited stations array
+     try {
+      const {fromStation, toStation} = req.body //
+      //requesting from the table the column station_name where the id is equal to the fromStation and looping till i find it:
+      const fromStationName = await db.select('station_name').from('se_project.station');//.where('id', fromStation);
+      //requesting from the table the column station_name where the id is equal to the toStation and looping till i find it:
+      const toStationName = await db.select('station_name').from('se_project.station');//.where('id', toStation);
+      //checking whether the fromStation is == to fromStationName using a loop around station_name
+      const i = 0;
+      const zones = 0;
+      while (fromStation != fromStationName[i]) {
+        i++;
+      }
+      const fromstID = await db.select('id').from('se_project.station').where('station_name', fromStation);
+      res.json(fromstID);
+      i = 0;
+      while (toStation != toStationName[i]) {
+        i++;
+      }
+      const tostID = await db.select('id').from('se_project.station').where('station_name', toStation);
+      res.json(tostID);
+      zones = i;
+      //now we check from_station_id in route table and to_station_id in route table are equal to the fromstID and tostID:
+      const routeID = await db.select('id').from('se_project.route').where('from_station_id', fromstID).andWhere('to_station_id', tostID);
+      //now we check route_id in station_route table is equal to routeID:
+      const stationRouteID = await db.select('route_id').from('se_project.station_route').where('route_id', routeID);
+      if(zones < 10){
+        const price = await db.select('price').from('se_project.zone').where('zone_type', 9);
+        res.json(price);
+      }
+      else if((zones < 16) && (zones >= 10)){
+        const price = await db.select('price').from('se_project.zone').where('zone_type', 10);
+        res.json(price);
+      }
+      else{
+        const price = await db.select('price').from('se_project.zone').where('zone_type', 16);
+        res.json(price);
+      }
+    }catch (error) {
+        console.error(error.message);
+        res.status(500).send('Server Error!');
+   }
 
   });
 
