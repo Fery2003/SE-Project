@@ -101,39 +101,49 @@ module.exports = function (app) {
   // go through logic again before implementing
   app.post('/api/v1/payment/subscription', async (req, res) => {
     try {
-      // console.log('here')
       const { first_name, last_name, id } = await getUser(req);
       const { creditCardNumber, holderName, paidAmount, subType, zoneId } = req.body;
-      const { purchaseId } = req.query;
+      // const { purchaseId } = req.query;
       // input into transaction table (amount, user_id, purchase_id, purchase_type)
       // purchase_type is subscription
       // check first if he has a subscription
       const checkIfSubbed = await db.select('*').from('se_project.subscription').where('user_id', id);
+
       if (checkIfSubbed.length > 0) {
         return res.status(400).json({ msg: 'You already have a subscription' });
       }
+
       if (!creditCardNumber || !holderName || !paidAmount || !subType || !zoneId) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
+
       if (`${first_name} ${last_name}` == holderName) {
         console.log('name matches');
-        const price = await db.select('price').from('se_project.zone').where('id', zoneId);
+        const { price } = await db.select('price').from('se_project.zone').where('id', zoneId).first();
         const numOfTickets = subType == 'annual' ? 100 : subType == 'quarterly' ? 25 : subType == 'monthly' ? 10 : -1;
+        const total = price * numOfTickets;
+        console.log(total)
 
-        if (paidAmount < price * numOfTickets && price != -1) {
-          console.log('invalid');
+        if (paidAmount < total) {
+          return res.json({ msg: 'invalid' });
         } else {
-          await db.from('se_project.transaction').insert({ amount: price * numOfTickets, user_id: id, purchase_id: purchaseId, purchase_type: 'subscription' });
-          // input into subscription table (sub_type, zone_id, user_id, no_of_tickets)
           const ret = await db
             .from('se_project.subscription')
-            .insert({ sub_type: subType, zone_id: zoneId, user_id: id, no_of_tickets: numOfTickets });
+            .insert({ sub_type: subType, zone_id: zoneId, user_id: id, no_of_tickets: numOfTickets })
+            .returning('*');
+
+          const purchaseId = ret[0].id;
+
+          await db
+            .from('se_project.transaction')
+            .insert({ amount: total, user_id: id, purchase_id: purchaseId, purchase_type: 'subscription' });
+          res.json({ msg: `successfully subbed ${subType}` });
+          // input into subscription table (sub_type, zone_id, user_id, no_of_tickets)
         }
       } else {
         console.log('name does not match');
       }
       // res.json(ret);
-      res.json({msg: `successfully subbed ${subType}`})
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -170,15 +180,15 @@ module.exports = function (app) {
 
   // Get ticket price endpoint
   app.get('/api/v1/tickets/price/:originId', async (req, res) => {
-//Users can check the price of the ticket by specifying the origin and destination.
-// So, you have to figure a way through the three tables(stations, routes, stationRoutes)
-// Hint visited stations array
-     try {
-      const {fromStation, toStation} = req.body //
+    //Users can check the price of the ticket by specifying the origin and destination.
+    // So, you have to figure a way through the three tables(stations, routes, stationRoutes)
+    // Hint visited stations array
+    try {
+      const { fromStation, toStation } = req.body; //
       //requesting from the table the column station_name where the id is equal to the fromStation and looping till i find it:
-      const fromStationName = await db.select('station_name').from('se_project.station');//.where('id', fromStation);
+      const fromStationName = await db.select('station_name').from('se_project.station'); //.where('id', fromStation);
       //requesting from the table the column station_name where the id is equal to the toStation and looping till i find it:
-      const toStationName = await db.select('station_name').from('se_project.station');//.where('id', toStation);
+      const toStationName = await db.select('station_name').from('se_project.station'); //.where('id', toStation);
       //checking whether the fromStation is == to fromStationName using a loop around station_name
       const i = 0;
       const zones = 0;
@@ -198,23 +208,20 @@ module.exports = function (app) {
       const routeID = await db.select('id').from('se_project.route').where('from_station_id', fromstID).andWhere('to_station_id', tostID);
       //now we check route_id in station_route table is equal to routeID:
       const stationRouteID = await db.select('route_id').from('se_project.station_route').where('route_id', routeID);
-      if(zones < 10){
+      if (zones < 10) {
         const price = await db.select('price').from('se_project.zone').where('zone_type', 9);
         res.json(price);
-      }
-      else if((zones < 16) && (zones >= 10)){
+      } else if (zones < 16 && zones >= 10) {
         const price = await db.select('price').from('se_project.zone').where('zone_type', 10);
         res.json(price);
-      }
-      else{
+      } else {
         const price = await db.select('price').from('se_project.zone').where('zone_type', 16);
         res.json(price);
       }
-    }catch (error) {
-        console.error(error.message);
-        res.status(500).send('Server Error!');
-   }
-
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
   });
 
   // // Get all rides endpoint
