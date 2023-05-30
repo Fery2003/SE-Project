@@ -295,12 +295,16 @@ module.exports = function (app) {
         return res.status(400).json({ msg: 'Please enter 14 digits' });
       }
       //const senior = await pool.query('INSERT INTO se_project.senior (ticket_id) VALUES ($1) RETURNING *', [ticket_id]);
-      const requestS = await db
-        .insert([{ national_id: nationalId }, { status: 'pending' }, { user_id: uid }])
-        .into('se_project.senior_request')
-        .returning('*');
+      const senior = 
+      {
+        status: 'pending',
+        user_id : uid,
+        national_id: nationalId
+      }
+      const requestS = await db.insert(senior)
+      .into('se_project.senior_request').returning('*');
       res.json(requestS);
-      res.send('Senior request has been made.');
+      //res.send('Senior request has been made.');
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -373,14 +377,19 @@ module.exports = function (app) {
       if (!stationName) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
+      else{
       //const newStation = await pool.query(
-      //'INSERT INTO se_project.station (station_name, station_type, station_position, station_status) VALUES ($1, $2, $3, $4) RETURNING *',
-      //[stationname, stationtype, stationposition, stationstatus]);
-      const newStation = await db
-        .insert([{ station_name: stationName }, { station_type: 'normal' }, { station_status: 'new' }])
-        .into('se_project.station');
+        //'INSERT INTO se_project.station (station_name, station_type, station_position, station_status) VALUES ($1, $2, $3, $4) RETURNING *',
+        //[stationname, stationtype, stationposition, stationstatus]);
+      const newStation = {
+        station_name : stationName,
+        station_type: 'normal',
+        station_status: 'new'
+      }
+      const new_station_entry = await db.insert(newStation).into('se_project.station');
       res.json(newStation);
-      res.send('Station created.');
+      //res.send('Station created.');
+    }
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -416,9 +425,9 @@ module.exports = function (app) {
       const stationid = req.params;
       //const station = await pool.query('SELECT * FROM stations WHERE id = $1', [stationid]);
       const station = await db.select('*').from('se_project.station').where('id', stationid);
-      const { id } = getUser(req).roleid;
-      if (id != 2) {
-        return res.status(401).json({ msg: 'You are not authorized to delete a station' });
+      const user = await getUser(req);
+      if (user.isAdmin == false) {
+        return res.status(401).json({ msg: "You are not authorized to delete a station" });
       }
       console.log(station.rows[0]);
       if (station.length == 1) {
@@ -574,7 +583,11 @@ module.exports = function (app) {
 
     try {
       const new_Route = await db.from('se_project.route').insert(newRoute).returning('*');
+      const newRouteId = await db.select('id').from('se_project.route').where('from_station_id', newRoute.from_station_id).andWhere('to_station_id', newRoute.to_station_id);
+      const SR1 = await db.insert([{station_id: newRoute.from_station_id}, {route_id: newRouteId}]);
+      const SR2 = await db.insert([{station_id: newRoute.to_station_id}, {route_id: newRouteId}]);
       res.json(new_Route);
+      res.send('New Route Created!');
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -604,8 +617,7 @@ module.exports = function (app) {
     try {
       const routeId = req.params;
       const user = await getUser(req);
-      const { role_id } = user.role_id;
-      if (role_id !== 2) {
+      if (user.isAdmin == false) {
         return res.status(401).json({ msg: 'User not authorized!' });
       } else {
         //const deleteRoute = await pool.query('DELETE FROM routes WHERE id = $1', [routeId]);
@@ -646,21 +658,22 @@ module.exports = function (app) {
   // Accept/Reject Senior
   app.put('/api/v1/requests/senior/:requestId', async (req, res) => {
     try {
-      const nationalid = getUser(req).nationalid;
-      yob = nationalid.substring(0, 2); //get the first 2 no.s
+      const requestId = req.params.requestId;
+      const nationalid = await db.select('national_id').from('se_project.senior_request').where('id', requestId);
+      const n_id = nationalid[0].national_id;
+      let yob = n_id.substring(0, 2); //get the first 2 no.s
       if (yob < 99) {
         yob = '19' + yob;
       } else {
         yob = '20' + yob;
       }
       const year = new Date().getFullYear(); //this year
-      const age = year - pasrInt(yob); //age of the user
+      const age = year - parseInt(yob); //age of the user
       if (age < 60) {
         res.status(400).send('Cannot request a senior card if you are not a senior!');
       } else {
         const { seniorstatus } = req.body;
-        const requestId = req.params;
-        const updatedSenior = await db.from('se_project.senior_request').where('id', requestId).update({ seniorstatus: seniorstatus });
+        const updatedSenior = await db.from('se_project.senior_request').where('id', requestId).update({ status: seniorstatus }).returning('*');
         res.json(updatedSenior);
       }
     } catch (error) {
@@ -673,11 +686,11 @@ module.exports = function (app) {
   app.put('/api/v1/zones/:zoneId', async (req, res) => {
     try {
       const { newPrice } = req.body;
-      const { role_id } = (await getUser(req)).role_id;
+      const user = await getUser(req);
       const zoneId = req.params;
-      //if (role_id !== 2) {
-      //  return res.status(401).json({ msg: 'User not authorized!' });
-      //}
+      if (user.isAdmin == false) {
+        return res.status(401).json({ msg: 'User not authorized!' });
+      }
       if (newPrice.length === 0) {
         return res.status(400).json({ msg: 'Zone cannot be updated with empty price!' });
       }
