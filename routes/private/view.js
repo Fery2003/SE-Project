@@ -1,4 +1,4 @@
-const db = require('../../connectors/knexdb');
+const db = require('../../connectors/db.js');
 const roles = require('../../constants/roles');
 const { getSessionToken } = require('../../utils/session');
 
