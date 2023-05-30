@@ -122,7 +122,7 @@ module.exports = function (app) {
         const { price } = await db.select('price').from('se_project.zone').where('id', zoneId).first();
         const numOfTickets = subType == 'annual' ? 100 : subType == 'quarterly' ? 25 : subType == 'monthly' ? 10 : -1;
         const total = price * numOfTickets;
-        console.log(total)
+        console.log(total);
 
         if (paidAmount < total) {
           return res.json({ msg: 'invalid' });
@@ -134,9 +134,7 @@ module.exports = function (app) {
 
           const purchaseId = ret[0].id;
 
-          await db
-            .from('se_project.transaction')
-            .insert({ amount: total, user_id: id, purchase_id: purchaseId, purchase_type: 'subscription' });
+          await db.from('se_project.transaction').insert({ amount: total, user_id: id, purchase_id: purchaseId, purchase_type: 'subscription' });
           res.json({ msg: `successfully subbed ${subType}` });
           // input into subscription table (sub_type, zone_id, user_id, no_of_tickets)
         }
@@ -144,6 +142,7 @@ module.exports = function (app) {
         console.log('name does not match');
       }
       // res.json(ret);
+      res.json({ msg: `successfully subbed ${subType}` });
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -155,6 +154,7 @@ module.exports = function (app) {
 
   // Purchase ticket with subscription endpoint
   app.post('/api/v1/tickets/purchase/subscription', async (req, res) => {
+    const { userRemainingTickets } = getUser(req).numOfTickets;
     try {
       const { id } = await getUser(req);
       const ticket = {
@@ -164,6 +164,9 @@ module.exports = function (app) {
         sub_id: req.body.sub_id,
         trip_date: req.body.trip_date
       };
+      if (userRemainingTickets <= 0) {
+        return res.status(400).json({ msg: 'You have no remaining tickets' });
+      }
       if (!ticket.origin || !ticket.destination || !ticket.sub_id || !ticket.trip_date) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
@@ -171,6 +174,7 @@ module.exports = function (app) {
         return res.status(400).json({ msg: 'Please enter a valid date' });
       }
       const newTicket = await db.from('se_project.ticket').insert(ticket).returning('*');
+      getUser(req).numOfTickets--;
       res.json(newTicket);
     } catch (err) {
       console.error(err.message);
@@ -209,14 +213,16 @@ module.exports = function (app) {
       //now we check route_id in station_route table is equal to routeID:
       const stationRouteID = await db.select('route_id').from('se_project.station_route').where('route_id', routeID);
       if (zones < 10) {
-        const price = await db.select('price').from('se_project.zone').where('zone_type', 9);
-        res.json(price);
-      } else if (zones < 16 && zones >= 10) {
-        const price = await db.select('price').from('se_project.zone').where('zone_type', 10);
-        res.json(price);
-      } else {
-        const price = await db.select('price').from('se_project.zone').where('zone_type', 16);
-        res.json(price);
+        if (zones < 10) {
+          const price = await db.select('price').from('se_project.zone').where('zone_type', 9);
+          res.json(price);
+        } else if (zones < 16 && zones >= 10) {
+          const price = await db.select('price').from('se_project.zone').where('zone_type', 10);
+          res.json(price);
+        } else {
+          const price = await db.select('price').from('se_project.zone').where('zone_type', 16);
+          res.json(price);
+        }
       }
     } catch (error) {
       console.error(error.message);
