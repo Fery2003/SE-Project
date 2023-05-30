@@ -300,7 +300,7 @@ module.exports = function (app) {
       const requestS = await db.insert(senior)
       .into('se_project.senior_request').returning('*');
       res.json(requestS);
-      res.send('Senior request has been made.');
+      //res.send('Senior request has been made.');
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -657,21 +657,22 @@ module.exports = function (app) {
   // Accept/Reject Senior
   app.put('/api/v1/requests/senior/:requestId', async (req, res) => {
     try {
-      const nationalid = getUser(req).nationalid;
-      yob = nationalid.substring(0, 2); //get the first 2 no.s
+      const requestId = req.params.requestId;
+      const nationalid = await db.select('national_id').from('se_project.senior_request').where('id', requestId);
+      const n_id = nationalid[0].national_id;
+      let yob = n_id.substring(0, 2); //get the first 2 no.s
       if (yob < 99) {
         yob = '19' + yob;
       } else {
         yob = '20' + yob;
       }
       const year = new Date().getFullYear(); //this year
-      const age = year - pasrInt(yob); //age of the user
+      const age = year - parseInt(yob); //age of the user
       if (age < 60) {
         res.status(400).send('Cannot request a senior card if you are not a senior!');
       } else {
         const { seniorstatus } = req.body;
-        const requestId = req.params;
-        const updatedSenior = await db.from('se_project.senior_request').where('id', requestId).update({ seniorstatus: seniorstatus });
+        const updatedSenior = await db.from('se_project.senior_request').where('id', requestId).update({ status: seniorstatus }).returning('*');
         res.json(updatedSenior);
       }
     } catch (error) {
