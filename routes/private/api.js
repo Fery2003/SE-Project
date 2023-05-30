@@ -103,7 +103,7 @@ module.exports = function (app) {
     try {
       const { first_name, last_name, id } = await getUser(req);
       const { creditCardNumber, holderName, paidAmount, subType, zoneId } = req.body;
-      // const { purchaseId } = req.query;
+
       // input into transaction table (amount, user_id, purchase_id, purchase_type)
       // purchase_type is subscription
       // check first if he has a subscription
@@ -125,8 +125,9 @@ module.exports = function (app) {
         console.log(total);
 
         if (paidAmount < total) {
-          return res.json({ msg: 'invalid' });
+          return res.json({ msg: 'Not enough credit!' });
         } else {
+          // input into subscription table (sub_type, zone_id, user_id, no_of_tickets)
           const ret = await db
             .from('se_project.subscription')
             .insert({ sub_type: subType, zone_id: zoneId, user_id: id, no_of_tickets: numOfTickets })
@@ -136,10 +137,9 @@ module.exports = function (app) {
 
           await db.from('se_project.transaction').insert({ amount: total, user_id: id, purchase_id: purchaseId, purchase_type: 'subscription' });
           res.json({ msg: `successfully subbed ${subType}` });
-          // input into subscription table (sub_type, zone_id, user_id, no_of_tickets)
         }
       } else {
-        console.log('name does not match');
+        console.log(`Name does not match credit card holder's name`);
       }
       // res.json(ret);
       res.json({ msg: `successfully subbed ${subType}` });
@@ -150,7 +150,11 @@ module.exports = function (app) {
   });
 
   // pay for ticket endpoint
-  app.post('/api/v1/payment/ticket', async (req, res) => {});
+  app.post('/api/v1/payment/ticket', async (req, res) => {
+    const { first_name, last_name, id } = await getUser(req);
+    const { creditCardNumber, holderName, paidAmount, origin, destination, tripDate } = req.body;
+
+  });
 
   // Purchase ticket with subscription endpoint
   app.post('/api/v1/tickets/purchase/subscription', async (req, res) => {
@@ -553,10 +557,11 @@ module.exports = function (app) {
   // Create new route endpoint
   app.post('/api/v1/route', async (req, res) => {
     const newRoute = {
-      route_name: req.body.route_name, //not sure if namings here are correct ya yahia -Mariam
-      from_station_id: req.body.from_station_id,
-      to_station_id: req.body.to_station_id
+      route_name: req.body.routeName,
+      from_station_id: req.body.fromId,
+      to_station_id: req.body.toId
     };
+
     if (newRoute.from_station_id === newRoute.to_station_id) {
       return res.status(400).json({ msg: 'Route cannot be created with the same station!' });
     }
@@ -566,12 +571,8 @@ module.exports = function (app) {
     if (newRoute.route_name.length === 0) {
       return res.status(400).json({ msg: 'Route cannot be created with empty name!' });
     }
+
     try {
-      // const newRoute = await pool.query('INSERT INTO se_project.routes (routename, fromStationid, toStationid) VALUES ($1, $2, $3) RETURNING *', [
-      //   routename,
-      //   fromStationid,
-      //   toStationid
-      // ]);
       const new_Route = await db.from('se_project.route').insert(newRoute).returning('*');
       res.json(new_Route);
     } catch (error) {
