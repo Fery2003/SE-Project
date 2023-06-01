@@ -1,6 +1,6 @@
 const { isEmpty } = require('lodash');
 const { v4 } = require('uuid');
-const db = require('../../connectors/knexdb');
+const db = require('../../connectors/db.js');
 const roles = require('../../constants/roles');
 module.exports = function (app) {
   app.post('/api/v1/users/register', async function (req, res) {
@@ -61,7 +61,7 @@ module.exports = function (app) {
     // set the expiry time as 15 minutes after the current time
     const token = v4();
     const currentDateTime = new Date();
-    const expires_at = new Date(+currentDateTime + 900000); // expire in 15 minutes
+    const expires_at = new Date(+currentDateTime + 9000000); // expire in 15 minutes
 
     // create a session containing information about the user and expiry time
     const session = {
