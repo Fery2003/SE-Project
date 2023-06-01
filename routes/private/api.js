@@ -157,54 +157,118 @@ module.exports = function (app) {
     }
   });
 
-  // Get ticket price endpoint
-  app.get('/api/v1/tickets/price/:originId', async (req, res) => {
-//Users can check the price of the ticket by specifying the origin and destination.
-// So, you have to figure a way through the three tables(stations, routes, stationRoutes)
-// Hint visited stations array
-     try {
-      const {fromStation, toStation} = req.body //
-      //requesting from the table the column station_name where the id is equal to the fromStation and looping till i find it:
-      const fromStationName = await db.select('station_name').from('se_project.station');//.where('id', fromStation);
-      //requesting from the table the column station_name where the id is equal to the toStation and looping till i find it:
-      const toStationName = await db.select('station_name').from('se_project.station');//.where('id', toStation);
-      //checking whether the fromStation is == to fromStationName using a loop around station_name
-      const i = 0;
-      const zones = 0;
-      while (fromStation != fromStationName[i]) {
-        i++;
+// Get ticket price endpoint
+app.get('/api/v1/tickets/price/:originId', async (req, res) => {
+  try {
+    class TreeNode {
+      constructor(value) {
+        this.value = value; // where we add the destination
+        this.children = []; // where we add the routes
       }
-      const fromstID = await db.select('id').from('se_project.station').where('station_name', fromStation);
-      res.json(fromstID);
-      i = 0;
-      while (toStation != toStationName[i]) {
-        i++;
-      }
-      const tostID = await db.select('id').from('se_project.station').where('station_name', toStation);
-      res.json(tostID);
-      zones = i;
-      //now we check from_station_id in route table and to_station_id in route table are equal to the fromstID and tostID:
-      const routeID = await db.select('id').from('se_project.route').where('from_station_id', fromstID).andWhere('to_station_id', tostID);
-      //now we check route_id in station_route table is equal to routeID:
-      const stationRouteID = await db.select('route_id').from('se_project.station_route').where('route_id', routeID);
-      if(zones < 10){
-        const price = await db.select('price').from('se_project.zone').where('zone_type', 9);
-        res.json(price);
-      }
-      else if((zones < 16) && (zones >= 10)){
-        const price = await db.select('price').from('se_project.zone').where('zone_type', 10);
-        res.json(price);
-      }
-      else{
-        const price = await db.select('price').from('se_project.zone').where('zone_type', 16);
-        res.json(price);
-      }
-    }catch (error) {
-        console.error(error.message);
-        res.status(500).send('Server Error!');
-   }
+    }
+    const {fromStation, toStation, station_type} = req.body
+    const fromStationID = await db.select('id').from('se_project.station').where("station_name", fromStation);
+    const toStationID = await db.select('id').from('se_project.station').where("station_name", toStation);
+    const routeID = await db.select('id').from('se_project.route').where('from_station_id', fromStationID).andWhere('to_station_id', toStationID);
+    while(routeID.length > 0){
 
-  });
+      function createTree(fromStation, toStation, stationConnections) {
+        const root = new TreeNode(toStation);
+  
+        if (toStation === fromStation) {
+          return root; // we have reached the destination
+        }
+  
+        if (!stationConnections.hasOwnProperty(toStation)) { //use table routes instead of connections
+          return null; // no connections ????
+        }
+  
+        for (let i = 0; i < stationConnections[toStation].length; i++) { 
+          const station = stationConnections[toStation][i]; // get the station
+          const child = createTree(fromStation, station, stationConnections); // create a tree for the station
+  
+          if (child !== null) {
+            root.children.push(child); // add the routes to the root(destination)
+          }
+        }
+  
+        return root; // return the tree
+      }
+  
+      const toStation = "Destination";
+      const fromStation = req.params.originId; // use the parameter from the request
+      const stationConnections = { // use the table routes instead of connections
+        Destination: ["Station1", "Station2"],
+        Station1: ["Station3", "Station4"],
+        Station2: ["Station5", "Station6"],
+        Station3: ["Station7"],
+        Station4: ["Starting"],
+        Station5: ["Starting"],
+        Station6: ["Starting"],
+        Station7: ["Starting"],
+      };
+  
+      const tree = createTree(fromStation, toStation, stationConnections); // create the tree
+      res.json(tree);
+    }}
+    catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error!');
+    }
+    
+});
+
+
+
+
+//The first trial *********************************
+//   app.get('/api/v1/tickets/price/:originId', async (req, res) => {
+// //Users can check the price of the ticket by specifying the origin and destination.
+// // So, you have to figure a way through the three tables(stations, routes, stationRoutes)
+// // Hint visited stations array
+//      try {
+//       const {fromStation, toStation} = req.body //
+//       //requesting from the table the column station_name where the id is equal to the fromStation and looping till i find it:
+//       const fromStationName = await db.select('station_name').from('se_project.station');//.where('id', fromStation);
+//       //requesting from the table the column station_name where the id is equal to the toStation and looping till i find it:
+//       const toStationName = await db.select('station_name').from('se_project.station');//.where('id', toStation);
+//       //checking whether the fromStation is == to fromStationName using a loop around station_name
+//       const i = 0;
+//       const zones = 0;
+//       while (fromStation != fromStationName[i]) {
+//         i++;
+//       }
+//       const fromstID = await db.select('id').from('se_project.station').where('station_name', fromStation);
+//       res.json(fromstID);
+//       i = 0;
+//       while (toStation != toStationName[i]) {
+//         i++;
+//       }m 
+//       const tostID = await db.select('id').from('se_project.station').where('station_name', toStation);
+//       res.json(tostID);
+//       zones = i;
+//       //now we check from_station_id in route table and to_station_id in route table are equal to the fromstID and tostID:
+//       const routeID = await db.select('id').from('se_project.route').where('from_station_id', fromstID).andWhere('to_station_id', tostID);
+//       //now we check route_id in station_route table is equal to routeID:
+//       const stationRouteID = await db.select('route_id').from('se_project.station_route').where('route_id', routeID);
+//       if(zones < 10){
+//         const price = await db.select('price').from('se_project.zone').where('zone_type', 9);
+//         res.json(price);
+//       }
+//       else if((zones < 16) && (zones >= 10)){
+//         const price = await db.select('price').from('se_project.zone').where('zone_type', 10);
+//         res.json(price);
+//       }
+//       else{
+//         const price = await db.select('price').from('se_project.zone').where('zone_type', 16);
+//         res.json(price);
+//       }
+//     }catch (error) {
+//         console.error(error.message);
+//         res.status(500).send('Server Error!');
+//    }
+
+//   });
 
   // // Get all rides endpoint
   // app.get('/rides', async (req, res) => {
