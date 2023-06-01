@@ -24,6 +24,9 @@
             <li><a href="/stations_example">Station</a></li>
             <li><a href="/users">Users</a></li>
             <li><a href="/users/add">Add Users</a></li>
+            <li><a href="/views/subscriptions.hjs">Subscription</a></li>
+            <li> <a href="/views/tickets.hjs">Tickets</a></li>
+            <li><a href="/views/resetPassword.hjs">Reset Password</a></li>
             <li><a href="/">Logout</a></li>
           </ul>
        </nav>
