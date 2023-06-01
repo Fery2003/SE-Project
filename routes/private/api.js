@@ -756,4 +756,17 @@ module.exports = function (app) {
       res.status(500).send('Server Error!');
     }
   });
+
+  //extra something for me
+  app.get('/api/zonePrice'), async (req,res) => {
+    try {
+      const {zoneType} = req.body;
+      const price = await db.select('price').from('se_project.zone').where('zone_type', zoneType);
+      res.send(price);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send('Server Error!');
+    }
+  }
 };
+
