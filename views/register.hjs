@@ -27,7 +27,7 @@
 
         $.ajax({
           type: "POST",
-          url: '/api/v1/user',
+          url: '/api/v1/users/register',
           data,
           success: function(serverResponse) {
             if(serverResponse) {

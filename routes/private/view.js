@@ -40,7 +40,7 @@ module.exports = function(app) {
   app.get('/stations', async function(req, res) {
     const user = await getUser(req);
     const stations = await db.select('*').from('se_project.station');
-    return res.render('stations_example', { ...user, stations });
+    return res.render('stations', { ...user, stations });
   });
 
 };
