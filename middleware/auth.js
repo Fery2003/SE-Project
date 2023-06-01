@@ -1,5 +1,5 @@
 const { v4 } = require('uuid');
-const db = require('../../connectors/db.js');
+const db = require('../connectors/db');
 const roles = require('../constants/roles');
 const { getSessionToken } = require('../utils/session');
 
