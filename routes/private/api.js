@@ -282,14 +282,14 @@ module.exports = function (app) {
         return res.status(400).json({ msg: 'Please enter 14 digits' });
       }
       //const senior = await pool.query('INSERT INTO se_project.senior (ticket_id) VALUES ($1) RETURNING *', [ticket_id]);
-      const senior = 
+      const senior =
       {
         status: 'pending',
-        user_id : uid,
+        user_id: uid,
         national_id: nationalId
       }
       const requestS = await db.insert(senior)
-      .into('se_project.senior_request').returning('*');
+        .into('se_project.senior_request').returning('*');
       res.json(requestS);
       //res.send('Senior request has been made.');
     } catch (error) {
@@ -364,19 +364,19 @@ module.exports = function (app) {
       if (!stationName) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
-      else{
-      //const newStation = await pool.query(
+      else {
+        //const newStation = await pool.query(
         //'INSERT INTO se_project.station (station_name, station_type, station_position, station_status) VALUES ($1, $2, $3, $4) RETURNING *',
         //[stationname, stationtype, stationposition, stationstatus]);
-      const newStation = {
-        station_name : stationName,
-        station_type: 'normal',
-        station_status: 'new'
+        const newStation = {
+          station_name: stationName,
+          station_type: 'normal',
+          station_status: 'new'
+        }
+        const new_station_entry = await db.insert(newStation).into('se_project.station');
+        res.json(newStation);
+        //res.send('Station created.');
       }
-      const new_station_entry = await db.insert(newStation).into('se_project.station');
-      res.json(newStation);
-      //res.send('Station created.');
-    }
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -571,8 +571,8 @@ module.exports = function (app) {
     try {
       const new_Route = await db.from('se_project.route').insert(newRoute).returning('*');
       const newRouteId = await db.select('id').from('se_project.route').where('from_station_id', newRoute.from_station_id).andWhere('to_station_id', newRoute.to_station_id);
-      const SR1 = await db.insert([{station_id: newRoute.from_station_id}, {route_id: newRouteId}]);
-      const SR2 = await db.insert([{station_id: newRoute.to_station_id}, {route_id: newRouteId}]);
+      const SR1 = await db.insert([{ station_id: newRoute.from_station_id }, { route_id: newRouteId }]);
+      const SR2 = await db.insert([{ station_id: newRoute.to_station_id }, { route_id: newRouteId }]);
       res.json(new_Route);
       res.send('New Route Created!');
     } catch (error) {
@@ -692,9 +692,9 @@ module.exports = function (app) {
   });
 
   //extra something for me
-  app.get('/api/zonePrice'), async (req,res) => {
+  app.get('/api/zonePrice'), async (req, res) => {
     try {
-      const {zoneType} = req.body;
+      const { zoneType } = req.body;
       const price = await db.select('price').from('se_project.zone').where('zone_type', zoneType);
       res.send(price);
     } catch (error) {
@@ -702,4 +702,16 @@ module.exports = function (app) {
       res.status(500).send('Server Error!');
     }
   }
+
+  app.get('api/ZoneId/:zoneType'), async (req, res) => {
+    try {
+      const { zoneType } = req.params;
+      const zid = await db.select('id').from('se_project.zone').where('zone_type', zoneType);
+      res.json(zid);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send('Server Error!');
+    }
+  };
 };
+
