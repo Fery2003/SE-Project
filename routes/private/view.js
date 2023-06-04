@@ -43,4 +43,8 @@ module.exports = function(app) {
     return res.render('stations', { ...user, stations });
   });
 
+  app.get('/manage/zones', async function(req, res) {
+    const user = await getUser(req);
+    return res.render('/manage/zones');
+  });
 };

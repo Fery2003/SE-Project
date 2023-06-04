@@ -27,7 +27,7 @@
             success: function(serverResponse) {
               if(serverResponse) {
                 {{!-- location.href = '/dashboard'; --}}
-                location.href = '/stations';
+                location.href = '/manage/zones';
               }
             },
             error: function(errorResponse) {
