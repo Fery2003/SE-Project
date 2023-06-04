@@ -50,6 +50,13 @@ module.exports = function(app) {
   });
 
   app.get('/requests/refunds', async function(req, res){
-    
+    const user = await getUser(req);
+    if (user.isAdmin) {
+      const refunds = await db.select('*').from('se_project.refund');
+      return res.status(200).render('refunds', { user, refunds });
+    } else {
+      const refunds = await db.select('*').from('se_project.refund').where('user_id', user.id);
+      return res.status(200).render('refunds', { user, refunds });
+    }
   })
 };
