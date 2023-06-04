@@ -49,14 +49,14 @@ module.exports = function(app) {
     return res.status(200).render('rides', { user, rides })
   });
 
-  app.get('/requests/refunds', async function(req, res){
+  app.get('/requests/refund', async function(req, res){
     const user = await getUser(req);
     if (user.isAdmin) {
-      const refunds = await db.select('*').from('se_project.refund');
-      return res.status(200).render('refunds', { user, refunds });
+      const refunds = await db.select('*').from('se_project.refund_request');
+      return res.status(200).render('request_refund', { user, refunds });
     } else {
-      const refunds = await db.select('*').from('se_project.refund').where('user_id', user.id);
-      return res.status(200).render('refunds', { user, refunds });
+      const refunds = await db.select('*').from('se_project.refund_request').where('user_id', user.id);
+      return res.status(200).render('request_refund', { user, refunds });
     }
   })
 };

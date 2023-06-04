@@ -20,23 +20,29 @@
                 crossorigin="anonymous"></script>
 
         <script>
-            $(document).ready(
-                function(){
-                    //request a refund for a ride 
-                    $(document).on('click', '#requestRefund', function(){
-                        $.ajax(
-                            {
-                                url: '/api/v1/refund/:ticketId',
-                                type: 'POST',
-                                success: function(result){
-                                    console.log(result);
-                                    $('#requestRefund').html(result);
-                                }
-                            }
-                        )
-                    })
-                }
-            )
+           $(document).ready(function() {
+    // Request a refund for a ride
+    $(document).on('click', '#requestRefund', function() {
+        var ticketId = extractTicketIdFromUrl();
+        
+        $.ajax({
+            url: `/api/v1/refund/${ticketId}`,
+            type: 'POST',
+            success: function(result) {
+                console.log(result);
+                $('#requestRefund').html(result);
+            }
+        });
+    });
+    
+    function extractTicketIdFromUrl() {
+        var url = window.location.href;
+        var ticketIdIndex = url.lastIndexOf('/') + 1;
+        var ticketId = url.substring(ticketIdIndex);
+        return ticketId;
+    }
+});
+
         </script>
 
     </head>
