@@ -43,4 +43,13 @@ module.exports = function(app) {
     return res.render('stations', { ...user, stations });
   });
 
+  app.get('/rides', async function(req, res) {
+    const user = await getUser(req);
+    const rides = await db.select('*').from('se_project.ride');
+    return res.status(200).render('rides', { user, rides })
+  });
+
+  app.get('/requests/refunds', async function(req, res){
+    
+  })
 };
