@@ -37,14 +37,26 @@ module.exports = function(app) {
   });
 
   // Register HTTP endpoint to render /courses page
-  app.get('/stations', async function(req, res) {
+  app.get('/manage/stations', async function(req, res) {
     const user = await getUser(req);
     const stations = await db.select('*').from('se_project.station');
-    return res.render('stations', { ...user, stations });
+    return res.status(200).render('stations', { user, stations });
   });
 
-  app.get('/manage/zones', async function(req, res) {
+  app.get('/rides', async function(req, res) {
     const user = await getUser(req);
-    return res.render('/manage/zones');
+    const rides = await db.select('*').from('se_project.ride');
+    return res.status(200).render('rides', { user, rides })
   });
+
+  app.get('/requests/refund', async function(req, res){
+    const user = await getUser(req);
+    if (user.isAdmin) {
+      const refunds = await db.select('*').from('se_project.refund_request');
+      return res.status(200).render('request_refund', { user, refunds });
+    } else {
+      const refunds = await db.select('*').from('se_project.refund_request').where('user_id', user.id);
+      return res.status(200).render('request_refund', { user, refunds });
+    }
+  })
 };

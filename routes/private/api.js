@@ -153,7 +153,6 @@ module.exports = function (app) {
   app.post('/api/v1/payment/ticket', async (req, res) => {
     const { first_name, last_name, id } = await getUser(req);
     const { creditCardNumber, holderName, paidAmount, origin, destination, tripDate } = req.body;
-
   });
 
   // Purchase ticket with subscription endpoint
@@ -185,119 +184,54 @@ module.exports = function (app) {
       res.status(500).send('Server Error!');
     }
   });
-
+  function transferTree(transferStation, destination) {
+    const root = transferStation;
+    if (!root) return null;
+    const rootNode = { stations: root, theNodes: [] }; //try the station thingy
+    let curr = rootNode;
+    const nextStationId = transferStation + 1;
+    while (currentNode.nextStationId !== null) {
+      //tbd
+    }
+  }
   // Get ticket price endpoint
   app.get('/api/v1/tickets/price/:originId', async (req, res) => {
-    //Users can check the price of the ticket by specifying the origin and destination.
-    // So, you have to figure a way through the three tables(stations, routes, stationRoutes)
-    // Hint visited stations array
     try {
-      const { fromStation, toStation } = req.body //
+      const { fromStation, toStation } = req.body;
       //requesting from the table the column station_name where the id is equal to the fromStation and looping till i find it:
-      const fromStationName = await db.select('station_name').from('se_project.station');//.where('id', fromStation);
-      //requesting from the table the column station_name where the id is equal to the toStation and looping till i find it:
-      const toStationName = await db.select('station_name').from('se_project.station');//.where('id', toStation);
-      //checking whether the fromStation is == to fromStationName using a loop around station_name
-      const i = 0;
-      const zones = 0;
-      while (fromStation != fromStationName[i]) {
-        i++;
+      const fromStationID = await db.select('id').from('se_project.station').where('station_name', fromStation); // 1//fromStationName is the id of the station
+      const toStationID = await db.select('id').from('se_project.station').where('station_name', toStation); //3
+      const fromSchangeable = null;
+      const toSchangeable = fromStationID;
+      stationCounter = 0;
+
+      const route = await db.select('id').from('se_project.route').where('from_station_id', fromStationID).andWhere('to_station_id', toStationID); //1,3
+      const matchingRoutes = await db
+        .select('id')
+        .from('route')
+        .where('route_name', '=', 'hi' + route.fromSchangeable + route.to_station_id);
+      //.limit(1); //to limit the no of rows we look into in the db
+      if (matchingRoutes > 0) {
+        console.log('You have reached your destination sucessfully!');
+        stationCounter = route.from_station_id + route.to_station_id - 1;
+      } else {
+        console.log('The route does not exist.');
+        while (matchingRoutes.length < 1) {
+          fromSchangeable = route.from_station_id + 1;
+          stationType = await db.select('station_type').from('station').where('id', fromSchangeable);
+          if (station.station_type == 'transfer') {
+            //call the tree function
+          }
+        }
       }
-      const fromstID = await db.select('id').from('se_project.station').where('station_name', fromStation);
-      res.json(fromstID);
-      i = 0;
-      while (toStation != toStationName[i]) {
-        i++;
-      }
-      const tostID = await db.select('id').from('se_project.station').where('station_name', toStation);
-      res.json(tostID);
-      zones = i;
-      //now we check from_station_id in route table and to_station_id in route table are equal to the fromstID and tostID:
-      const routeID = await db.select('id').from('se_project.route').where('from_station_id', fromstID).andWhere('to_station_id', tostID);
-      //now we check route_id in station_route table is equal to routeID:
-      const stationRouteID = await db.select('route_id').from('se_project.station_route').where('route_id', routeID);
-      if (zones < 10) {
-        const price = await db.select('price').from('se_project.zone').where('zone_type', 9);
-        res.json(price);
-      }
-      else if ((zones < 16) && (zones >= 10)) {
-        const price = await db.select('price').from('se_project.zone').where('zone_type', 10);
-        res.json(price);
-      }
-      else {
-        const price = await db.select('price').from('se_project.zone').where('zone_type', 16);
-        res.json(price);
-      }
-    } catch (error) {
-      console.error(error.message);
+      //then calculate the price depending on the zones
+      //then check whether the user is a senior or not (if yes add a discount and return the price)
+      //res.json(?);
+    } catch (err) {
+      console.error(err.message);
       res.status(500).send('Server Error!');
     }
-
   });
-
-
-
-
-  //The first trial *********************************
-  //   app.get('/api/v1/tickets/price/:originId', async (req, res) => {
-  // //Users can check the price of the ticket by specifying the origin and destination.
-  // // So, you have to figure a way through the three tables(stations, routes, stationRoutes)
-  // // Hint visited stations array
-  //      try {
-  //       const {fromStation, toStation} = req.body //
-  //       //requesting from the table the column station_name where the id is equal to the fromStation and looping till i find it:
-  //       const fromStationName = await db.select('station_name').from('se_project.station');//.where('id', fromStation);
-  //       //requesting from the table the column station_name where the id is equal to the toStation and looping till i find it:
-  //       const toStationName = await db.select('station_name').from('se_project.station');//.where('id', toStation);
-  //       //checking whether the fromStation is == to fromStationName using a loop around station_name
-  //       const i = 0;
-  //       const zones = 0;
-  //       while (fromStation != fromStationName[i]) {
-  //         i++;
-  //       }
-  //       const fromstID = await db.select('id').from('se_project.station').where('station_name', fromStation);
-  //       res.json(fromstID);
-  //       i = 0;
-  //       while (toStation != toStationName[i]) {
-  //         i++;
-  //       }m 
-  //       const tostID = await db.select('id').from('se_project.station').where('station_name', toStation);
-  //       res.json(tostID);
-  //       zones = i;
-  //       //now we check from_station_id in route table and to_station_id in route table are equal to the fromstID and tostID:
-  //       const routeID = await db.select('id').from('se_project.route').where('from_station_id', fromstID).andWhere('to_station_id', tostID);
-  //       //now we check route_id in station_route table is equal to routeID:
-  //       const stationRouteID = await db.select('route_id').from('se_project.station_route').where('route_id', routeID);
-  //       if(zones < 10){
-  //         const price = await db.select('price').from('se_project.zone').where('zone_type', 9);
-  //         res.json(price);
-  //       }
-  //       else if((zones < 16) && (zones >= 10)){
-  //         const price = await db.select('price').from('se_project.zone').where('zone_type', 10);
-  //         res.json(price);
-  //       }
-  //       else{
-  //         const price = await db.select('price').from('se_project.zone').where('zone_type', 16);
-  //         res.json(price);
-  //       }
-  //     }catch (error) {
-  //         console.error(error.message);
-  //         res.status(500).send('Server Error!');
-  //    }
-
-  //   });
-
-  // // Get all rides endpoint
-  // app.get('/rides', async (req, res) => {
-  //   try {
-  //     //const rides = await pool.query('SELECT * FROM se_project.ride');
-  //     const rides = await db.select('*').from('se_project.ride')
-  //     res.json(rides);
-  //   } catch (error) {
-  //     console.error(error.message);
-  //     res.status(500).send('Server Error!');
-  //   }
-  // });
 
   // Request ticket refund endpoint
   app.post('/api/v1/refund/:ticketId', async (req, res) => {
@@ -348,14 +282,12 @@ module.exports = function (app) {
         return res.status(400).json({ msg: 'Please enter 14 digits' });
       }
       //const senior = await pool.query('INSERT INTO se_project.senior (ticket_id) VALUES ($1) RETURNING *', [ticket_id]);
-      const senior =
-      {
+      const senior = {
         status: 'pending',
         user_id: uid,
         national_id: nationalId
-      }
-      const requestS = await db.insert(senior)
-        .into('se_project.senior_request').returning('*');
+      };
+      const requestS = await db.insert(senior).into('se_project.senior_request').returning('*');
       res.json(requestS);
       //res.send('Senior request has been made.');
     } catch (error) {
@@ -429,8 +361,7 @@ module.exports = function (app) {
       const { stationName } = req.body;
       if (!stationName) {
         return res.status(400).json({ msg: 'Please enter all fields' });
-      }
-      else {
+      } else {
         //const newStation = await pool.query(
         //'INSERT INTO se_project.station (station_name, station_type, station_position, station_status) VALUES ($1, $2, $3, $4) RETURNING *',
         //[stationname, stationtype, stationposition, stationstatus]);
@@ -438,7 +369,7 @@ module.exports = function (app) {
           station_name: stationName,
           station_type: 'normal',
           station_status: 'new'
-        }
+        };
         const new_station_entry = await db.insert(newStation).into('se_project.station');
         res.json(newStation);
         //res.send('Station created.');
@@ -475,42 +406,42 @@ module.exports = function (app) {
   // Delete station endpoint
   app.delete('/api/v1/station/:stationId', async (req, res) => {
     try {
-      const stationid = req.params;
+      const stationId = req.params;
       //const station = await pool.query('SELECT * FROM stations WHERE id = $1', [stationid]);
-      const station = await db.select('*').from('se_project.station').where('id', stationid);
+      const station = await db.select('*').from('se_project.station').where('id', stationId);
       const user = await getUser(req);
       if (user.isAdmin == false) {
-        return res.status(401).json({ msg: "You are not authorized to delete a station" });
+        return res.status(401).json({ msg: 'You are not authorized to delete a station' });
       }
       console.log(station.rows[0]);
       if (station.length == 1) {
         if (station.station_type == 'normal') {
           if (station.station_position == 'start') {
             //let affectedRoute = await pool.query('select * from routes where fromstationid = $1', [stationid]);
-            let affectedRoute = await db.select('*').from('se_project.routes').where('fromstationid', stationid);
+            let affectedRoute = await db.select('*').from('se_project.routes').where('from_station_id', stationId);
             //update the to station to become a start
             //await pool.query('update stations set stationposition = $1 where id = $2', ['start', affectedRoute.toStationid]);
             await db('se_project.station').where('id', affectedRoute.toStationid).update('station_position', 'start');
             //await pool.query('delete from stations where id = $1', [stationid]);
-            await db('se_project.station').where('id', stationid).del();
+            await db('se_project.station').where('id', stationId).del();
           } else if (station.station_position == 'end') {
             //let affectedRoute = await pool.query('select * from routes where fromstationid = $1', [stationid]);
-            let affectedRoute = await db.select('*').from('se_project.route').where('from_station_id', stationid);
+            let affectedRoute = await db.select('*').from('se_project.route').where('from_station_id', stationId);
             //update the to station to become an end
             //await pool.query('update station set stationposition = $1 where id = $2', ['end', affectedRoute.toStationid]);
             await db('se_project.station').where('id', affectedRoute.toStationid).update('station_position', 'end');
 
             //await pool.query('delete from stations where id = $1', [stationid]);
-            await db('se_project.station').where('id', stationid).del();
+            await db('se_project.station').where('id', stationId).del();
           } else if (station.station_position == 'middle') {
             //let middleIsTo = await pool.query('select * from routes where toStationId = $1', [stationid]);
-            let middleIsTo = await db.select('*').from('se_project.route').where('to_station_id', stationid);
+            let middleIsTo = await db.select('*').from('se_project.route').where('to_station_id', stationId);
             let myFromStation = middleIsTo.from_station_id;
             //let middleIsFrom = await pool.query('select * from routes where fromStationId = $1', [stationid]);
-            let middleIsFrom = await db.select('*').from('se_project.route').where('from_station_id', stationid);
+            let middleIsFrom = await db.select('*').from('se_project.route').where('from_station_id', stationId);
             let myToStation = middleIsFrom.to_station_id;
             //await pool.query('delete from stations where id = $1', [stationid]);
-            await db('se_project.station').where('id', stationid).del();
+            await db('se_project.station').where('id', stationId).del();
             //update routes table with new entries
             //let newStationFromTo = await pool.query('insert into routes (routename, fromStationid, toStationid) values ($1, $2, $3)', [
             //'newroute1',
@@ -547,9 +478,9 @@ module.exports = function (app) {
           }
         } else if (station.station_type == 'transfer') {
           //let transferRoutes = await pool.query('select * from route where from_station_id = $1', [stationid])
-          let transferRoutes = await db.select('*').from('se_project.route').where('from_station_id', stationid);
+          let transferRoutes = await db.select('*').from('se_project.route').where('from_station_id', stationId);
           //let myNewTransfer = await pool.query('select from_station_id from route where to_station_id = $1', [stationid])
-          let myNewTransfer = await db.select('from_station_id').from('se_project.route').where('to_station_id', stationid);
+          let myNewTransfer = await db.select('from_station_id').from('se_project.route').where('to_station_id', stationId);
           for (let i = 0; i < transferRoutes.length; i++) {
             let toStation = transferRoutes[i].to_station_id;
             //await pool.query ('insert into route (route_name, from_station_id, to_station_id) values ($1, $2, $3)', [ myNewTransfer+' '+toStation, myNewTransfer, toStation]);
@@ -606,7 +537,7 @@ module.exports = function (app) {
           //await pool.query('update station set station_type = $1 where id = $2', ['transfer', myNewTransfer]);
           await db('se_project.station').where('id', myNewTransfer).update('station_type', 'transfer');
           //await pool.query('delete station where id = $1', [stationid]);
-          await db('se_project.station').where('id', stationid).del();
+          await db('se_project.station').where('id', stationId).del();
           res.status(200).send('Station deleted and necessary updates created');
         }
       }
@@ -636,7 +567,11 @@ module.exports = function (app) {
 
     try {
       const new_Route = await db.from('se_project.route').insert(newRoute).returning('*');
-      const newRouteId = await db.select('id').from('se_project.route').where('from_station_id', newRoute.from_station_id).andWhere('to_station_id', newRoute.to_station_id);
+      const newRouteId = await db
+        .select('id')
+        .from('se_project.route')
+        .where('from_station_id', newRoute.from_station_id)
+        .andWhere('to_station_id', newRoute.to_station_id);
       const SR1 = await db.insert([{ station_id: newRoute.from_station_id }, { route_id: newRouteId }]);
       const SR2 = await db.insert([{ station_id: newRoute.to_station_id }, { route_id: newRouteId }]);
       res.json(new_Route);
@@ -758,26 +693,27 @@ module.exports = function (app) {
   });
 
   //extra something for me
-  app.get('/api/zonePrice'), async (req, res) => {
-    try {
-      const { zoneType } = req.body;
-      const price = await db.select('price').from('se_project.zone').where('zone_type', zoneType);
-      res.send(price);
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).send('Server Error!');
-    }
-  }
+  app.get('/api/v1/zonePrice'),
+    async (req, res) => {
+      try {
+        const { zoneType } = req.body;
+        const price = await db.select('price').from('se_project.zone').where('zone_type', zoneType);
+        res.status(200).send(price);
+      } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Server Error!');
+      }
+    };
 
-  app.get('api/ZoneId/:zoneType'), async (req, res) => {
-    try {
-      const { zoneType } = req.params;
-      const zid = await db.select('id').from('se_project.zone').where('zone_type', zoneType);
-      res.json(zid);
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).send('Server Error!');
-    }
-  };
+  app.get('api/ZoneId/:zoneType'),
+    async (req, res) => {
+      try {
+        const { zoneType } = req.params;
+        const zid = await db.select('id').from('se_project.zone').where('zone_type', zoneType);
+        res.json(zid);
+      } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Server Error!');
+      }
+    };
 };
-

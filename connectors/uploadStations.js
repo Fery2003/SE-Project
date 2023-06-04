@@ -1,5 +1,5 @@
 // import the knex library that will allow us to
-// construct SQL statements
+// // construct SQL statements
 const knex = require('knex');
 
 
@@ -93,6 +93,18 @@ async function uploadS() {
       station_type: 'normal',
       station_position: 'end',
       station_status: 'old'
+    },
+    {
+      station_name: 's8',
+      station_type: 'normal',
+      station_position: 'middle',
+      station_status: 'old'
+    },
+    {
+      station_name: 's9',
+      station_type: 'normal',
+      station_position: 'end',
+      station_status: 'old'
     }
   ];
 
@@ -102,7 +114,7 @@ async function uploadS() {
   }
 }
 async function uploadR() {
-  let routes = [
+  let routes = [ //3 is a transfer station to : 4, 6 and 8
     { route_name: 'hi12', from_station_id: 1, to_station_id: 2 },
     { route_name: 'hi21', from_station_id: 2, to_station_id: 1 },
     { route_name: 'hi23', from_station_id: 2, to_station_id: 3 },
@@ -114,7 +126,11 @@ async function uploadR() {
     { route_name: 'hi45', from_station_id: 4, to_station_id: 5 },
     { route_name: 'hi54', from_station_id: 5, to_station_id: 4 },
     { route_name: 'hi76', from_station_id: 7, to_station_id: 6 },
-    { route_name: 'hi67', from_station_id: 6, to_station_id: 7 }
+    { route_name: 'hi67', from_station_id: 6, to_station_id: 7 },
+    { route_name: 'hi38', from_station_id: 3, to_station_id: 8 },
+    { route_name: 'hi83', from_station_id: 8, to_station_id: 3 },
+    { route_name: 'hi89', from_station_id: 8, to_station_id: 9 },
+    { route_name: 'hi98', from_station_id: 9, to_station_id: 8 },
   ];
 
   for (let i = 0; i < routes.length; i++) {

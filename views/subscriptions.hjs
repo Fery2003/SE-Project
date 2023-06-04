@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,17 +18,14 @@
 
     <script>
         $(document).ready(
-            function()
-            {
+            function () {
                 //SHOW THE ZONES FROM /api/v1/zones in the database
-                $(document).on('click', '#showZones', function()
-                {
+                $(document).on('click', '#showZones', function () {
                     $.ajax(
                         {
                             url: '/api/v1/zones',
                             type: 'GET',
-                            success: function(result)
-                            {
+                            success: function (result) {
                                 console.log(result);
                                 $('#showZones').html(result);
                             }
@@ -38,8 +36,9 @@
         )
     </script>
 </head>
+
 <body>
-<h1>Subscription</h1>
+    <h1>Subscription</h1>
 
     <!-- Button to show the zones from the database -->
     <button id="showZones" class="btn btn-primary">Show Zones</button>
@@ -50,4 +49,5 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
+
 </html>
