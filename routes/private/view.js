@@ -59,4 +59,9 @@ module.exports = function(app) {
       return res.status(200).render('request_refund', { user, refunds });
     }
   })
+  app.get('/manage/routes', async function(req, res) {
+    const user = await getUser(req);
+    const routes = await db.select('*').from('se_project.route');
+    return res.status(200).render('routes', { user, routes });
+  });
 };
