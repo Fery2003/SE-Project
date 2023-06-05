@@ -40,7 +40,7 @@ module.exports = function(app) {
   app.get('/manage/stations', async function(req, res) {
     const user = await getUser(req);
     const stations = await db.select('*').from('se_project.station');
-    return res.status(200).render('stations', { user, stations });
+    return res.status(200).render('stations', { ...user, stations });
   });
 
   app.get('/rides', async function(req, res) {

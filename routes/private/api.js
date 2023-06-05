@@ -421,7 +421,7 @@ module.exports = function (app) {
             let affectedRoute = await db.select('*').from('se_project.routes').where('from_station_id', stationId);
             //update the to station to become a start
             //await pool.query('update stations set stationposition = $1 where id = $2', ['start', affectedRoute.toStationid]);
-            await db('se_project.station').where('id', affectedRoute.toStationid).update('station_position', 'start');
+            await db('se_project.station').where('id', affectedRoute.to_station_id).update('station_position', 'start');
             //await pool.query('delete from stations where id = $1', [stationid]);
             await db('se_project.station').where('id', stationId).del();
           } else if (station.station_position == 'end') {
@@ -429,7 +429,7 @@ module.exports = function (app) {
             let affectedRoute = await db.select('*').from('se_project.route').where('from_station_id', stationId);
             //update the to station to become an end
             //await pool.query('update station set stationposition = $1 where id = $2', ['end', affectedRoute.toStationid]);
-            await db('se_project.station').where('id', affectedRoute.toStationid).update('station_position', 'end');
+            await db('se_project.station').where('id', affectedRoute.to_station_id).update('station_position', 'end');
 
             //await pool.query('delete from stations where id = $1', [stationid]);
             await db('se_project.station').where('id', stationId).del();
@@ -460,21 +460,21 @@ module.exports = function (app) {
               .into('se_project.route');
             //add to SR table the new routes with their correspoding stations
             //let idnewStationFromTo = await pool.query('select id from routes where fromStationid = $1', myFromStation);
-            let idnewStationFromTo = await db.select('id').from('se_project.route').where('from_station_id', myFromStation);
+            let idNewStationFromTo = await db.select('id').from('se_project.route').where('from_station_id', myFromStation);
             //let idnewStationToFrom = await pool.query('select id from routes where fromStationid = $1', mytToStation);
-            let idnewStationToFrom = await db.select('id').from('se_project.route').where('from_station_id', myToStation);
+            let idNewStationToFrom = await db.select('id').from('se_project.route').where('from_station_id', myToStation);
             // let newSR1 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
             //   myFromStation,
             //   parseInt(idnewStationFromTo)
             // ]);
             let newSR1 = await db
-              .insert([{ station_id: myFromStation }, { route_id: parseInt(idnewStationFromTo) }])
+              .insert([{ station_id: myFromStation }, { route_id: parseInt(idNewStationFromTo) }])
               .into('se_project.station_route');
             // let newSR2 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
             //   myToStation,
             //   parseInt(idnewStationToFrom)
             // ]);
-            let newSR2 = await db.insert([{ station_id: myToStation }, { route_id: parseInt(idnewStationToFrom) }]).into('se_project.station_route');
+            let newSR2 = await db.insert([{ station_id: myToStation }, { route_id: parseInt(idNewStationToFrom) }]).into('se_project.station_route');
           }
         } else if (station.station_type == 'transfer') {
           //let transferRoutes = await pool.query('select * from route where from_station_id = $1', [stationid])
