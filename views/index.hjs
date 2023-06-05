@@ -5,7 +5,7 @@
       <link rel='stylesheet' href='/styles/bootstrap.min.css' />
       <link rel='stylesheet' href='/styles/style.css' />
       <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
-      <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+      {{!-- <script src="/js/bootstrap.min.js" type="text/javascript"></script> --}}
     </head>
   </head>
   <body>
