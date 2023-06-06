@@ -1,7 +1,7 @@
 const { isEmpty, get } = require('lodash');
 const { v4 } = require('uuid');
 const db = require('../../connectors/db.js');
-const roles = require('../../constants/roles');
+const roles = require('../../constants/roles.js');
 const { getSessionToken } = require('../../utils/session.js');
 const { compileFunction } = require('vm');
 const e = require('express');
@@ -21,9 +21,9 @@ const getUser = async function (req) {
     .first();
 
   console.log('user =>', user);
-  user.isNormal = user.roleid === roles.user;
-  user.isAdmin = user.roleid === roles.admin;
-  user.isSenior = user.roleid === roles.senior;
+  user.isNormal = user.role_id === roles.user;
+  user.isAdmin = user.role_id === roles.admin;
+  user.isSenior = user.role_id === roles.senior;
   console.log('user =>', user);
   return user;
 };

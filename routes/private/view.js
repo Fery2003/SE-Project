@@ -1,5 +1,5 @@
 const db = require('../../connectors/db.js');
-const roles = require('../../constants/roles');
+const roles = require('../../constants/roles.js');
 const { getSessionToken } = require('../../utils/session');
 
 const getUser = async function(req) {
@@ -16,9 +16,9 @@ const getUser = async function(req) {
     .first();
   
   console.log('user =>', user)
-  user.isStudent = user.roleid === roles.student;
-  user.isAdmin = user.roleid === roles.admin;
-  user.isSenior = user.roleid === roles.senior;
+  user.isStudent = user.role_id === roles.student;
+  user.isAdmin = user.role_id === roles.admin;
+  user.isSenior = user.role_id === roles.senior;
 
   return user;  
 }
@@ -40,6 +40,9 @@ module.exports = function(app) {
   app.get('/manage/stations', async function(req, res) {
     const user = await getUser(req);
     const stations = await db.select('*').from('se_project.station');
+    if (user.isAdmin) {
+      console.log('user is admin')
+    }
     return res.status(200).render('stations', { ...user, stations });
   });
 
