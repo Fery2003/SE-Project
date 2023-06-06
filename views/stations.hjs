@@ -5,9 +5,8 @@
     <meta charset="utf-8">
     <title>Stations</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-    {{!-- <link rel='stylesheet' href='/styles/bootstrap.min.css' />
-    <link rel='stylesheet' href='/styles/style.css' /> --}}
+    <meta content="Cairo Metro" name="keywords">
+    <meta content="Cairo Metro" name="description">
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap"

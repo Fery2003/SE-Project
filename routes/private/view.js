@@ -36,13 +36,9 @@ module.exports = function(app) {
     return res.render('users', { users });
   });
 
-  // Register HTTP endpoint to render /courses page
   app.get('/manage/stations', async function(req, res) {
     const user = await getUser(req);
     const stations = await db.select('*').from('se_project.station');
-    if (user.isAdmin) {
-      console.log('user is admin')
-    }
     return res.status(200).render('stations', { ...user, stations });
   });
 
