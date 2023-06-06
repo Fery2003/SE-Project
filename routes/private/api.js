@@ -360,17 +360,14 @@ module.exports = function (app) {
     try {
       const { stationName } = req.body;
       if (!stationName) {
-        return res.status(400).json({ msg: 'Please enter all fields' });
+        return res.status(400).json({ msg: `Please enter the station's name!` });
       } else {
-        //const newStation = await pool.query(
-        //'INSERT INTO se_project.station (station_name, station_type, station_position, station_status) VALUES ($1, $2, $3, $4) RETURNING *',
-        //[stationname, stationtype, stationposition, stationstatus]);
         const newStation = {
           station_name: stationName,
           station_type: 'normal',
           station_status: 'new'
         };
-        const new_station_entry = await db.insert(newStation).into('se_project.station');
+        await db.insert(newStation).into('se_project.station');
         res.json(newStation);
         //res.send('Station created.');
       }
