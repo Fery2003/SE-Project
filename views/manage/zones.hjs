@@ -157,16 +157,16 @@
                         </p>
                         <div class="input-group">
                             <input type="number" class="form-control bg-dark border-dark" style="padding: 25px;"
-                                id="newPrice" value="">
+                                id="newPrice9" value="">
                             <div class="input-group-append">
-                                <button class="btn btn-primary text-uppercase px-3" id="update">Update</button>
+                                <button class="btn btn-primary text-uppercase px-3" id="update9">Update</button>
                             </div>
                             <!-- take input from textbox-->
                             <script>
                                 $(document).ready(function () {
                                     // Handle updating price
-                                    $("#update").click(function () {
-                                        const newPrice = $('#newPrice').val();
+                                    $("#update9").click(function () {
+                                        const newPrice = $('#newPrice9').val();
                                         const data = {
                                             newPrice,
                                         };
@@ -226,16 +226,16 @@
                         </p>
                         <div class="input-group">
                             <input type="number" class="form-control bg-dark border-dark" style="padding: 25px;"
-                                id="newPrice" value="">
+                                id="newPrice10" value="">
                             <div class="input-group-append">
-                                <button class="btn btn-primary text-uppercase px-3" id="update">Update</button>
+                                <button class="btn btn-primary text-uppercase px-3" id="update10">Update</button>
                             </div>
                             <!-- take input from textbox-->
                             <script>
                                 $(document).ready(function () {
                                     // Handle updating price
-                                    $("#update").click(function () {
-                                        const newPrice = $('#newPrice').val();
+                                    $("#update10").click(function () {
+                                        const newPrice = $('#newPrice10').val();
                                         const data = {
                                             newPrice,
                                         };
@@ -295,16 +295,16 @@
                         </p>
                         <div class="input-group">
                             <input type="number" class="form-control bg-dark border-dark" style="padding: 25px;"
-                                id="newPrice" value="">
+                                id="newPrice16" value="">
                             <div class="input-group-append">
-                                <button class="btn btn-primary text-uppercase px-3" id="update">Update</button>
+                                <button class="btn btn-primary text-uppercase px-3" id="update16">Update</button>
                             </div>
                             <!-- take input from textbox-->
                             <script>
                                 $(document).ready(function () {
                                     // Handle updating price
-                                    $("#update").click(function () {
-                                        const newPrice = $('#newPrice').val();
+                                    $("#update16").click(function () {
+                                        const newPrice = $('#newPrice16').val();
                                         const data = {
                                             newPrice,
                                         };

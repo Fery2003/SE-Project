@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tickets</title>
-    
+
     {{! Bootstrap CSS }}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -17,16 +18,119 @@
     <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
 
     <script>
+        $(document).ready(function () {
+            // Handle Registration Button Click
+            $("#showTicketPrice").click(function () {
+                const first_name = $('#first_name').val();
+                const last_name = $('#last_name').val();
+                const id = $('#id').val();
+                const { creditCardNumber,
+                    holderName,
+                    paidAmount,
+                    origin,
+                    destination,
+                    tripDate } =
+                    $('#creditCardNumber').val(),
+                    $('#holderName').val(),
+                        $('#paidAmount').val(),
+                        $('#origin').val(),
+                        $('#destination').val(),
+                        $('#tripDate').val();
+
+                const data = {
+                    first_name,
+                    last_name,
+                    id,
+                    creditCardNumber,
+                    holderName,
+                    paidAmount,
+                    origin,
+                    destination,
+                    tripDate
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: '/api/v1/payment/ticket',
+                    data,
+                    success: function (serverResponse) {
+                        if (serverResponse) {
+                            alert('Successfully Registered User');
+                            location.href = '/';
+                        }
+                    },
+                    error: function (errorResponse) {
+                        if (errorResponse) {
+                            alert(`Error Register User: ${errorResponse.responseText}`);
+                        }
+                    }
+                });
+            });
+        });
     </script>
 </head>
+
 <body>
-    
     <h1>Tickets</h1>
 
-    <div id="ticketContainer">
+    <div id="ticketContainer"></div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2>Ticket Information</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" class="form-control" id="first_name" placeholder="Enter your first name"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" class="form-control" id="last_name" placeholder="Enter your last name"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="id">ID</label>
+                        <input type="text" class="form-control" id="id" placeholder="Enter your ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="creditCardNumber">Credit Card Number</label>
+                        <input type="text" class="form-control" id="creditCardNumber"
+                            placeholder="Enter your credit card number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="holderName">Card Holder Name</label>
+                        <input type="text" class="form-control" id="holderName"
+                            placeholder="Enter the card holder's name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="paidAmount">Paid Amount</label>
+                        <input type="text" class="form-control" id="paidAmount" placeholder="Enter the paid amount"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="origin">Origin</label>
+                        <input type="text" class="form-control" id="origin" placeholder="Enter the origin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="destination">Destination</label>
+                        <input type="text" class="form-control" id="destination" placeholder="Enter the destination"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tripDate">Trip Date</label>
+                        <input type="text" class="form-control" id="tripDate" placeholder="Enter the trip date"
+                            required>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="showTicketPrice">Show Ticket Price</button>
+                </form>
+            </div>
+        </div>
     </div>
 
-    {{! Bootstrap JS }}
+    <!-- Include Bootstrap JS -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
