@@ -185,47 +185,76 @@ module.exports = function (app) {
       res.status(500).send('Server Error!');
     }
   });
-  function transferTree(transferStation, destination){
-    const root = transferStation;
-    if(!root) return null;
-    const rootNode = {stations: root, theNodes: [] }; //try the station thingy
-    let curr = rootNode;
-    const nextStationId = transferStation + 1;
-    while (currentNode.nextStationId !== null) {//tbd
+
+  function transferTree(transferStation, destination) {
+    const root = transferStation; // root of tree
+    if (!root) return null; // check if root is null
+    const rootNode = { nodes: [] }; // store children of root node
+    let curr = rootNode; // store root as current node
+    const nextStationId = transferStation + 1; // fetch following station
+    if (nextStationId == destination) {
+      console.log("You reached your destination");
+    }
+
+    
+
+    db.select('id').from('route').where('route_name').equals('hi' + transferStation + '%')
+    stationType = db.select('station_type').from('station').where('id', transferStation);
+    if (stationType == 'transfer') {
+      root = transferStation
+      transferTree(nextStationId, destination)
+    }
+    
+    while (nextStationId != null) { // tbd
+
+    }
   }
-}
   // Get ticket price endpoint
   app.get('/api/v1/tickets/price/:originId', async (req, res) => {
     try {
       const { fromStation, toStation } = req.body;
-      //requesting from the table the column station_name where the id is equal to the fromStation and looping till i find it:
-      const fromStationID = await db.select('id').from('se_project.station').where('station_name', fromStation); // 1//fromStationName is the id of the station 
-      const toStationID = await db.select('id').from('se_project.station').where('station_name', toStation); //3
-      const fromSchangeable = null;
-      const toSchangeable = fromStationID;
-      stationCounter = 0;
+      // fetch id of station
+      const fromStationId = await db.select('*').from('se_project.station').where('station_name', fromStation); // 1//fromStationName is the id of the station 
+      const fromStationObj = await db.select('*').from('se_project.station').where('id', fromStationId)
+      const toStationId = await db.select('*').from('se_project.station').where('station_name', toStation);
+      const toStationObj = await db.select('*').from('se_project.station').where('id', toStationId);
+
+      stationStack = []
       
-      const route = await db.select('id').from('se_project.route').where('from_station_id', fromStationID).andWhere('to_station_id', toStationID); //1,3      
-      const matchingRoutes = await db.select('id')
-        .from('route')
-        .where('route_name', '=', 'hi' + route.fromSchangeable + route.to_station_id);
-        //.limit(1); //to limit the no of rows we look into in the db
-      if (matchingRoutes > 0){
-        console.log('You have reached your destination sucessfully!');
-        stationCounter = route.from_station_id + route.to_station_id - 1;
-      } else {
-        console.log('The route does not exist.');
-        while(matchingRoutes.length < 1){
-          fromSchangeable = route.from_station_id + 1;
-          stationType = await db.select('station_type').from('station').where('id', fromSchangeable);
-          if(station.station_type == 'transfer'){
-            //call the tree function
-          }
-        }
-      }
-      //then calculate the price depending on the zones
-      //then check whether the user is a senior or not (if yes add a discount and return the price)
-      //res.json(?);
+      do {
+        stationStack.push(fromStationObj) // pushing current station to stack
+        fromStationObj = toStationObj // traversing to next node/station
+        toStationObj = db.select() 
+      } while (fromStationObj.station_type == 'normal')
+
+      // //requesting from the table the column station_name where the id is equal to the fromStation and looping till i find it:
+      // const toStationID = await db.select('id').from('se_project.station').where('station_name', toStation); //3
+      
+      // const fromSChangeable = null;
+      // const toSchangeable = fromStationID;
+      // stationCounter = 0;
+  
+      // const route = await db.select('id').from('se_project.route').where('from_station_id', fromStationID).andWhere('to_station_id', toStationID); //1,3      
+      // const matchingRoutes = await db.select('id')
+      //   .from('route')
+      //   .where('route_name', '=', 'hi' + route.fromSChangeable + route.to_station_id);
+      // //.limit(1); //to limit the no of rows we look into in the db
+      // if (matchingRoutes > 0) {
+      //   console.log('You have reached your destination sucessfully!');
+      //   stationCounter = route.from_station_id + route.to_station_id - 1;
+      // } else {
+      //   console.log('The route does not exist.');
+      //   while (matchingRoutes.length < 1) {
+      //     fromSChangeable = route.from_station_id + 1;
+      //     stationType = await db.select('station_type').from('station').where('id', fromSChangeable);
+      //     if (station_type == 'transfer') {
+      //       //call the tree function
+      //     }
+      //   }
+      // }
+      // //then calculate the price depending on the zones
+      // //then check whether the user is a senior or not (if yes add a discount and return the price)
+      // //res.json(?);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error!');
