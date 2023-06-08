@@ -193,20 +193,21 @@ module.exports = function (app) {
     let curr = rootNode; // store root as current node
     const nextStationId = transferStation + 1; // fetch following station
     if (nextStationId == destination) {
-      console.log("You reached your destination");
+      console.log('You reached your destination');
     }
 
-    
-
-    db.select('id').from('route').where('route_name').equals('hi' + transferStation + '%')
+    db.select('id')
+      .from('route')
+      .where('route_name')
+      .equals('hi' + transferStation + '%');
     stationType = db.select('station_type').from('station').where('id', transferStation);
     if (stationType == 'transfer') {
-      root = transferStation
-      transferTree(nextStationId, destination)
+      root = transferStation;
+      transferTree(nextStationId, destination);
     }
-    
-    while (nextStationId != null) { // tbd
 
+    while (nextStationId != null) {
+      // tbd
     }
   }
   // Get ticket price endpoint
@@ -214,27 +215,27 @@ module.exports = function (app) {
     try {
       const { fromStation, toStation } = req.body;
       // fetch id of station
-      const fromStationId = await db.select('*').from('se_project.station').where('station_name', fromStation); // 1//fromStationName is the id of the station 
-      const fromStationObj = await db.select('*').from('se_project.station').where('id', fromStationId)
+      const fromStationId = await db.select('*').from('se_project.station').where('station_name', fromStation); // 1//fromStationName is the id of the station
+      const fromStationObj = await db.select('*').from('se_project.station').where('id', fromStationId);
       const toStationId = await db.select('*').from('se_project.station').where('station_name', toStation);
       const toStationObj = await db.select('*').from('se_project.station').where('id', toStationId);
 
-      stationStack = []
-      
+      stationStack = [];
+
       do {
-        stationStack.push(fromStationObj) // pushing current station to stack
-        fromStationObj = toStationObj // traversing to next node/station
-        toStationObj = db.select() 
-      } while (fromStationObj.station_type == 'normal')
+        stationStack.push(fromStationObj); // pushing current station to stack
+        fromStationObj = toStationObj; // traversing to next node/station
+        toStationObj = db.select();
+      } while (fromStationObj.station_type == 'normal');
 
       // //requesting from the table the column station_name where the id is equal to the fromStation and looping till i find it:
       // const toStationID = await db.select('id').from('se_project.station').where('station_name', toStation); //3
-      
+
       // const fromSChangeable = null;
       // const toSchangeable = fromStationID;
       // stationCounter = 0;
-  
-      // const route = await db.select('id').from('se_project.route').where('from_station_id', fromStationID).andWhere('to_station_id', toStationID); //1,3      
+
+      // const route = await db.select('id').from('se_project.route').where('from_station_id', fromStationID).andWhere('to_station_id', toStationID); //1,3
       // const matchingRoutes = await db.select('id')
       //   .from('route')
       //   .where('route_name', '=', 'hi' + route.fromSChangeable + route.to_station_id);
@@ -432,139 +433,105 @@ module.exports = function (app) {
   app.delete('/api/v1/station/:stationId', async (req, res) => {
     try {
       let { stationId } = req.params;
-      stationId = Number.parseInt(stationId);
-      //const sid = Number.parseInt(stationId);
-      //const station = await pool.query('SELECT * FROM stations WHERE id = $1', [stationid]);
-      const station = await db.select('*').from('se_project.station').where('id', stationId);
+      // stationId = Number.parseInt(stationId);
+
+      const station = await db.select('*').from('se_project.station').where('id', stationId).first();
       const user = await getUser(req);
+
       if (user.isAdmin == false) {
         return res.status(401).json({ msg: 'You are not authorized to delete a station' });
       }
-      console.log(station.rows[0]);
-      if (station.length == 1) {
+
+      console.log(station);
+
+      if (station) {
         if (station.station_type == 'normal') {
           if (station.station_position == 'start') {
-            //let affectedRoute = await pool.query('select * from routes where fromstationid = $1', [stationid]);
-            let affectedRoute = await db.select('*').from('se_project.routes').where('from_station_id', stationId);
+            let affectedRoute = await db.select('*').from('se_project.route').where('from_station_id', stationId).first();
+            console.log(affectedRoute)
+
             //update the to station to become a start
-            //await pool.query('update stations set stationposition = $1 where id = $2', ['start', affectedRoute.toStationid]);
             await db('se_project.station').where('id', affectedRoute.to_station_id).update('station_position', 'start');
-            //await pool.query('delete from stations where id = $1', [stationid]);
             await db('se_project.station').where('id', stationId).del();
           } else if (station.station_position == 'end') {
-            //let affectedRoute = await pool.query('select * from routes where fromstationid = $1', [stationid]);
             let affectedRoute = await db.select('*').from('se_project.route').where('from_station_id', stationId);
-            //update the to station to become an end
-            //await pool.query('update station set stationposition = $1 where id = $2', ['end', affectedRoute.toStationid]);
-            await db('se_project.station').where('id', affectedRoute.to_station_id).update('station_position', 'end');
 
-            //await pool.query('delete from stations where id = $1', [stationid]);
+            //update the to station to become an end
+            await db('se_project.station').where('id', affectedRoute.to_station_id).update('station_position', 'end');
             await db('se_project.station').where('id', stationId).del();
           } else if (station.station_position == 'middle') {
-            //let middleIsTo = await pool.query('select * from routes where toStationId = $1', [stationid]);
             let middleIsTo = await db.select('*').from('se_project.route').where('to_station_id', stationId);
             let myFromStation = middleIsTo.from_station_id;
-            //let middleIsFrom = await pool.query('select * from routes where fromStationId = $1', [stationid]);
             let middleIsFrom = await db.select('*').from('se_project.route').where('from_station_id', stationId);
             let myToStation = middleIsFrom.to_station_id;
-            //await pool.query('delete from stations where id = $1', [stationid]);
+
             await db('se_project.station').where('id', stationId).del();
+
             //update routes table with new entries
-            //let newStationFromTo = await pool.query('insert into routes (routename, fromStationid, toStationid) values ($1, $2, $3)', [
-            //'newroute1',
-            //myFromStation,
-            //myToStation]);
             let newStationFromTo = await db
               .insert([{ route_name: '' + myFromStation + myToStation }, { from_station_id: myFromStation }, { to_station_id: myToStation }])
               .into('se_project.route');
-            // let newStationToFrom = await pool.query('insert into routes (routename, fromStationid, toStationid) values ($1, $2, $3)', [
-            //   'newroute1',
-            //   myToStation,
-            //   myFromStation
-            // ]);
+
             let newStationToFrom = await db
               .insert([{ route_name: '' + myToStation + myFromStation }, { from_station_id: myToStation }, { to_station_id: myFromStation }])
               .into('se_project.route');
+
             //add to SR table the new routes with their correspoding stations
-            //let idnewStationFromTo = await pool.query('select id from routes where fromStationid = $1', myFromStation);
             let idNewStationFromTo = await db.select('id').from('se_project.route').where('from_station_id', myFromStation);
-            //let idnewStationToFrom = await pool.query('select id from routes where fromStationid = $1', mytToStation);
             let idNewStationToFrom = await db.select('id').from('se_project.route').where('from_station_id', myToStation);
-            // let newSR1 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
-            //   myFromStation,
-            //   parseInt(idnewStationFromTo)
-            // ]);
+
             let newSR1 = await db
               .insert([{ station_id: myFromStation }, { route_id: parseInt(idNewStationFromTo) }])
               .into('se_project.station_route');
-            // let newSR2 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
-            //   myToStation,
-            //   parseInt(idnewStationToFrom)
-            // ]);
+
             let newSR2 = await db.insert([{ station_id: myToStation }, { route_id: parseInt(idNewStationToFrom) }]).into('se_project.station_route');
           }
         } else if (station.station_type == 'transfer') {
-          //let transferRoutes = await pool.query('select * from route where from_station_id = $1', [stationid])
           let transferRoutes = await db.select('*').from('se_project.route').where('from_station_id', stationId);
-          //let myNewTransfer = await pool.query('select from_station_id from route where to_station_id = $1', [stationid])
           let myNewTransfer = await db.select('from_station_id').from('se_project.route').where('to_station_id', stationId);
           for (let i = 0; i < transferRoutes.length; i++) {
             let toStation = transferRoutes[i].to_station_id;
-            //await pool.query ('insert into route (route_name, from_station_id, to_station_id) values ($1, $2, $3)', [ myNewTransfer+' '+toStation, myNewTransfer, toStation]);
+
             await db
               .insert([{ route_name: '' + myNewTransfer + toStation }, { from_station_id: myNewTransfer }, { to_station_id: toStation }])
               .into('se_project.route');
-            //await pool.query ('insert into route (route_name, from_station_id, to_station_id) values ($1, $2, $3)', [ toStationr+' '+myNewTransfer, toStation, myNewTransfer]);
+
             await db
               .insert([{ route_name: '' + toStation + myNewTransfer }, { from_station_id: toStation }, { to_station_id: myNewTransfer }])
               .into('se_project.route');
 
-            //let newRouteIdTransferToStation = await pool.query('select id from route where from_station_id = $1 and to_station_id = $2', [myNewTransfer, toStation]);
             let newRouteIdTransferToStation = await db
               .select('id')
               .from('se_project.route')
               .where('from_station_id', myNewTransfer)
               .andWhere('to_station_id', toStation);
-            //let newRouteIdToStationToTransfer = await pool.query('select id from route where from_station_id = $1 and to_station_id = $2', [toStation, myNewTransfer]);
+
             let newRouteIdToStationToTransfer = await db
               .select('id')
               .from('se_project.route')
               .where('from_station_id', toStation)
               .andWhere('to_station_id', myNewTransfer);
 
-            // let newSR5 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
-            //   toStation,
-            //   parseInt(newRouteIdTransferToStation)
-            // ]);
             let newSR5 = await db
               .insert([{ station_id: toStation }, { route_id: parseInt(newRouteIdTransferToStation) }])
               .into('se_project.station_route');
-            // let newSR6 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
-            //   toStation,
-            //   parseInt(newRouteIdToStationToTransfer)
-            // ]);
+
             let newSR6 = await db
               .insert([{ station_id: toStation }, { route_id: parseInt(newRouteIdToStationToTransfer) }])
               .into('se_project.station_route');
-            // let newSR7 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
-            //   myNewTransfer,
-            //   parseInt(newRouteIdToStationToTransfer)
-            // ]);
+
             let newSR7 = await db
               .insert([{ station_id: myNewTransfer }, { route_id: parseInt(newRouteIdToStationToTransfer) }])
               .into('se_project.station_route');
-            // let newSR8 = await pool.query('insert into stationRoutes (stationid, routeid) values ($1,$2)', [
-            //   myNewTransfer,
-            //   parseInt(newRouteIdTransferToStation)
-            // ]);
+
             let newSR8 = await db
               .insert([{ station_id: myNewTransfer }, { route_id: parseInt(newRouteIdTransferToStation) }])
               .into('se_project.station_route');
           }
-          //await pool.query('update station set station_type = $1 where id = $2', ['transfer', myNewTransfer]);
+
           await db('se_project.station').where('id', myNewTransfer).update('station_type', 'transfer');
-          //await pool.query('delete station where id = $1', [stationid]);
           await db('se_project.station').where('id', stationId).del();
+
           res.status(200).send('Station deleted and necessary updates created');
         }
       }
