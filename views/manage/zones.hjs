@@ -34,6 +34,35 @@
 </head>
 
 <body>
+    <script>
+        $(document).ready(function () {
+            // Open the modal when the "update zone price" button is clicked
+            $("#btnupdatePrice").click(function () {
+                $("#zoneModal").modal("show");
+            });
+
+            // Handle the "update zone" button click inside the modal
+            $("#updateZoneBtn").click(function () {
+                var zoneid = $("#zoneid").val();
+                var zoneprice = $("#price").val();
+                // Make an AJAX request to update zone price
+                $.ajax({
+                    url: "/api/v1/zones/${zoneid}",
+                    type: "PUT",
+                    contentType: "application/json",
+                    data: JSON.stringify({ price: zoneprice }),
+                    success: function (response) {
+                        console.log(response);
+                        // Optionally, update the UI or perform additional actions after station creation
+                        $("#zoneModal").modal("hide"); // Hide the modal
+                    },
+                    error: function (error) {
+                        console.error("Error creating station:", error.responseJSON.msg);
+                    }
+                });
+            });
+        });
+    </script>
     <!-- Topbar Start -->
     <div class="container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block">
         <div class="row">
@@ -120,219 +149,56 @@
 
     <!-- Services Start -->
     <div class="container-fluid py-5">
-        <div class="container pt-5 pb-3">
-            <h1 class="display-4 text-uppercase text-center mb-5">Zones</h1>
-            <div class="row">
-                <div class="col-lg-4 col-md-6 mb-2">
-                    <div class="service-item d-flex flex-column justify-content-center px-4 mb-4">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div class="d-flex align-items-center justify-content-center bg-primary ml-n4"
-                                style="width: 80px; height: 80px;">
-                                <i class="fa fa-2x fa-taxi text-secondary"></i>
-                            </div>
-                            <h1 class="display-2 text-white mt-n2 m-0">01</h1>
-                        </div>
-                        <h4 class="text-uppercase mb-3">Up To 9 Stations</h4>
-                        <!-- retrieve price from data base table zone-->
-                        <p class="m-0">For trips that reach 9 stations, tickets will cost
-                            <script>
-                                var price = 0;
-                                var stations = 9;
-                                $.ajax({
-                                    type: "GET",
-                                    url: '/api/zonePrice',
-                                    stations,
-                                    success: function (serverResponse) {
-                                        if (serverResponse)
-                                            price = serverResponse.price;
-                                    },
-                                    error: function (errorResponse) {
-                                        if (errorResponse) {
-                                            alert(`Error Cannot Retrieve: ${errorResponse.responseText}`);
-                                        }
-                                    }
-                            document.write(price);
-                                });
-                            </script>
-                        </p>
-                        <div class="input-group">
-                            <input type="number" class="form-control bg-dark border-dark" style="padding: 25px;"
-                                id="newPrice9" value="">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary text-uppercase px-3" id="update9">Update</button>
-                            </div>
-                            <!-- take input from textbox-->
-                            <script>
-                                $(document).ready(function () {
-                                    // Handle updating price
-                                    $("#update9").click(function () {
-                                        const newPrice = $('#newPrice9').val();
-                                        const data = {
-                                            newPrice,
-                                        };
-                                        const stType = 9; 
-                                        $.get('/api/ZoneId/${stType}', function (data) {
-                                            $.ajax({
-                                                type: "PUT",
-                                                url: '/api/v1/zones/${data}',
-                                                newPrice,
-                                                success: function (serverResponse) {
-                                                    if (serverResponse)
-                                                        newPrice = serverResponse.price;
-                                                },
-                                                error: function (errorResponse) {
-                                                    if (errorResponse) {
-                                                        alert(`Error Cannot Retrieve: ${errorResponse.responseText}`);
-                                                    }
-                                                }
-                                            });
-                                        });
-                                    });
-                                });
-                            </script>
-                        </div>
+        <div style="position:absolute; right:0;">
+            <input id="btnupdatePrice" type="button" value="Zone price" class="btn btn-primary">
+            <br />
+        </div>
+        <div class="modal fade" id="zoneModal" tabindex="-1" role="dialog" aria-labelledby="zoneModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="zoneIdLabel">Enter Zone Id</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-6 mb-2">
-                    <div class="service-item active d-flex flex-column justify-content-center px-4 mb-4">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div class="d-flex align-items-center justify-content-center bg-primary ml-n4"
-                                style="width: 80px; height: 80px;">
-                                <i class="fa fa-2x fa-money-check-alt text-secondary"></i>
-                            </div>
-                            <h1 class="display-2 text-white mt-n2 m-0">02</h1>
-                        </div>
-                        <h4 class="text-uppercase mb-3">10 - 16 Stations</h4>
-                        <p class="m-0">For trips ranging between 10 and 16 stations, tickets will cost
-                            <script>
-                                var price = 0;
-                                var stations = 10;
-                                $.ajax({
-                                    type: "GET",
-                                    url: '/api/zonePrice',
-                                    stations,
-                                    success: function (serverResponse) {
-                                        if (serverResponse)
-                                            price = serverResponse.price;
-                                    },
-                                    error: function (errorResponse) {
-                                        if (errorResponse) {
-                                            alert(`Error Cannot Retrieve: ${errorResponse.responseText}`);
-                                        }
-                                    }
-                            document.write(price);
-                                });
-                            </script>
-                        </p>
-                        <div class="input-group">
-                            <input type="number" class="form-control bg-dark border-dark" style="padding: 25px;"
-                                id="newPrice10" value="">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary text-uppercase px-3" id="update10">Update</button>
-                            </div>
-                            <!-- take input from textbox-->
-                            <script>
-                                $(document).ready(function () {
-                                    // Handle updating price
-                                    $("#update10").click(function () {
-                                        const newPrice = $('#newPrice10').val();
-                                        const data = {
-                                            newPrice,
-                                        };
-                                        const stType = 10; 
-                                        $.get('/api/ZoneId/${stType}', function (data) {
-                                            $.ajax({
-                                                type: "PUT",
-                                                url: '/api/v1/zones/${data}',
-                                                newPrice,
-                                                success: function (serverResponse) {
-                                                    if (serverResponse)
-                                                        newPrice = serverResponse.price;
-                                                },
-                                                error: function (errorResponse) {
-                                                    if (errorResponse) {
-                                                        alert(`Error Cannot Retrieve: ${errorResponse.responseText}`);
-                                                    }
-                                                }
-                                            });
-                                        });
-                                    });
-                                });
-                            </script>
-                        </div>
+                    <div class="modal-body">
+                        <input type="text" id="zoneid" class="form-control" placeholder="Enter zone id">
+                        <input type="number" id="price" class="form-control" placeholder="Enter new price">
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-6 mb-2">
-                    <div class="service-item d-flex flex-column justify-content-center px-4 mb-4">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div class="d-flex align-items-center justify-content-center bg-primary ml-n4"
-                                style="width: 80px; height: 80px;">
-                                <i class="fa fa-2x fa-car text-secondary"></i>
-                            </div>
-                            <h1 class="display-2 text-white mt-n2 m-0">03</h1>
-                        </div>
-                        <h4 class="text-uppercase mb-3">More Than 16 Stations</h4>
-                        <p class="m-0">For trips more than 16 stations, tickets will cost
-                            <script>
-                                var price = 0;
-                                var stations = 16;
-                                $.ajax({
-                                    type: "GET",
-                                    url: '/api/zonePrice',
-                                    stations,
-                                    success: function (serverResponse) {
-                                        if (serverResponse)
-                                            price = serverResponse.price;
-                                    },
-                                    error: function (errorResponse) {
-                                        if (errorResponse) {
-                                            alert(`Error Cannot Retrieve: ${errorResponse.responseText}`);
-                                        }
-                                    }
-                            document.write(price);
-                                });
-                            </script>
-                        </p>
-                        <div class="input-group">
-                            <input type="number" class="form-control bg-dark border-dark" style="padding: 25px;"
-                                id="newPrice16" value="">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary text-uppercase px-3" id="update16">Update</button>
-                            </div>
-                            <!-- take input from textbox-->
-                            <script>
-                                $(document).ready(function () {
-                                    // Handle updating price
-                                    $("#update16").click(function () {
-                                        const newPrice = $('#newPrice16').val();
-                                        const data = {
-                                            newPrice,
-                                        };
-                                        const stType = 16; 
-                                        $.get('/api/ZoneId/${stType}', function (data) {
-                                            $.ajax({
-                                                type: "PUT",
-                                                url: '/api/v1/zones/${data}',
-                                                newPrice,
-                                                success: function (serverResponse) {
-                                                    if (serverResponse)
-                                                        newPrice = serverResponse.price;
-                                                },
-                                                error: function (errorResponse) {
-                                                    if (errorResponse) {
-                                                        alert(`Error Cannot Retrieve: ${errorResponse.responseText}`);
-                                                    }
-                                                }
-                                            });
-                                        });
-                                    });
-                                });
-                            </script>
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="updateZoneBtn">Update</button>
                     </div>
                 </div>
             </div>
         </div>
+         <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Zone Type</th>
+                    <th scope="col">Price</th>
+                    {{#isAdmin}}
+                    <th scope="col" class="text-center">Actions</th>
+                    {{/isAdmin}}
+
+
+                </tr>
+            </thead>
+            <tbody>
+                {{#zone}}
+                <tr>
+                    <td>{{id}}</td>
+                    <td>{{zone_type}}</td>
+                    <td>{{price}}</td>
+                    
+                </tr>
+                {{/zone}}
+            </tbody>
+
+        </table>
     </div>
     <!-- Services End -->
 
