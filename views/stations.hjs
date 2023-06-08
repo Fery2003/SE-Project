@@ -127,9 +127,8 @@
             });
 
             // Handle the "Delete Station" button click
-            $("#stationsTable").on("click", ".delete-station", function () {
+            $(".delete-station").click(function () {
                 var stationId = $(this).attr("id");
-                console.log(`/api/v1/station/${stationId}`)
 
                 // Make an AJAX request to delete the station
                 $.ajax({
@@ -157,7 +156,6 @@
                     }
                 });
             });
-
         });
 
     </script>
