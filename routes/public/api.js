@@ -40,7 +40,7 @@ module.exports = function (app) {
     const { email, password } = req.body;
     if (!email) {
       // If the email is not present, return an HTTP unauthorized code
-      return res.status(400).send('email is required');
+      return res.status(400).send('Email is required');
     }
     if (!password) {
       // If the password is not present, return an HTTP unauthorized code
@@ -51,7 +51,7 @@ module.exports = function (app) {
     // if invalid, send an unauthorized code
     const user = await db('se_project').select('*').from('se_project.user').where('email', email).first();
     if (isEmpty(user)) {
-      return res.status(400).send('user does not exist');
+      return res.status(400).send('User does not exist');
     }
 
     if (user.password !== password) {
@@ -73,7 +73,7 @@ module.exports = function (app) {
       await db('se_project.session').insert(session);
       // In the response, set a cookie on the client with the name "session_cookie"
       // and the value as the UUID we generated. We also set the expiration time.
-      return res.cookie('session_token', token, { expires: expires_at }).status(200).send('login successful');
+      return res.cookie('session_token', token, { expires: expires_at }).status(200).send('Login successful');
     } catch (e) {
       console.log(e.message);
       return res.status(400).send('Could not register user');

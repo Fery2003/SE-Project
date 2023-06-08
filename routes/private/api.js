@@ -50,14 +50,12 @@ module.exports = function (app) {
       const user = await getUser(req);
       // check role of user here and redirect to corresponding dashboard
       if (user.isAdmin) {
-        // const userInfo = await pool.query('SELECT * FROM se_project.user');
         const userInfo = await db.select('*').from('se_project.user');
       } else if (user.isNormal || user.isSenior) {
-        // const userInfo = await pool.query('SELECT * FROM se_project.user WHERE id = $1', [user.id]);
-        const userInfo = await db.select('*').from('se_project.user').where('id', user.id);
+        const userInfo = await db.select('*').from('se_project.user').where('id', user.user_id);
       }
       // const userInfo = await db.select('*').from('se_project.user').where('id', user.id);
-      res.json(userInfo);
+      res.status(200).send('Dashboard Accessed');
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -68,17 +66,17 @@ module.exports = function (app) {
   app.put('/api/v1/password/reset', async (req, res) => {
     try {
       const { user_id } = await getUser(req);
-      const password = req.body.newPassword;
-      if (!password) {
+      const { newPassword } = req.body;
+      if (!newPassword) {
         return res.status(400).json({ msg: 'Please enter a password' });
       }
-      if (password.length < 0) {
+      if (newPassword.length < 0) {
         //eh lazmeto ya yahia? what case should be inserted for this to actually happpen?
         return res.status(400).json({ msg: 'Password must mot be empty' });
       }
-      const ret = await db.from('se_project.user').where('id', user_id).update({ password: password });
+      await db.from('se_project.user').where('id', user_id).update({ password: newPassword });
       // res.json(ret);
-      res.json({ message: 'Password reset successfully' });
+      res.status(200).json({ message: 'Password reset successfully' });
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -88,7 +86,6 @@ module.exports = function (app) {
   // Subscriptions endpoint(running but not testing)
   app.get('/api/v1/zones', async (req, res) => {
     try {
-      // const zones = await pool.query('SELECT * FROM se_project.zone');
       const zones = await db.select('*').from('se_project.zone');
       res.json(zones);
     } catch (error) {
@@ -102,13 +99,14 @@ module.exports = function (app) {
   // go through logic again before implementing
   app.post('/api/v1/payment/subscription', async (req, res) => {
     try {
-      const { first_name, last_name, id } = await getUser(req);
+      const { first_name, last_name, user_id } = await getUser(req);
       const { creditCardNumber, holderName, paidAmount, subType, zoneId } = req.body;
 
       // input into transaction table (amount, user_id, purchase_id, purchase_type)
       // purchase_type is subscription
+
       // check first if he has a subscription
-      const checkIfSubbed = await db.select('*').from('se_project.subscription').where('user_id', id);
+      const checkIfSubbed = await db.select('*').from('se_project.subscription').where('user_id', user_id);
 
       if (checkIfSubbed.length > 0) {
         return res.status(400).json({ msg: 'You already have a subscription' });
@@ -126,21 +124,23 @@ module.exports = function (app) {
         console.log(total);
 
         if (paidAmount < total) {
-          return res.json({ msg: 'Not enough credit!' });
+          return res.status(400).json({ msg: 'Not enough credit!' });
         } else {
           // input into subscription table (sub_type, zone_id, user_id, no_of_tickets)
           const ret = await db
             .from('se_project.subscription')
-            .insert({ sub_type: subType, zone_id: zoneId, user_id: id, no_of_tickets: numOfTickets })
-            .returning('*');
+            .insert({ sub_type: subType, zone_id: zoneId, user_id: user_id, no_of_tickets: numOfTickets })
+            .returning('*')
+            .first();
 
-          const purchaseId = ret[0].id;
+          const { id } = ret;
 
-          await db.from('se_project.transaction').insert({ amount: total, user_id: id, purchase_id: purchaseId, purchase_type: 'subscription' });
-          res.json({ msg: `successfully subbed ${subType}` });
+          await db.from('se_project.transaction').insert({ amount: total, user_id: user_id, purchase_id: id, purchase_type: 'subscription' });
+          res.status(200).json({ msg: `successfully subbed ${subType}` });
         }
       } else {
         console.log(`Name does not match credit card holder's name`);
+        res.status(500).send("Name does not match!");
       }
       // res.json(ret);
       res.json({ msg: `successfully subbed ${subType}` });
@@ -161,6 +161,7 @@ module.exports = function (app) {
     const { userRemainingTickets } = getUser(req).numOfTickets;
     try {
       const { id } = await getUser(req);
+
       const ticket = {
         origin: req.body.origin,
         destination: req.body.destination,
@@ -168,17 +169,22 @@ module.exports = function (app) {
         sub_id: req.body.sub_id,
         trip_date: req.body.trip_date
       };
+
       if (userRemainingTickets <= 0) {
         return res.status(400).json({ msg: 'You have no remaining tickets' });
       }
+
       if (!ticket.origin || !ticket.destination || !ticket.sub_id || !ticket.trip_date) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
+
       if (ticket.trip_date < Date.now()) {
         return res.status(400).json({ msg: 'Please enter a valid date' });
       }
+
       const newTicket = await db.from('se_project.ticket').insert(ticket).returning('*');
       getUser(req).numOfTickets--;
+
       res.json(newTicket);
     } catch (err) {
       console.error(err.message);
@@ -319,15 +325,14 @@ module.exports = function (app) {
       }
       const year = new Date().getFullYear(); //this year
       const age = year - parseInt(yob); //age of the user
-      const senior = {}
+      const senior = {};
       if (age < 60) {
         senior = {
           status: 'rejected',
           user_id: uid,
           national_id: nationalId
         };
-      } 
-      else {
+      } else {
         senior = {
           status: 'pending',
           user_id: uid,
@@ -466,7 +471,7 @@ module.exports = function (app) {
         if (station.station_type == 'normal') {
           if (station.station_position == 'start') {
             let affectedRoute = await db.select('*').from('se_project.route').where('from_station_id', stationId).first();
-            console.log(affectedRoute)
+            console.log(affectedRoute);
 
             //update the to station to become a start
             await db('se_project.station').where('id', affectedRoute.to_station_id).update('station_position', 'start');
@@ -661,14 +666,12 @@ module.exports = function (app) {
       const requestId = req.params.requestId;
       const { seniorstatus } = req.body;
       const updatedSenior = await db.from('se_project.senior_request').where('id', requestId).update({ status: seniorstatus }).returning('*');
-      if(seniorstatus == 'accepted')
-      {
+      if (seniorstatus == 'accepted') {
         const uid = await db.from('se_project.senior_request').where('id', requestId).select('user_id');
         const updateUser = await db.from('se_project.user').where('id', uid[0].user_id).update('role_id', 3).returning('*');
       }
       res.json(updatedSenior);
-      } 
-    catch (error) {
+    } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
     }
