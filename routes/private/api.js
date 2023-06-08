@@ -7,6 +7,7 @@ const { compileFunction } = require('vm');
 const e = require('express');
 const { type } = require('os');
 const { subtle } = require('crypto');
+const { stat } = require('fs');
 const getUser = async function (req) {
   const sessionToken = getSessionToken(req);
   if (!sessionToken) {
@@ -448,7 +449,9 @@ module.exports = function (app) {
   // Delete station endpoint
   app.delete('/api/v1/station/:stationId', async (req, res) => {
     try {
-      const stationId = req.params;
+      let { stationId } = req.params;
+      stationId = Number.parseInt(stationId);
+      //const sid = Number.parseInt(stationId);
       //const station = await pool.query('SELECT * FROM stations WHERE id = $1', [stationid]);
       const station = await db.select('*').from('se_project.station').where('id', stationId);
       const user = await getUser(req);

@@ -31,6 +31,62 @@
 <body>
     <script>
         $(document).ready(function () {
+            // Function to update the table data
+            function updateTable() {
+                $.ajax({
+                    url: "/manage/stations",
+                    type: "GET",
+                    success: function (response) {
+                        var updatedTableHTML = "";
+                        console.log(response);
+
+                        if (Array.isArray(response.stations)) {
+                            // Generate the updated table HTML based on the response
+                            //response.stations.forEach(function (station) {
+                            //  updatedTableHTML += "<tr>" +
+                            //    "<td>" + station.id + "</td>" +
+                            //  "<td>" + station.station_name + "</td>" +
+                            //"<td>" + station.station_type + "</td>" +
+                            //"<td>" + station.station_position + "</td>" +
+                            //"<td>" + station.station_status + "</td>";
+
+                            //if (response.isAdmin) {
+                            //  updatedTableHTML += "<td class='text-center'>" +
+                            //    "<input id='btnEditStation' type='button' value='Edit station' class='btn btn-primary'>" +
+                            //  "<input id='btnDeleteStation' type='button' value='Delete station' class='btn btn-danger'>" +
+                            //"</td>";
+                            //}
+
+                            //updatedTableHTML += "</tr>";
+                            //});
+                            for (let station of response.stations) {
+                                updatedTableHTML += "<tr>" +
+                                    "<td>" + station.id + "</td>" +
+                                    "<td>" + station.station_name + "</td>" +
+                                    "<td>" + station.station_type + "</td>" +
+                                    "<td>" + station.station_position + "</td>" +
+                                    "<td>" + station.station_status + "</td>";
+
+                                if (response.isAdmin) {
+                                    updatedTableHTML += "<td class='text-center'>" +
+                                        "<input id='btnEditStation' type='button' value='Edit station' class='btn btn-primary'>" +
+                                        "<input id='btnDeleteStation' type='button' value='Delete station' class='btn btn-danger'>" +
+                                        "</td>";
+                                }
+
+                                updatedTableHTML += "</tr>";
+                            }
+
+                            // Update the table with the updated HTML
+                            $("#stationsTable tbody").html(updatedTableHTML);
+                        }
+                    },
+                    error: function (error) {
+                        console.error("Error updating table:", error);
+                    }
+                });
+            }
+
             // Open the modal when the "Add Station" button is clicked
             $("#btnAddStation").click(function () {
                 $("#stationModal").modal("show");
@@ -48,17 +104,62 @@
                     data: JSON.stringify({ stationName: stationName }),
                     success: function (response) {
                         console.log(response);
-                        // Optionally, update the UI or perform additional actions after station creation
                         $("#stationModal").modal("hide"); // Hide the modal
+                        updateTable(); // Update the table data
+
+                        // Display success message to the user
+                        var successMessage = $("<div>", {
+                            class: "alert alert-success",
+                            text: "Station created successfully!"
+                        });
+
+                        $("#stationModal").before(successMessage);
+
+                        // Automatically remove the success message after 3 seconds
+                        setTimeout(function () {
+                            successMessage.remove();
+                        }, 3000);
                     },
                     error: function (error) {
                         console.error("Error creating station:", error.responseJSON.msg);
                     }
                 });
             });
-        });
-    </script>
 
+            // Handle the "Delete Station" button click
+            $("#stationsTable").on("click", "#btnDeleteStation", function () {
+                var stationId = $(this).closest("tr").find("td:first").text();
+
+                // Make an AJAX request to delete the station
+                $.ajax({
+                    url: "/api/v1/station/" + stationId,
+                    type: "DELETE",
+                    success: function (response) {
+                        console.log(response);
+                        updateTable(); // Update the table data
+
+                        // Display success message to the user
+                        var successMessage = $("<div>", {
+                            class: "alert alert-success",
+                            text: "Station deleted successfully!"
+                        });
+
+                        $("#stationsTable").before(successMessage);
+
+                        // Automatically remove the success message after 3 seconds
+                        setTimeout(function () {
+                            successMessage.remove();
+                        }, 3000);
+                    },
+                    error: function (error) {
+                        console.error("Error deleting station:", error.msg);
+                    }
+                });
+            });
+
+        });
+
+    </script>
 
     <!-- Topbar Start -->
     <div>
@@ -170,7 +271,7 @@
         </div>
         {{/isAdmin}}
         <br />
-        <table class="table">
+        <table class="table" id="stationsTable">
             <thead>
                 <tr>
                     <th scope="col">ID</th>
@@ -205,6 +306,7 @@
 
         </table>
     </div>
+
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
         <div class="row pt-5">
@@ -256,11 +358,9 @@
             </div>
             <!-- Footer End -->
 
-
             <!-- Back to Top -->
             <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
                     class="fa fa-angle-double-up"></i></a>
-
 
             <!-- JavaScript Libraries -->
             <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
