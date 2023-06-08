@@ -124,7 +124,7 @@ h6,
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(rgba(28, 30, 50, .9), rgba(28, 30, 50, .9)), url(../img/bg-banner.jpg);
+    background: linear-gradient(rgba(28, 30, 50, .9), rgba(28, 30, 50, .9));
     background-attachment: fixed;
 }
 
@@ -307,9 +307,4 @@ h6,
 
 .testimonial-carousel .owl-item.center .testimonial-item h4 {
     color: var(--light);
-}
-
-.bg-banner {
-    background: linear-gradient(rgba(28, 30, 50, .9), rgba(28, 30, 50, .9)), url(../img/bg-banner.jpg);
-    background-attachment: fixed;
 }
