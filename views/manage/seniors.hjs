@@ -36,32 +36,67 @@
 <body>
     <script>
         $(document).ready(function () {
-            // Open the modal when the "update zone price" button is clicked
-            $("#btnupdatePrice").click(function () {
-                $("#zoneModal").modal("show");
-            });
-
-            // Handle the "update zone" button click inside the modal
-            $("#updateZoneBtn").click(function () {
-                var zoneid = $("#zoneid").val();
-                var zoneprice = $("#price").val();
-                // Make an AJAX request to update zone price
+            $("#requestsTable").on("click", "#btnAccept", function () {
+                var requestId = $(this).closest("tr").find("td:first").text();
+                const status = "accepted"
+                // Make an AJAX request to delete the station
                 $.ajax({
-                    url: "/api/v1/zones/${zoneid}",
+                    url: "/api/v1/requests/senior/${requestId}",
                     type: "PUT",
-                    contentType: "application/json",
-                    data: JSON.stringify({ price: zoneprice }),
+                    status
                     success: function (response) {
                         console.log(response);
-                        // Optionally, update the UI or perform additional actions after station creation
-                        $("#zoneModal").modal("hide"); // Hide the modal
+                        updateTable(); // Update the table data
+
+                        // Display success message to the user
+                        var successMessage = $("<div>", {
+                            class: "alert alert-success",
+                            text: "Request accepted successfully!"
+                        });
+
+                        $("#requestsTable").before(successMessage);
+
+                        // Automatically remove the success message after 3 seconds
+                        setTimeout(function () {
+                            successMessage.remove();
+                        }, 3000);
                     },
                     error: function (error) {
-                        console.error("Error creating station:", error.responseJSON.msg);
+                        console.error("Error updating table:", error.msg);
                     }
                 });
             });
-        });
+            $("#requestsTable").on("click", "#btnReject", function () {
+                var requestId = $(this).closest("tr").find("td:first").text();
+                const status = "rejected"
+                // Make an AJAX request to delete the station
+                $.ajax({
+                    url: "/api/v1/requests/senior/${requestId}",
+                    type: "PUT",
+                    status
+                    success: function (response) {
+                        console.log(response);
+                        updateTable(); // Update the table data
+
+                        // Display success message to the user
+                        var successMessage = $("<div>", {
+                            class: "alert alert-success",
+                            text: "Request accepted successfully!"
+                        });
+
+                        $("#requestsTable").before(successMessage);
+
+                        // Automatically remove the success message after 3 seconds
+                        setTimeout(function () {
+                            successMessage.remove();
+                        }, 3000);
+                    },
+                    error: function (error) {
+                        console.error("Error updating table:", error.msg);
+                    }
+                });
+            });
+        });    
     </script>
     <!-- Topbar Start -->
     <div class="container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block">
@@ -137,11 +172,11 @@
 
     <!-- Page Header Start -->
     <div class="container-fluid page-header">
-        <h1 class="display-3 text-uppercase text-white mb-3">Zones</h1>
+        <h1 class="display-3 text-uppercase text-white mb-3">Senior Requests</h1>
         <div class="d-inline-flex text-white">
             <h6 class="text-uppercase m-0"><a class="text-white" href="/views/dashboard.hjs">Home</a></h6>
             <h6 class="text-body m-0 px-3">/</h6>
-            <h6 class="text-uppercase text-body m-0">Zones</h6>
+            <h6 class="text-uppercase text-body m-0">Senior Requests</h6>
         </div>
     </div>
     <!-- Page Header Start -->
@@ -149,37 +184,13 @@
 
     <!-- Services Start -->
     <div class="container-fluid py-5">
-        <div style="position:absolute; right:0;">
-            <input id="btnupdatePrice" type="button" value="Zone price" class="btn btn-primary">
-            <br />
-        </div>
-        <div class="modal fade" id="zoneModal" tabindex="-1" role="dialog" aria-labelledby="zoneModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="zoneIdLabel">Enter Zone Id</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="text" id="zoneid" class="form-control" placeholder="Enter zone id">
-                        <input type="number" id="price" class="form-control" placeholder="Enter new price">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="updateZoneBtn">Update</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-         <table class="table">
+         <table class="table" id = "requestsTable">
             <thead>
                 <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">Zone Type</th>
-                    <th scope="col">Price</th>
+                    <th scope="col">Request Stats</th>
+                    <th scope="col">User Id</th>
+                    <th scope="col">National Id</th>
                     {{#isAdmin}}
                     <th scope="col" class="text-center">Actions</th>
                     {{/isAdmin}}
@@ -188,14 +199,20 @@
                 </tr>
             </thead>
             <tbody>
-                {{#zone}}
+                {{#senior_request}}
                 <tr>
                     <td>{{id}}</td>
-                    <td>{{zone_type}}</td>
-                    <td>{{price}}</td>
-                    
+                    <td>{{status}}</td>
+                    <td>{{user_id}}</td>
+                    <td>{{national_id}}</td>
+                    {{#isAdmin}}
+                    <td class="text-center">
+                        <input id="btnAccept" type="button" value="Accept" class="btn btn-primary">
+                        <input id="btnReject" type="button" value="Reject" class="btn btn-danger">
+                    </td>
+                    {{/isAdmin}}
                 </tr>
-                {{/zone}}
+                {{/senior_request}}
             </tbody>
 
         </table>

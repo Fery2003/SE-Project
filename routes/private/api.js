@@ -311,11 +311,29 @@ module.exports = function (app) {
         return res.status(400).json({ msg: 'Please enter 14 digits' });
       }
       //const senior = await pool.query('INSERT INTO se_project.senior (ticket_id) VALUES ($1) RETURNING *', [ticket_id]);
-      const senior = {
-        status: 'pending',
-        user_id: uid,
-        national_id: nationalId
-      };
+      let yob = nationalId.substring(0, 2); //get the first 2 no.s
+      if (yob < 99) {
+        yob = '19' + yob;
+      } else {
+        yob = '20' + yob;
+      }
+      const year = new Date().getFullYear(); //this year
+      const age = year - parseInt(yob); //age of the user
+      const senior = {}
+      if (age < 60) {
+        senior = {
+          status: 'rejected',
+          user_id: uid,
+          national_id: nationalId
+        };
+      } 
+      else {
+        senior = {
+          status: 'pending',
+          user_id: uid,
+          national_id: nationalId
+        };
+      }
       const requestS = await db.insert(senior).into('se_project.senior_request').returning('*');
       res.json(requestS);
       //res.send('Senior request has been made.');
@@ -641,24 +659,16 @@ module.exports = function (app) {
   app.put('/api/v1/requests/senior/:requestId', async (req, res) => {
     try {
       const requestId = req.params.requestId;
-      const nationalid = await db.select('national_id').from('se_project.senior_request').where('id', requestId);
-      const n_id = nationalid[0].national_id;
-      let yob = n_id.substring(0, 2); //get the first 2 no.s
-      if (yob < 99) {
-        yob = '19' + yob;
-      } else {
-        yob = '20' + yob;
+      const { seniorstatus } = req.body;
+      const updatedSenior = await db.from('se_project.senior_request').where('id', requestId).update({ status: seniorstatus }).returning('*');
+      if(seniorstatus == 'accepted')
+      {
+        const uid = await db.from('se_project.senior_request').where('id', requestId).select('user_id');
+        const updateUser = await db.from('se_project.user').where('id', uid[0].user_id).update('role_id', 3).returning('*');
       }
-      const year = new Date().getFullYear(); //this year
-      const age = year - parseInt(yob); //age of the user
-      if (age < 60) {
-        res.status(400).send('Cannot request a senior card if you are not a senior!');
-      } else {
-        const { seniorstatus } = req.body;
-        const updatedSenior = await db.from('se_project.senior_request').where('id', requestId).update({ status: seniorstatus }).returning('*');
-        res.json(updatedSenior);
-      }
-    } catch (error) {
+      res.json(updatedSenior);
+      } 
+    catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
     }
