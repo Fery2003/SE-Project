@@ -84,7 +84,7 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/refunds" class="dropdown-item">Refund
+                                    <a href="/manage/refunds" class="dropdown-item active">Refund
                                         Requests</a>
                                     <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
                                 </div>
@@ -92,13 +92,13 @@
                             {{/isAdmin}}
                             {{#isNormal}}
                             <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
-                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
+                            <a href="tickets" class="nav-item nav-link">Tickets</a>
                             <a href="prices" class="nav-item nav-link">Prices</a>
                             <a href="rides" class="nav-item nav-link">Rides</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/refunds" class="dropdown-item">Refund
+                                    <a href="/manage/refunds" class="dropdown-item active">Refund
                                         Requests</a>
                                     <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
                                 </div>
@@ -106,13 +106,13 @@
                             {{/isNormal}}
                             {{#isSenior}}
                             <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
-                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
+                            <a href="tickets" class="nav-item nav-link">Tickets</a>
                             <a href="prices" class="nav-item nav-link">Prices</a>
                             <a href="rides" class="nav-item nav-link">Rides</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/refunds" class="dropdown-item">Refund
+                                    <a href="/manage/refunds" class="dropdown-item active">Refund
                                         Requests</a>
                                     <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
                                 </div>

@@ -91,9 +91,9 @@
                             {{/isAdmin}}
                             {{#isNormal}}
                             <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
-                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
+                            <a href="tickets" class="nav-item nav-link">Tickets</a>
                             <a href="prices" class="nav-item nav-link">Prices</a>
-                            <a href="rides" class="nav-item nav-link">Rides</a>
+                            <a href="rides" class="nav-item nav-link active">Rides</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
@@ -105,9 +105,9 @@
                             {{/isNormal}}
                             {{#isSenior}}
                             <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
-                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
+                            <a href="tickets" class="nav-item nav-link">Tickets</a>
                             <a href="prices" class="nav-item nav-link">Prices</a>
-                            <a href="rides" class="nav-item nav-link">Rides</a>
+                            <a href="rides" class="nav-item nav-link active">Rides</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
