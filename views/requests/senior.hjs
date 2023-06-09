@@ -31,74 +31,10 @@
 
     <!-- Template Stylesheet -->
     <link href="/views/css/style.css" rel="stylesheet">
-</head>
 
-<body>
-    <script>
-        $(document).ready(function () {
-            $("#requestsTable").on("click", "#btnAccept", function () {
-                var requestId = $(this).closest("tr").find("td:first").text();
-                const status = "accepted"
-                // Make an AJAX request to delete the station
-                $.ajax({
-                    url: "/api/v1/requests/senior/${requestId}",
-                    type: "PUT",
-                    status
-                    success: function (response) {
-                        console.log(response);
-                        updateTable(); // Update the table data
-
-                        // Display success message to the user
-                        var successMessage = $("<div>", {
-                            class: "alert alert-success",
-                            text: "Request accepted successfully!"
-                        });
-
-                        $("#requestsTable").before(successMessage);
-
-                        // Automatically remove the success message after 3 seconds
-                        setTimeout(function () {
-                            successMessage.remove();
-                        }, 3000);
-                    },
-                    error: function (error) {
-                        console.error("Error updating table:", error.msg);
-                    }
-                });
-            });
-            $("#requestsTable").on("click", "#btnReject", function () {
-                var requestId = $(this).closest("tr").find("td:first").text();
-                const status = "rejected"
-                // Make an AJAX request to delete the station
-                $.ajax({
-                    url: "/api/v1/requests/senior/${requestId}",
-                    type: "PUT",
-                    status
-                    success: function (response) {
-                        console.log(response);
-                        updateTable(); // Update the table data
-
-                        // Display success message to the user
-                        var successMessage = $("<div>", {
-                            class: "alert alert-success",
-                            text: "Request accepted successfully!"
-                        });
-
-                        $("#requestsTable").before(successMessage);
-
-                        // Automatically remove the success message after 3 seconds
-                        setTimeout(function () {
-                            successMessage.remove();
-                        }, 3000);
-                    },
-                    error: function (error) {
-                        console.error("Error updating table:", error.msg);
-                    }
-                });
-            });
-        });    
-    </script>
-    <!-- Topbar Start -->
+    <!--functionality -->
+    <body>
+           <!-- Topbar Start -->
     <div class="container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block">
         <div class="row">
             <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
@@ -130,7 +66,6 @@
         </div>
     </div>
     <!-- Topbar End -->
-
 
     <!-- Navbar Start -->
     <div class="container-fluid position-relative nav-bar p-0">
@@ -169,8 +104,8 @@
     </div>
     <!-- Navbar End -->
 
-
-    <!-- Page Header Start -->
+    
+    <!-- Page Header Start EDDIITTTT-->
     <div class="container-fluid page-header">
         <h1 class="display-3 text-uppercase text-white mb-3">Senior Requests</h1>
         <div class="d-inline-flex text-white">
@@ -181,43 +116,9 @@
     </div>
     <!-- Page Header End -->
 
-
-    <!-- Services Start -->
-    <div class="container-fluid py-5">
-         <table class="table" id = "requestsTable">
-            <thead>
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Request Stats</th>
-                    <th scope="col">User Id</th>
-                    <th scope="col">National Id</th>
-                    {{#isAdmin}}
-                    <th scope="col" class="text-center">Actions</th>
-                    {{/isAdmin}}
-
-
-                </tr>
-            </thead>
-            <tbody>
-                {{#senior_request}}
-                <tr>
-                    <td>{{id}}</td>
-                    <td>{{status}}</td>
-                    <td>{{user_id}}</td>
-                    <td>{{national_id}}</td>
-                    {{#isAdmin}}
-                    <td class="text-center">
-                        <input id="btnAccept" type="button" value="Accept" class="btn btn-primary">
-                        <input id="btnReject" type="button" value="Reject" class="btn btn-danger">
-                    </td>
-                    {{/isAdmin}}
-                </tr>
-                {{/senior_request}}
-            </tbody>
-
-        </table>
-    </div>
-    <!-- Services End -->
+    <!-- services start -->
+    
+    <!-- services End -->
 
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
@@ -294,3 +195,5 @@
 </body>
 
 </html>
+    </body> 
+
