@@ -230,6 +230,15 @@
             </div>
             <!-- Footer End -->
 
+            <button id="submit">Change</button>
+
+            {{!-- input textbox in div to take input password --}}
+            <div class="form-group">
+                <label for="password">New Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter your new password"
+                    required>
+            </div>
+
             <!-- Back to Top -->
             <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
                     class="fa fa-angle-double-up"></i></a>
