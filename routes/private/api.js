@@ -121,7 +121,7 @@ module.exports = function (app) {
         const { price } = await db.select('price').from('se_project.zone').where('id', zoneId).first();
         const numOfTickets = subType == 'annual' ? 100 : subType == 'quarterly' ? 25 : subType == 'monthly' ? 10 : -1;
         const total = price * numOfTickets;
-        console.log(total);
+        user.isSenior ? (total *= 0.5) : total;
 
         if (paidAmount < total) {
           return res.status(400).json({ msg: 'Not enough credit!' });
@@ -140,7 +140,7 @@ module.exports = function (app) {
         }
       } else {
         console.log(`Name does not match credit card holder's name`);
-        res.status(500).send("Name does not match!");
+        res.status(500).send('Name does not match!');
       }
       // res.json(ret);
       res.json({ msg: `successfully subbed ${subType}` });
@@ -152,8 +152,26 @@ module.exports = function (app) {
 
   // pay for ticket endpoint
   app.post('/api/v1/payment/ticket', async (req, res) => {
-    const { first_name, last_name, id } = await getUser(req);
-    const { creditCardNumber, holderName, paidAmount, origin, destination, tripDate } = req.body;
+    try {
+      const { first_name, last_name, id } = await getUser(req);
+      const { creditCardNumber, holderName, paidAmount, origin, destination, tripDate } = req.body;
+
+      if (!creditCardNumber || !holderName || !paidAmount || !origin || !destination || !tripDate) {
+        return res.status(400).json({ msg: 'Please enter all fields' });
+      }
+
+      if (`${first_name} ${last_name}` == holderName) {
+        console.log('name matches');
+
+        
+      } else {
+        console.log(`Name does not match credit card holder's name`);
+        res.status(500).send('Name does not match!');
+      }
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
   });
 
   // Purchase ticket with subscription endpoint
@@ -197,13 +215,12 @@ module.exports = function (app) {
     if (!root) return null; // check if root is null "an extra unnecessary check :)"
     const rootNode = { nodes: [] }; // store children of root node
     let curr = rootNode; // store root as current node
-    do {
-
-      const nextStationId = transferStation + 1; // fetch following station
+    do  {
+        const nextStationId = transferStation + 1; // fetch following station
 
       // check if next station is destination
       if (nextStationId == destination) {
-        console.log('You have reached your destination !');
+        console.log('You have reached your destination!');
       }
 
       db.select('id')
@@ -239,29 +256,33 @@ module.exports = function (app) {
       const toStationObj = await db.select('*').from('se_project.station').where('id', toStationId);
 
       const stationStack = [];
-      const routeNames = "hi" + fromStationObj.id + toStationObj.id;
+      const routeNames = 'hi' + fromStationObj.id + toStationObj.id;
       do {
-        const ifDirect = await db.select("route_name").from("se_project.route").where("from_station_id", fromStationObj.id).andWhere("to_station_id", toStationObj.id);
+        const ifDirect = await db
+          .select('route_name')
+          .from('se_project.route')
+          .where('from_station_id', fromStationObj.id)
+          .andWhere('to_station_id', toStationObj.id);
 
         if (ifDirect == routeNames) {
-          console.log("Your route is a direct one !");
+          console.log('Your route is a direct one !');
           stationStack.push(fromStationObj);
           stationStack.push(toStationObj);
-        }
-        else {
+        } else {
           stationStack.push(fromStationObj); // pushing current station to stack
           fromStationObj = toStationObj; // traversing to next node/station
           toStationObj.id += 1;
-          toStationObj = await db.select("*").from("se_project.route").where("route_name", routeNames);
+          toStationObj = await db.select('*').from('se_project.route').where('route_name', routeNames);
         }
-      } while ((fromStationObj.station_type == 'normal') && (toStationObj.station_type == 'normal'));
+      } while (fromStationObj.station_type == 'normal' && toStationObj.station_type == 'normal');
 
       noOfStations = stationStack.length;
 
-      if (fromStationObj.station_type == 'transfer') {
+      if  (fromStationObj.station_type == 'transfer')  {
         x = transferTree(fromStationObj.id, toStationObj.id);
         noOfStations += x;
       }
+
 
       //converting noOfstations into a text:
       const getPrice = null;
@@ -276,7 +297,7 @@ module.exports = function (app) {
       } // greater than 16 to infinity
 
       //Now we check if the user is a senior or not:
-      const isSenior = await db.select("is_senior").from("se_project.user").where("id", getUser(req).id);
+      const isSenior = await db.select('is_senior').from('se_project.user').where('id', getUser(req).id);
 
       if (isSenior == true)
         getPrice = getPrice * 0.5; // 50% discount

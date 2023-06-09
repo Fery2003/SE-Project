@@ -66,7 +66,7 @@ module.exports = function (app) {
       const refunds = await db.select('*').from('se_project.refund_request');
       return res.status(200).render('request_refund', { user, refunds });
     } else {
-      const refunds = await db.select('*').from('se_project.refund_request').where('user_id', user.id);
+      const refunds = await db.select('*').from('se_project.refund_request').where('user_id', user.user_id);
       return res.status(200).render('request_refund', { user, refunds });
     }
   });
