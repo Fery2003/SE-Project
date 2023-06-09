@@ -677,9 +677,7 @@ module.exports = function (app) {
       if (routename.length === 0) {
         return res.status(400).json({ msg: 'Route cannot be updated with empty name!' });
       }
-      //const updatedRoute = await pool.query('UPDATE routes SET routename = $1 WHERE id = $2 RETURNING *', [routename, fromStationid]);
-      const updatedRoute = await db('se_project.route').where('id', fromStationid.routeId).update('route_name', routename).returning('*');
-      res.json(updatedRoute[0]);
+      await db('se_project.route').where('id', fromStationid.routeId).update('route_name', routename).returning('*');
       res.send('Route was updated!');
     } catch (error) {
       console.error(error.message);

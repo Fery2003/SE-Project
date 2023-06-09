@@ -100,7 +100,7 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
+                            <a href="./dashboard" class="nav-item nav-link active">Dashboard</a>
                             {{#isAdmin}}
                             <a href="/manage/stations" class="nav-item nav-link">Stations</a>
                             <a href="/manage/routes" class="nav-item nav-link">Routes</a>
@@ -183,7 +183,7 @@
         <div class="container-fluid page-header">
             <h1 class="display-3 text-uppercase text-white mb-3">Tickets</h1>
             <div class="d-inline-flex text-white">
-                <h6 class="text-uppercase m-0"><a class="text-white" href="/dashboard.hjs">Home</a></h6>
+                <h6 class="text-uppercase m-0"><a class="text-white" href="./dashboard">Home</a></h6>
                 <h6 class="text-body m-0 px-3">/</h6>
                 <h6 class="text-uppercase text-body m-0">Tickets</h6>
             </div>

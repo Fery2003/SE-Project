@@ -2,42 +2,42 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>Stations</title>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <meta content="Cairo Metro" name="keywords">
-  <meta content="Cairo Metro" name="description">
-  <!-- Google Web Fonts -->
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap"
-    rel="stylesheet">
+    <meta charset="utf-8">
+    <title>Stations</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Cairo Metro" name="keywords">
+    <meta content="Cairo Metro" name="description">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap"
+        rel="stylesheet">
 
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
 
-  <!-- Libraries Stylesheet -->
-  <link rel="stylesheet" href="/lib/owlcarousel/assets/owl.carousel.min.css">
-  <link rel="stylesheet" href="/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" />
+    <!-- Libraries Stylesheet -->
+    <link rel="stylesheet" href="/lib/owlcarousel/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" />
 
-  <!-- Customized Bootstrap Stylesheet -->
-  <link href="/styles/bootstrap.min.css" rel="stylesheet">
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/styles/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Template Stylesheet -->
-  <link href="/styles/style.css" rel="stylesheet">
+    <!-- Template Stylesheet -->
+    <link href="/styles/style.css" rel="stylesheet">
 
-  <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
 </head>
 
 <body>
     <script>
-        $(document).ready(function(){
+        $(document).ready(function () {
             // Open the modal when the "Add Route" button is clicked
             $("#btnAddRoute").click(function () {
-                $("#routeModal").modal("show");
+                $("#createRouteModal").modal("show");
             });
             // Handle the "Create Route" button click inside the modal
             $("#createRouteBtn").click(function () {
-                const routeName = $("#routeNameInput").val();
+                const routeName = $("#createRouteNameInput").val();
                 const fromStationId = $("#fromStationId").val();
                 const toStationId = $("#toStationId").val();
                 data = {
@@ -53,7 +53,7 @@
                     data: JSON.stringify(data),
                     success: function (response) {
                         console.log(response);
-                        $("#routeModal").modal("hide"); // Hide the modal
+                        $("#createRouteModal").modal("hide"); // Hide the modal
                         // updateTable(); // Update the table data
 
                         // Display success message to the user
@@ -62,7 +62,7 @@
                             text: "Route created successfully!"
                         });
 
-                        $("#routeModal").before(successMessage);
+                        $("#createRouteModal").before(successMessage);
 
                         // Automatically remove the success message after 3 seconds
                         setTimeout(function () {
@@ -85,7 +85,7 @@
                     type: "DELETE",
                     success: function (response) {
                         console.log(response);
-                    
+
                         // Display success message to the user
                         var successMessage = $("<div>", {
                             class: "alert alert-success",
@@ -102,6 +102,46 @@
                     error: function (error) {
                         console.error("Error deleting route:", error);
                     }
+                });
+            });
+
+            // Handle edit route button
+            $('.edit-route').click(function () {
+                $('#editRouteModal').modal('show');
+                const routeId = $(this).attr("id");
+
+                // Handle the "Edit Route" button click inside the modal
+                $("#editRouteBtn").click(function () {
+                    const routeName = $("#editRouteNameInput").val();
+
+                    // Make an AJAX request to create the route
+                    $.ajax({
+                        url: `/api/v1/route/${routeId}`,
+                        type: "PUT",
+                        contentType: "application/json",
+                        data: JSON.stringify({ routename: routeName }),
+                        success: function (response) {
+                            console.log(response);
+                            $("#editRouteModal").modal("hide"); // Hide the modal
+                            // updateTable(); // Update the table data
+
+                            // Display success message to the user
+                            var successMessage = $("<div>", {
+                                class: "alert alert-success",
+                                text: "Route edited successfully!"
+                            });
+
+                            $("#editRouteModal").before(successMessage);
+
+                            // Automatically remove the success message after 3 seconds
+                            setTimeout(function () {
+                                successMessage.remove();
+                            }, 3000);
+                        },
+                        error: function (error) {
+                            console.error("Error editing route:", error.responseJSON.msg);
+                        }
+                    });
                 });
             });
         });
@@ -152,7 +192,7 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
+                            <a href="../dashboard" class="nav-item nav-link active">Dashboard</a>
                             {{#isAdmin}}
                             <a href="/manage/stations" class="nav-item nav-link">Stations</a>
                             <a href="/manage/routes" class="nav-item nav-link">Routes</a>
@@ -160,9 +200,9 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/requests/refund" class="dropdown-item">Refund
+                                    <a href="/manage/requests/refunds" class="dropdown-item">Refund
                                         Requests</a>
-                                    <a href="/manage/requests/senior" class="dropdown-item">Senior Requests</a>
+                                    <a href="/manage/requests/seniors" class="dropdown-item">Senior Requests</a>
                                 </div>
                             </div>
                             {{/isAdmin}}
@@ -194,7 +234,8 @@
                             {{/isNormal}}
                             {{#isSenior}}
                             <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                                <a href="/subscriptions" class="nav-link dropdown-toggle"
+                                    data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
                                     <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
@@ -218,8 +259,8 @@
                                 </div>
                             </div>
                             {{/isSenior}}
-                            
-                            
+
+
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
                                 <div class="dropdown-menu rounded-0 m-0">
@@ -237,36 +278,60 @@
         <div class="container-fluid page-header">
             <h1 class="display-3 text-uppercase text-white mb-3">Routes</h1>
             <div class="d-inline-flex text-white">
-                <h6 class="text-uppercase m-0"><a class="text-white" href="/dashboard.hjs">Home</a></h6>
+                <h6 class="text-uppercase m-0"><a class="text-white" href="./dashboard">Home</a></h6>
                 <h6 class="text-body m-0 px-3">/</h6>
                 <h6 class="text-uppercase text-body m-0">Routes</h6>
             </div>
         </div>
         <!-- Page Header End -->
-              {{#isAdmin}}
+        {{#isAdmin}}
         <div style="position:absolute; right:0;">
             <input id="btnAddRoute" type="button" value="Add Route" class="btn btn-primary">
             <br />
         </div>
-        <div class="modal fade" id="routeModal" tabindex="-1" role="dialog" aria-labelledby="RouteModalLabel"
+        <div class="modal fade" id="createRouteModal" tabindex="-1" role="dialog" aria-labelledby="RouteModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="routeModalLabel">Enter Route Name</h5>
+                        <h5 class="modal-title" id="createRouteModalLabel">Enter Route Name</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <input type="text" id="routeNameInput" class="form-control" placeholder="Enter route name">
-                        <input type="text" id="fromStationId" class="form-control" placeholder="Enter starting station's ID">
-                        <input type="text" id="toStationId" class="form-control" placeholder="Enter destination station's ID">
+                        <input type="text" id="createRouteNameInput" class="form-control"
+                            placeholder="Enter route name">
+                        <input type="text" id="fromStationId" class="form-control"
+                            placeholder="Enter starting station's ID">
+                        <input type="text" id="toStationId" class="form-control"
+                            placeholder="Enter destination station's ID">
 
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="button" class="btn btn-primary" id="createRouteBtn">Create Route</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editRouteModal" tabindex="-1" role="dialog" aria-labelledby="RouteModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editRouteModalLabel">Enter Route Name</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="editRouteNameInput" class="form-control" placeholder="Enter route name">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="editRouteBtn">Edit Route</button>
                     </div>
                 </div>
             </div>
@@ -307,8 +372,8 @@
         </table>
     </div>
 
-    
-     <!-- Footer Start -->
+
+    <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
         <div class="row pt-5">
             <div class="col-lg-3 col-md-6 mb-5">

@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Stations</title>
+  <title>Dashboard</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <meta content="Cairo Metro" name="keywords">
   <meta content="Cairo Metro" name="description">
@@ -75,7 +75,7 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
+                            <a href="../dashboard" class="nav-item nav-link active">Dashboard</a>
                             {{#isAdmin}}
                             <a href="/manage/stations" class="nav-item nav-link">Stations</a>
                             <a href="/manage/routes" class="nav-item nav-link">Routes</a>
