@@ -353,15 +353,11 @@ module.exports = function (app) {
     try {
       const { nationalId } = req.body;
       const { user_id } = await getUser(req);
-      console.log("hi")
-
       if (!nationalId) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       } else if (nationalId.length < 14) {
         return res.status(400).json({ msg: 'Please enter 14 digits' });
       }
-      console.log("hi")
-
       //const senior = await pool.query('INSERT INTO se_project.senior (ticket_id) VALUES ($1) RETURNING *', [ticket_id]);
       let yob = nationalId.substring(0, 2); //get the first 2 no.s
       if (yob < 99) {
@@ -369,7 +365,6 @@ module.exports = function (app) {
       } else {
         yob = '20' + yob;
       }
-      console.log("hi")
 
       const year = new Date().getFullYear(); //this year
       const age = year - parseInt(yob); //age of the user
@@ -387,8 +382,6 @@ module.exports = function (app) {
           national_id: nationalId
         };
       }
-      console.log("hi")
-      console.log(senior)
       const requestS = await db.insert(senior).into('se_project.senior_request').returning('*');
       // res.json(requestS);
       res.send('Senior request has been made.');
@@ -623,27 +616,46 @@ module.exports = function (app) {
       to_station_id: req.body.toId
     };
 
+    console.log(newRoute);
+
     if (newRoute.from_station_id === newRoute.to_station_id) {
       return res.status(400).json({ msg: 'Route cannot be created with the same station!' });
     }
+
     if (newRoute.from_station_id === undefined || newRoute.to_station_id === undefined) {
       return res.status(400).json({ msg: 'Route cannot be created with undefined stations!' });
     }
+
     if (newRoute.route_name.length === 0) {
-      return res.status(400).json({ msg: 'Route cannot be created with empty name!' });
+      return res.status(400).json({ msg: 'Route cannot be created with an empty name!' });
     }
 
     try {
-      const new_Route = await db.from('se_project.route').insert(newRoute).returning('*');
-      const newRouteId = await db
-        .select('id')
-        .from('se_project.route')
-        .where('from_station_id', newRoute.from_station_id)
-        .andWhere('to_station_id', newRoute.to_station_id);
-      const SR1 = await db.insert([{ station_id: newRoute.from_station_id }, { route_id: newRouteId }]);
-      const SR2 = await db.insert([{ station_id: newRoute.to_station_id }, { route_id: newRouteId }]);
-      res.json(new_Route);
-      res.send('New Route Created!');
+      const temp = await db.from('se_project.route').insert(newRoute).returning('*');
+
+      const query1 = `
+      INSERT INTO se_project.station_route (station_id, route_id)
+      SELECT ?, ?
+      WHERE NOT EXISTS (
+        SELECT 1 FROM se_project.station_route
+        WHERE station_id = ? AND route_id = ?
+      )
+      `;
+      const fromStationId = newRoute.from_station_id;
+      const toStationId = newRoute.to_station_id;
+      const SR1 = await db.raw(query1, [fromStationId, temp[0].id, fromStationId, temp[0].id]);
+
+      const query2 = `
+      INSERT INTO se_project.station_route (station_id, route_id)
+      SELECT ?, ?
+      WHERE NOT EXISTS (
+        SELECT 1 FROM se_project.station_route
+        WHERE station_id = ? AND route_id = ?
+      )
+      `;
+      const SR2 = await db.raw(query2, [toStationId, temp[0].id, toStationId, temp[0].id]);
+
+      res.status(200).send('New Route Created!');
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
