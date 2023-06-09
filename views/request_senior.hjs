@@ -93,8 +93,73 @@
             </div>
         </div>
         <!-- Topbar End -->
-    </div>
 
+        <!-- Navbar Start -->
+        <div class="container-fluid position-relative nav-bar p-0">
+            <div class="position-relative px-lg-5" style="z-index: 9;">
+                <nav class="navbar navbar-expand-lg bg-secondary navbar-dark py-3 py-lg-0 pl-3 pl-lg-5">
+                    <a href="" class="navbar-brand">
+                        <h1 class="text-uppercase text-primary mb-1">Cairo Metro</h1>
+                    </a>
+                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
+                        <div class="navbar-nav ml-auto py-0">
+                            <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
+                            {{#isAdmin}}
+                            <a href="/manage/stations" class="nav-item nav-link">Stations</a>
+                            <a href="/manage/routes" class="nav-item nav-link">Routes</a>
+                            <a href="/manage/zones" class="nav-item nav-link">Zones</a>
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
+                                <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/manage/requests/refund" class="dropdown-item">Refund
+                                        Requests</a>
+                                    <a href="/manage/requests/senior" class="dropdown-item">Senior Requests</a>
+                                </div>
+                            </div>
+                            {{/isAdmin}}
+                            {{#isNormal}}
+                        <a href="/subscriptions" class="nav-item nav-link">Subscriptions</a>
+                        <a href="/tickets" class="nav-item nav-link">Tickets</a>
+                        <a href="/prices" class="nav-item nav-link">Prices</a>
+                        <a href="/rides" class="nav-item nav-link">Rides</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="/requests/refund" class="dropdown-item">Refund
+                                    Requests</a>
+                                <a href="/requests/senior" class="dropdown-item">Senior Requests</a>
+                            </div>
+                        </div>
+                        {{/isNormal}}
+                        {{#isSenior}}
+                        <a href="/subscriptions" class="nav-item nav-link">Subscriptions</a>
+                        <a href="/tickets" class="nav-item nav-link active">Tickets</a>
+                        <a href="/prices" class="nav-item nav-link">Prices</a>
+                        <a href="/rides" class="nav-item nav-link">Rides</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="/requests/refund" class="dropdown-item">Refund
+                                    Requests</a>
+                                <a href="/requests/senior" class="dropdown-item">Senior Requests</a>
+                            </div>
+                        </div>
+                        {{/isSenior}}
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
+                                <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/manage/reset" class="dropdown-item">Reset Password</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- Navbar End -->
 
     <div class="body">
         <input type="text" id="NID" class="form-control" placeholder="Enter your National ID">
@@ -161,20 +226,21 @@
 
 
     <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
+            <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
+                    class="fa fa-angle-double-up"></i></a>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="/lib/easing/easing.min.js"></script>
-    <script src="/lib/waypoints/waypoints.min.js"></script>
-    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+            <!-- JavaScript Libraries -->
+            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+            <script src="/lib/easing/easing.min.js"></script>
+            <script src="/lib/waypoints/waypoints.min.js"></script>
+            <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+            <script src="/lib/tempusdominus/js/moment.min.js"></script>
+            <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script>
+            <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-    <!-- Template Javascript -->
-    <script src="/js/main.js"></script>
+            <!-- Template Javascript -->
+            <script src="/js/main.js"></script>
 </body>
 
 </html>
