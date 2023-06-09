@@ -39,8 +39,7 @@
                     url: `/api/v1/tickets/price/${fromstation}/${tostation}`,
                     success: function (serverResponse) {
                         if (serverResponse) {
-                            alert(serverResponse);
-                            console.log(serverResponse);
+                            $('#priceResult').val(serverResponse);
                         }
                     },
                     error: function (errorResponse) {
@@ -50,8 +49,15 @@
                     }
                 });
             });
+            $("#ticketButton").click(function(){
+                if($('#priceResult').val() == 0){
+                    alert('Please select stations first');
+                    return;
+                }
+                location.href = '/tickets/purchase';
+            });
         });
-
+      
     </script>
 
     <div>
@@ -116,7 +122,8 @@
                             {{/isAdmin}}
                             {{#isNormal}}
                             <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                                <a href="/subscriptions" class="nav-link dropdown-toggle"
+                                    data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
                                 </div>
@@ -140,7 +147,8 @@
                             {{/isNormal}}
                             {{#isSenior}}
                             <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                                <a href="/subscriptions" class="nav-link dropdown-toggle"
+                                    data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
                                 </div>
@@ -162,7 +170,7 @@
                                 </div>
                             </div>
                             {{/isSenior}}
-                            
+
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
                                 <div class="dropdown-menu rounded-0 m-0">
@@ -187,88 +195,89 @@
         </div>
         <!-- Page Header Start -->
     </div>
-
-    <!-- Content Start -->
-    {{!-- <div class="a">
-        <h1>Price</h1>
-    </div> --}}
     <div style="padding-left: 500px">
-        <form class="form-horizontal" style="width: 50%;">
+        <form class="form-horizontal" style="width: 80%;">
             <div class="group">
                 <label for="originStation" class="col-sm-2 control-label">Origin station</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="originStation" name="originStation"
                         placeholder="Station Name" value="">
                 </div>
-            </div>
-            <div class="group">
+                </br>
                 <label for="destinationStation" class="col-sm-2 control-label">Destination station</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="destinationStation" name="destinationStation"
                         placeholder="Station Name" value="">
                 </div>
-            </div>
-            <div class="group">
-                <div class="col-sm-10 col-sm-offset-2">
-                    <input id="price" name="price" type="button" value="price" class="btn btn-primary">
+                </br>
+                <div class="col-sm-10 col-sm-offset-2 text-center">
+                    <input id="price" name="price" type="button" value="Price" class="btn btn-primary btn-lg">
                 </div>
-            </div>
-            </div>
-        </form>
+                <div class="col-sm-10 col-sm-offset-2 text-center mt-3">
+                    <input type="text" class="form-control" id="priceResult" placeholder="ticket price" readonly>
+                </div>
+                </br>
+                <div class="col-sm-10 col-sm-offset-2 text-center">
+                    <input id="ticketButton" name="ticketButton" type="button" value="Continue to purchase ticket"
+                        class="btn btn-primary btn-lg">
+                </div>
 
-        <!-- Footer Start -->
-        <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
-            <div class="row pt-5">
-                <div class="col-lg-3 col-md-6 mb-5">
-                    <h4 class="text-uppercase text-light mb-4">Get In Touch!</h4>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt text-white mr-3"></i>123 Street, New York, USA</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt text-white mr-3"></i>+012 345 67890</p>
-                    <p><i class="fa fa-envelope text-white mr-3"></i>info@example.com</p>
-                    <h6 class="text-uppercase text-white py-2">Follow Us</h6>
-                    <div class="d-flex justify-content-start">
-                        <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i
-                                class="fab fa-linkedin-in"></i></a>
-                        <a class="btn btn-lg btn-dark btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
+
+            </div>
+    </div>
+    </form>
+    <!-- Footer Start -->
+    <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
+        <div class="row pt-5">
+            <div class="col-lg-3 col-md-6 mb-5">
+                <h4 class="text-uppercase text-light mb-4">Get In Touch!</h4>
+                <p class="mb-2"><i class="fa fa-map-marker-alt text-white mr-3"></i>123 Street, New York, USA</p>
+                <p class="mb-2"><i class="fa fa-phone-alt text-white mr-3"></i>+012 345 67890</p>
+                <p><i class="fa fa-envelope text-white mr-3"></i>info@example.com</p>
+                <h6 class="text-uppercase text-white py-2">Follow Us</h6>
+                <div class="d-flex justify-content-start">
+                    <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="btn btn-lg btn-dark btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
                 </div>
-                <div class="col-lg-3 col-md-6 mb-5">
-                    <h4 class="text-uppercase text-light mb-4">Useful Links</h4>
-                    <div class="d-flex flex-column justify-content-start">
-                        <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Privacy
-                            Policy</a>
-                        <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Terms &
-                            Conditions</a>
-                        <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>New Member
-                            Registration</a>
-                        <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Affiliate
-                            Programmes</a>
-                        <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Returns &
-                            Refunds</a>
-                        <a class="text-body" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Help & FAQs</a>
-                    </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-5">
+                <h4 class="text-uppercase text-light mb-4">Useful Links</h4>
+                <div class="d-flex flex-column justify-content-start">
+                    <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Privacy
+                        Policy</a>
+                    <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Terms &
+                        Conditions</a>
+                    <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>New Member
+                        Registration</a>
+                    <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Affiliate
+                        Programmes</a>
+                    <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Returns &
+                        Refunds</a>
+                    <a class="text-body" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Help & FAQs</a>
                 </div>
-                <div class="col-lg-3 col-md-6 mb-5">
-                    <h4 class="text-uppercase text-light mb-4">Newsletter</h4>
-                    <p class="mb-4">Watch out for the latest news here!</p>
-                    <div class="w-100 mb-3">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-dark border-dark" style="padding: 25px;"
-                                placeholder="Your Email">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary text-uppercase px-3">Sign Up</button>
-                            </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-5">
+                <h4 class="text-uppercase text-light mb-4">Newsletter</h4>
+                <p class="mb-4">Watch out for the latest news here!</p>
+                <div class="w-100 mb-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control bg-dark border-dark" style="padding: 25px;"
+                            placeholder="Your Email">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary text-uppercase px-3">Sign Up</button>
                         </div>
                     </div>
                 </div>
-                <div class="container-fluid bg-dark py-4 px-sm-3 px-md-5">
-                    <p class="mb-2 text-center text-body">&copy; <a href="#">Cairo Metro</a>. All Rights Reserved.</p>
-                    <p class="m-0 text-center text-body">Designed by <a href="https://htmlcodex.com">HTML Codex</a></p>
-                </div>
-                <!-- Footer End -->
+            </div>
+            <div class="container-fluid bg-dark py-4 px-sm-3 px-md-5">
+                <p class="mb-2 text-center text-body">&copy; <a href="#">Cairo Metro</a>. All Rights Reserved.</p>
+                <p class="m-0 text-center text-body">Designed by <a href="https://htmlcodex.com">HTML Codex</a></p>
+            </div>
+            <!-- Footer End -->
 
-                <!-- Back to Top -->
+            <!-- Back to Top -->
             <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
                     class="fa fa-angle-double-up"></i></a>
 
