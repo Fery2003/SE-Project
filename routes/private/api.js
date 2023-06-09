@@ -282,15 +282,14 @@ module.exports = function (app) {
       noOfStations += x;
     }
 
-    const getPrice = null;
+    let getPrice = null;
     if (noOfStations <= 9) {
-      getPrice = await db.select('price').from('se_project.zone').where('zone_type', '1-9');
+      getPrice = await db.select('price').from('se_project.zone').where('zone_type', '9').first();
     } else if (noOfStations <= 16 && noOfStations > 9) {
-      getPrice = await db.select('price').from('se_project.zone').where('zone_type', '10-16');
+      getPrice = await db.select('price').from('se_project.zone').where('zone_type', '10').first();
     } else {
-      getPrice = await db.select('price').fromRaw('(select "price" from "se_project.zone" where "price" > ?)', '16');
-    } // greater than 16 to infinity
-
+      getPrice = await db.select('price').from('se_project.zone').where('zone_type', '16').first();
+    }
     //Now we check if the user is a senior or not:
     if (user.isSenior == true) getPrice = getPrice * 0.5; // 50% discount
 
@@ -299,10 +298,11 @@ module.exports = function (app) {
   // Get ticket price endpoint
   app.get('/api/v1/tickets/price/:originId/:destinationId', async (req, res) => {
     try {
-      const { fromStation, toStation } = req.body;
+      const { originId, destinationId } = req.params;
       const user = await getUser(req);
-      const price = await getPrice(fromStation, toStation, user);
-      res.json(price);
+      const price = await getPrice(originId, destinationId, user);
+      console.log('price is: ', price);
+      res.json(price.price);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error!');
