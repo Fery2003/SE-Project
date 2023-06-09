@@ -116,14 +116,16 @@
                             {{/isAdmin}}
                             {{#isNormal}}
                             <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
                                     <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
                                 </div>
                             </div>
                             <div class="nav-item dropdown">
-                                <a href="/tickets" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
                                 <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/tickets" class="dropdown-item">My Tickets</a>
                                     <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
                                 </div>
                             </div>
@@ -142,12 +144,14 @@
                             <div class="nav-item dropdown">
                                 <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
                                     <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
                                 </div>
                             </div>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
                                 <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/tickets" class="dropdown-item">My Tickets</a>
                                     <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
                                 </div>
                             </div>
@@ -162,6 +166,7 @@
                                 </div>
                             </div>
                             {{/isSenior}}
+                            
                             
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
