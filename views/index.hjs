@@ -47,7 +47,7 @@
           data,
           success: function (serverResponse) {
             if (serverResponse) {
-              location.href = '/manage/routes';
+              location.href = '/requests/senior';
             }
           },
           error: function (errorResponse) {
