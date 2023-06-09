@@ -163,6 +163,93 @@
         <!-- Page Header End -->   
     </div>
 
+    <!-- Team Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <h1 class="display-4 text-uppercase text-center mb-5">Meet Our Team</h1>
+            <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="img/team-1.jpg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Feras Nizar</h4>
+                        <p class="m-0">Software Engineer</p>
+                        <div class="team-social position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="img/team-2.jpg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Rita Emad</h4>
+                        <p class="m-0">Software Engineer</p>
+                        <div class="team-social position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="img/team-3.jpg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Yahia Ehab</h4>
+                        <p class="m-0">Software Engineer</p>
+                        <div class="team-social position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="img/team-4.jpg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Jana ElKasaby</h4>
+                        <p class="m-0">Software Engineer</p>
+                        <div class="team-social position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="img/team-4.jpg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Mariam Amr</h4>
+                        <p class="m-0">Software Engineer</p>
+                        <div class="team-social position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="img/team-4.jpg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">AbdelRaouf Khorshid</h4>
+                        <p class="m-0">Software Engineer</p>
+                        <div class="team-social position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Team End -->
+
+
+    <!-- Vendor Start -->
+    <div class="container-fluid py-5">
+
+
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
         <div class="row pt-5">
