@@ -245,64 +245,68 @@ module.exports = function (app) {
     return nodes.length;
 
   }
+  async function getPrice(fromStation , toStation, user){
+    const fromStationId = await db.select('*').from('se_project.station').where('station_name', fromStation);
+    const fromStationObj = await  db.select('*').from('se_project.station').where('id', fromStationId);
+    const toStationId = await db.select('*').from('se_project.station').where('station_name', toStation);
+    const toStationObj = await db.select('*').from('se_project.station').where('id', toStationId);
+
+    const stationStack = [];
+    const routeNames = 'hi' + fromStationObj.id + toStationObj.id;
+    do {
+      const ifDirect = await db
+        .select('route_name')
+        .from('se_project.route')
+        .where('from_station_id', fromStationObj.id)
+        .andWhere('to_station_id', toStationObj.id);
+
+      if (ifDirect == routeNames) {
+        console.log('Your route is a direct one !');
+        stationStack.push(fromStationObj);
+        stationStack.push(toStationObj);
+      } else {
+        stationStack.push(fromStationObj); // pushing current station to stack
+        fromStationObj = toStationObj; // traversing to next node/station
+        toStationObj.id += 1;
+        toStationObj = await db.select('*').from('se_project.route').where('route_name', routeNames);
+      }
+    } while (fromStationObj.station_type == 'normal' && toStationObj.station_type == 'normal');
+
+    noOfStations = stationStack.length;
+
+    if  (fromStationObj.station_type == 'transfer')  {
+      x = transferTree(fromStationObj.id, toStationObj.id);
+      noOfStations += x;
+    }
+
+
+    //converting noOfstations into a text:
+    const getPrice = null;
+    if (noOfStations <= 9) {
+      getPrice = await db.select("price").from("se_project.zone").where("zone_type", "1-9");
+    }
+    else if (noOfStations <= 16 && noOfStations > 9) {
+      getPrice = await db.select("price").from("se_project.zone").where("zone_type", "10-16");
+    }
+    else {
+      getPrice = await db.select("price").fromRaw('(select "price" from "se_project.zone" where "price" > ?)', '16');
+    } // greater than 16 to infinity
+
+    //Now we check if the user is a senior or not:
+    const isSenior = await db.select('is_senior').from('se_project.user').where('id', user.user_id);
+
+    if (isSenior == true)
+      getPrice = getPrice * 0.5; // 50% discount
+
+    return getPrice;
+  }
   // Get ticket price endpoint
   app.get('/api/v1/tickets/price/:originId', async (req, res) => {
     try {
       const { fromStation, toStation } = req.body;
-      // fetch id of station
-      const fromStationId = await db.select('*').from('se_project.station').where('station_name', fromStation);
-      const fromStationObj = await db.select('*').from('se_project.station').where('id', fromStationId);
-      const toStationId = await db.select('*').from('se_project.station').where('station_name', toStation);
-      const toStationObj = await db.select('*').from('se_project.station').where('id', toStationId);
-
-      const stationStack = [];
-      const routeNames = 'hi' + fromStationObj.id + toStationObj.id;
-      do {
-        const ifDirect = await db
-          .select('route_name')
-          .from('se_project.route')
-          .where('from_station_id', fromStationObj.id)
-          .andWhere('to_station_id', toStationObj.id);
-
-        if (ifDirect == routeNames) {
-          console.log('Your route is a direct one !');
-          stationStack.push(fromStationObj);
-          stationStack.push(toStationObj);
-        } else {
-          stationStack.push(fromStationObj); // pushing current station to stack
-          fromStationObj = toStationObj; // traversing to next node/station
-          toStationObj.id += 1;
-          toStationObj = await db.select('*').from('se_project.route').where('route_name', routeNames);
-        }
-      } while (fromStationObj.station_type == 'normal' && toStationObj.station_type == 'normal');
-
-      noOfStations = stationStack.length;
-
-      if  (fromStationObj.station_type == 'transfer')  {
-        x = transferTree(fromStationObj.id, toStationObj.id);
-        noOfStations += x;
-      }
-
-
-      //converting noOfstations into a text:
-      const getPrice = null;
-      if (noOfStations <= 9) {
-        getPrice = await db.select("price").from("se_project.zone").where("zone_type", "1-9");
-      }
-      else if (noOfStations <= 16 && noOfStations > 9) {
-        getPrice = await db.select("price").from("se_project.zone").where("zone_type", "10-16");
-      }
-      else {
-        getPrice = await db.select("price").fromRaw('(select "price" from "se_project.zone" where "price" > ?)', '16');
-      } // greater than 16 to infinity
-
-      //Now we check if the user is a senior or not:
-      const isSenior = await db.select('is_senior').from('se_project.user').where('id', getUser(req).id);
-
-      if (isSenior == true)
-        getPrice = getPrice * 0.5; // 50% discount
-
-      res.json(getPrice);
+      const user = await getUser(req);
+      const price = await getPrice(fromStation, toStation, user);
+      res.json(price);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error!');

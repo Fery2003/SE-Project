@@ -83,6 +83,11 @@ module.exports = function (app) {
   app.get('/manage/senior', async function (req, res) {
     const user = await getUser(req);
     const sRequests = await db.select('*').from('se_project.senior_request');
-    return res.status(200).render('routes', { user, sRequests });
+    return res.status(200).render('routes', { ...user, sRequests });
+  });
+  app.get('/prices', async function (req, res) {
+    const user = await getUser(req);
+    const prices = await db.select('*').from('se_project.zone');
+    return res.status(200).render('prices', { user, prices });
   });
 };
