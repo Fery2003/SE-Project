@@ -31,56 +31,26 @@
 <body>
     <script>
         $(document).ready(function(){
-            //function to update the table
-            function updateTable(){
-                $ajax({
-                    type: "GET",
-                    url: "/api/v1/route",
-                    success: function(response){
-                        var updatedTableHTML = "";
-                        console.log(response);
-
-                       if (Array.isArray(response.route)) {
-                            for (let route of response.route) {
-                                updatedTableHTML += "<tr>" +
-                                    "<td>" + route.id + "</td>" +
-                                    "<td>" + route.route_name + "</td>" +
-                                    "<td>" + route.from_station_id + "</td>" +
-                                    "<td>" + route.to_station_id + "</td>";
- 
-                                if (response.isAdmin) {
-                                    updatedTableHTML += "<td class='text-center'>" +
-                                        "<input id='btnEditRoute' type='button' value='Edit route' class='btn btn-primary'>" +
-                                        "<input id='btnDeleteRoute' type='button' value='Delete Route' class='btn btn-danger'>" +
-                                        "</td>";
-                                }
-
-                                updatedTableHTML += "</tr>";
-                            }
-
-                            // Update the table with the updated HTML
-                            $("#routeTable tbody").html(updatedTableHTML);
-                        }
-                    },
-                    error: function (error) {
-                        console.error("Error updating table:", error);
-                    }
-                });
-            }
             // Open the modal when the "Add Route" button is clicked
             $("#btnAddRoute").click(function () {
                 $("#routeModal").modal("show");
             });
             // Handle the "Create Route" button click inside the modal
             $("#createRouteBtn").click(function () {
-                var routeName = $("#routeNameInput").val();
-
+                const routeName = $("#routeNameInput").val();
+                const fromStationId = $("#fromStationId").val();
+                const toStationId = $("#toStationId").val();
+                data = {
+                    routeName: routeName,
+                    fromId: fromStationId,
+                    toId: toStationId
+                };
                 // Make an AJAX request to create the route
                 $.ajax({
                     url: "/api/v1/route",
                     type: "POST",
                     contentType: "application/json",
-                    data: JSON.stringify({ route_name: routeName }),
+                    data: JSON.stringify(data),
                     success: function (response) {
                         console.log(response);
                         $("#routeModal").modal("hide"); // Hide the modal
@@ -278,7 +248,7 @@
             <input id="btnAddRoute" type="button" value="Add Route" class="btn btn-primary">
             <br />
         </div>
-        <div class="modal fade" id="RouteModal" tabindex="-1" role="dialog" aria-labelledby="RouteModalLabel"
+        <div class="modal fade" id="routeModal" tabindex="-1" role="dialog" aria-labelledby="RouteModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -290,6 +260,9 @@
                     </div>
                     <div class="modal-body">
                         <input type="text" id="routeNameInput" class="form-control" placeholder="Enter route name">
+                        <input type="text" id="fromStationId" class="form-control" placeholder="Enter starting station's ID">
+                        <input type="text" id="toStationId" class="form-control" placeholder="Enter destination station's ID">
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
