@@ -76,7 +76,7 @@ module.exports = function (app) {
     }
   });
 
-  // Subscriptions endpoint(running but not testing)
+  // get all zones
   app.get('/api/v1/zones', async (req, res) => {
     try {
       const zones = await db.select('*').from('se_project.zone');
