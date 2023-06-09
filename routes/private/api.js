@@ -70,7 +70,7 @@ module.exports = function (app) {
       if (!newPassword) {
         return res.status(400).json({ msg: 'Please enter a password' });
       }
-      if (newPassword.length < 0) {
+      if (newPassword.length == 0) {
         //eh lazmeto ya yahia? what case should be inserted for this to actually happpen?
         return res.status(400).json({ msg: 'Password must mot be empty' });
       }
@@ -215,8 +215,8 @@ module.exports = function (app) {
     if (!root) return null; // check if root is null "an extra unnecessary check :)"
     const rootNode = { nodes: [] }; // store children of root node
     let curr = rootNode; // store root as current node
-    do {
-      const nextStationId = transferStation + 1; // fetch following station
+    do  {
+        const nextStationId = transferStation + 1; // fetch following station
 
       // check if next station is destination
       if (nextStationId == destination) {
@@ -234,7 +234,8 @@ module.exports = function (app) {
       }
       //store the very next stations to the transfer (all of them) into the nodes stack
       curr.nodes.push(nextStationId);
-    } while (nextStationId.station_position != 'end');
+
+    } while (nextStationId.station_position != "end");
     if (nextStationId != destination) {
       //empty the stack
       nodes = [];
@@ -242,6 +243,7 @@ module.exports = function (app) {
     }
 
     return nodes.length;
+
   }
   // Get ticket price endpoint
   app.get('/api/v1/tickets/price/:originId', async (req, res) => {
@@ -276,25 +278,29 @@ module.exports = function (app) {
 
       noOfStations = stationStack.length;
 
-      if (fromStationObj.station_type == 'transfer') {
+      if  (fromStationObj.station_type == 'transfer')  {
         x = transferTree(fromStationObj.id, toStationObj.id);
         noOfStations += x;
       }
 
+
       //converting noOfstations into a text:
       const getPrice = null;
       if (noOfStations <= 9) {
-        getPrice = await db.select('price').from('se_project.zone').where('zone_type', '1-9');
-      } else if (noOfStations <= 16 && noOfStations > 9) {
-        getPrice = await db.select('price').from('se_project.zone').where('zone_type', '10-16');
-      } else {
-        getPrice = await db.select('price').fromRaw('(select "price" from "se_project.zone" where "price" > ?)', '16');
+        getPrice = await db.select("price").from("se_project.zone").where("zone_type", "1-9");
+      }
+      else if (noOfStations <= 16 && noOfStations > 9) {
+        getPrice = await db.select("price").from("se_project.zone").where("zone_type", "10-16");
+      }
+      else {
+        getPrice = await db.select("price").fromRaw('(select "price" from "se_project.zone" where "price" > ?)', '16');
       } // greater than 16 to infinity
 
       //Now we check if the user is a senior or not:
       const isSenior = await db.select('is_senior').from('se_project.user').where('id', getUser(req).id);
 
-      if (isSenior == true) getPrice = getPrice * 0.5; // 50% discount
+      if (isSenior == true)
+        getPrice = getPrice * 0.5; // 50% discount
 
       res.json(getPrice);
     } catch (err) {
@@ -512,15 +518,15 @@ module.exports = function (app) {
             await db('se_project.station').where('id', affectedRoute.to_station_id).update('station_position', 'start');
             await db('se_project.station').where('id', stationId).del();
           } else if (station.station_position == 'end') {
-            let affectedRoute = await db.select('*').from('se_project.route').where('from_station_id', stationId);
+            let affectedRoute = await db.select('*').from('se_project.route').where('from_station_id', stationId).first();
 
             //update the to station to become an end
             await db('se_project.station').where('id', affectedRoute.to_station_id).update('station_position', 'end');
             await db('se_project.station').where('id', stationId).del();
           } else if (station.station_position == 'middle') {
-            let middleIsTo = await db.select('*').from('se_project.route').where('to_station_id', stationId);
+            let middleIsTo = await db.select('*').from('se_project.route').where('to_station_id', stationId).first();
             let myFromStation = middleIsTo.from_station_id;
-            let middleIsFrom = await db.select('*').from('se_project.route').where('from_station_id', stationId);
+            let middleIsFrom = await db.select('*').from('se_project.route').where('from_station_id', stationId).first();
             let myToStation = middleIsFrom.to_station_id;
 
             await db('se_project.station').where('id', stationId).del();
@@ -544,8 +550,12 @@ module.exports = function (app) {
 
             let newSR2 = await db.insert([{ station_id: myToStation }, { route_id: parseInt(idNewStationToFrom) }]).into('se_project.station_route');
           }
+          else
+          {
+            await db('se_project.station').where('id', stationId).del();
+          }
         } else if (station.station_type == 'transfer') {
-          let transferRoutes = await db.select('*').from('se_project.route').where('from_station_id', stationId);
+          let transferRoutes = await db.select('*').from('se_project.route').where('from_station_id', stationId).first();
           let myNewTransfer = await db.select('from_station_id').from('se_project.route').where('to_station_id', stationId);
           for (let i = 0; i < transferRoutes.length; i++) {
             let toStation = transferRoutes[i].to_station_id;
