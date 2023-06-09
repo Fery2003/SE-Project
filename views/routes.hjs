@@ -2,34 +2,141 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>Stations</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta charset="utf-8">
+  <title>Stations</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="Cairo Metro" name="keywords">
+  <meta content="Cairo Metro" name="description">
+  <!-- Google Web Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap"
+    rel="stylesheet">
 
-    <link rel='stylesheet' href='/styles/bootstrap.min.css' />
-    <link rel='stylesheet' href='/styles/style.css' />
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap"
-        rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
+  <!-- Libraries Stylesheet -->
+  <link rel="stylesheet" href="/lib/owlcarousel/assets/owl.carousel.min.css">
+  <link rel="stylesheet" href="/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" />
 
-    <!-- Libraries Stylesheet -->
-    <link rel="stylesheet" href="/lib/owlcarousel/assets/owl.carousel.min.css">
-    <link rel="stylesheet" href="/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" />
+  <!-- Customized Bootstrap Stylesheet -->
+  <link href="/styles/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="/styles/bootstrap.min.css" rel="stylesheet">
+  <!-- Template Stylesheet -->
+  <link href="/styles/style.css" rel="stylesheet">
 
-    <!-- Template Stylesheet -->
-    <link href="/styles/style.css" rel="stylesheet">
+  <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
 </head>
 
 <body>
-    <div>
+    <script>
+        $(document).ready(function(){
+            //function to update the table
+            function updateTable(){
+                $ajax({
+                    type: "GET",
+                    url: "/api/v1/route",
+                    success: function(response){
+                        var updatedTableHTML = "";
+                        console.log(response);
 
+                       if (Array.isArray(response.route)) {
+                            for (let route of response.route) {
+                                updatedTableHTML += "<tr>" +
+                                    "<td>" + route.id + "</td>" +
+                                    "<td>" + route.route_name + "</td>" +
+                                    "<td>" + route.from_station_id + "</td>" +
+                                    "<td>" + route.to_station_id + "</td>";
+ 
+                                if (response.isAdmin) {
+                                    updatedTableHTML += "<td class='text-center'>" +
+                                        "<input id='btnEditRoute' type='button' value='Edit route' class='btn btn-primary'>" +
+                                        "<input id='btnDeleteRoute' type='button' value='Delete Route' class='btn btn-danger'>" +
+                                        "</td>";
+                                }
+
+                                updatedTableHTML += "</tr>";
+                            }
+
+                            // Update the table with the updated HTML
+                            $("#routeTable tbody").html(updatedTableHTML);
+                        }
+                    },
+                    error: function (error) {
+                        console.error("Error updating table:", error);
+                    }
+                });
+            }
+            // Open the modal when the "Add Route" button is clicked
+            $("#btnAddRoute").click(function () {
+                $("#routeModal").modal("show");
+            });
+            // Handle the "Create Route" button click inside the modal
+            $("#createRouteBtn").click(function () {
+                var routeName = $("#routeNameInput").val();
+
+                // Make an AJAX request to create the route
+                $.ajax({
+                    url: "/api/v1/route",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ route_name: routeName }),
+                    success: function (response) {
+                        console.log(response);
+                        $("#routeModal").modal("hide"); // Hide the modal
+                        // updateTable(); // Update the table data
+
+                        // Display success message to the user
+                        var successMessage = $("<div>", {
+                            class: "alert alert-success",
+                            text: "Route created successfully!"
+                        });
+
+                        $("#routeModal").before(successMessage);
+
+                        // Automatically remove the success message after 3 seconds
+                        setTimeout(function () {
+                            successMessage.remove();
+                        }, 3000);
+                    },
+                    error: function (error) {
+                        console.error("Error creating route:", error.responseJSON.msg);
+                    }
+                });
+            });
+
+            // Handle the "Delete Route" button click
+            $(".delete-route").click(function () {
+                var routeId = $(this).attr("id");
+
+                // Make an AJAX request to delete the route
+                $.ajax({
+                    url: `/api/v1/route/${routeId}`,
+                    type: "DELETE",
+                    success: function (response) {
+                        console.log(response);
+                    
+                        // Display success message to the user
+                        var successMessage = $("<div>", {
+                            class: "alert alert-success",
+                            text: "Route deleted successfully!"
+                        });
+
+                        $("#routeTable").before(successMessage);
+
+                        // Automatically remove the success message after 3 seconds
+                        setTimeout(function () {
+                            successMessage.remove();
+                        }, 3000);
+                    },
+                    error: function (error) {
+                        console.error("Error deleting route:", error);
+                    }
+                });
+            });
+        });
+    </script>
+    <div>
         <!-- Topbar Start -->
         <div class='container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block'>
             <div class='row'>
@@ -62,6 +169,7 @@
             </div>
         </div>
         <!-- Topbar End -->
+
         <!-- Navbar Start -->
         <div class="container-fluid position-relative nav-bar p-0">
             <div class="position-relative px-lg-5" style="z-index: 9;">
@@ -74,23 +182,52 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="/dashboard.hjs" class="nav-item nav-link">Dashboard</a>
-                            <a href="/stations.hjs" class="nav-item nav-link">Stations</a>
-                            <a href="/routes.hjs" class="nav-item nav-link active">Routes</a>
-                            <a href="/zones.hjs" class="nav-item nav-link">Zones</a>
+                            <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
+                            {{#isAdmin}}
+                            <a href="stations" class="nav-item nav-link">Stations</a>
+                            <a href="routes" class="nav-item nav-link">Routes</a>
+                            <a href="/manage/zones" class="nav-item nav-link">Zones</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/refunds.hjs" class="dropdown-item">Refund
+                                    <a href="/manage/refunds" class="dropdown-item">Refund
                                         Requests</a>
-                                    <a href="/seniors.hjs" class="dropdown-item">Senior Requests</a>
+                                    <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
                                 </div>
                             </div>
+                            {{/isAdmin}}
+                            {{#isNormal}}
+                            <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
+                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
+                            <a href="prices" class="nav-item nav-link">Prices</a>
+                            <a href="rides" class="nav-item nav-link">Rides</a>
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
+                                <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/manage/refunds" class="dropdown-item">Refund
+                                        Requests</a>
+                                    <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
+                                </div>
+                            </div>
+                            {{/isNormal}}
+                            {{#isSenior}}
+                            <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
+                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
+                            <a href="prices" class="nav-item nav-link">Prices</a>
+                            <a href="rides" class="nav-item nav-link">Rides</a>
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
+                                <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/manage/refunds" class="dropdown-item">Refund
+                                        Requests</a>
+                                    <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
+                                </div>
+                            </div>
+                            {{/isSenior}}
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="team.html" class="dropdown-item">My Account</a>
-                                    <!-- where will this redirect? -->
+                                    <a href="reset" class="dropdown-item">Reset Password</a>
                                 </div>
                             </div>
                         </div>
@@ -102,7 +239,7 @@
 
         <!-- Page Header Start -->
         <div class="container-fluid page-header">
-            <h1 class="display-3 text-uppercase text-white mb-3">Zones</h1>
+            <h1 class="display-3 text-uppercase text-white mb-3">Routes</h1>
             <div class="d-inline-flex text-white">
                 <h6 class="text-uppercase m-0"><a class="text-white" href="/dashboard.hjs">Home</a></h6>
                 <h6 class="text-body m-0 px-3">/</h6>
@@ -110,40 +247,69 @@
             </div>
         </div>
         <!-- Page Header End -->
-            {{#isAdmin}}
-            <!-- Content Start -->
-            <div style="position:absolute; right:0;">
-                  <input id="BtnAddRoute" type="button" class="btn btn-primary" value="Add Route">
-                  <br />
+              {{#isAdmin}}
+        <div style="position:absolute; right:0;">
+            <input id="btnAddRoute" type="button" value="Add Route" class="btn btn-primary">
+            <br />
+        </div>
+        <div class="modal fade" id="RouteModal" tabindex="-1" role="dialog" aria-labelledby="RouteModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="routeModalLabel">Enter Route Name</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="routeNameInput" class="form-control" placeholder="Enter route name">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="createRouteBtn">Create Route</button>
+                    </div>
+                </div>
             </div>
-            {{/isAdmin}}
-            <table class="table">
-                  <thead>
-                        <tr>
-                              <th scope="col">Route ID</th>
-                              <th scope="col">Start Station</th>
-                              <th scope="col">End Station</th>
-                              <th scope="col">Price</th>
-                              <th scope="col">Actions</th>
-                        </tr>
-                  </thead>
-                  <tbody>
-                        {{#routes}}
-                        <tr>
-                              <th scope="row">{{route_id}}</th>
-                              <td>{{start_station}}</td>
-                              <td>{{end_station}}</td>
-                              <td>{{price}}</td>
-                              <td>
-                                    <a href="/editRoute.hjs?route_id={{route_id}}" class="btn btn-primary">Edit</a>
-                                    <a href="/deleteRoute.hjs?route_id={{route_id}}" class="btn btn-danger">Delete</a>
-                              </td>
-                        </tr>
-                  </tbody>
-            </table>
-            </div>
+        </div>
+        {{/isAdmin}}
+        <br />
+        <table class="table" id="routeTable">
+            <thead>
+                <tr>
+                    <th scope="col">Route ID</th>
+                    <th scope="col">Route Name</th>
+                    <th scope="col">From Station ID</th>
+                    <th scope="col">To Station ID</th>
+                    {{#isAdmin}}
+                    <th scope="col" class="text-center">Actions</th>
+                    {{/isAdmin}}
+
+
+                </tr>
+            </thead>
+            <tbody>
+                {{#routes}}
+                <tr>
+                    <td>{{id}}</td>
+                    <td>{{route_name}}</td>
+                    <td>{{from_station_id}}</td>
+                    <td>{{to_station_id}}</td>
+                    {{#isAdmin}}
+                    <td class="text-center">
+                        <input id="{{id}}" type="button" value="Edit route" class="btn btn-primary edit-route">
+                        <input id="{{id}}" type="button" value="Delete route" class="btn btn-danger delete-route">
+                    </td>
+                    {{/isAdmin}}
+                </tr>
+                {{/routes}}
+            </tbody>
+
+        </table>
+    </div>
+
     
-    <!-- Footer Start -->
+     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
         <div class="row pt-5">
             <div class="col-lg-3 col-md-6 mb-5">
@@ -194,11 +360,9 @@
             </div>
             <!-- Footer End -->
 
-
             <!-- Back to Top -->
             <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
                     class="fa fa-angle-double-up"></i></a>
-
 
             <!-- JavaScript Libraries -->
             <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

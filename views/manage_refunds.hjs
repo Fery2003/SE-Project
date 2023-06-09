@@ -2,64 +2,33 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>Prices</title>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <meta content="Cairo Metro" name="keywords">
-  <meta content="Cairo Metro" name="description">
-  <!-- Google Web Fonts -->
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap"
-    rel="stylesheet">
+    <meta charset="utf-8">
+    <title>Stations</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Cairo Metro" name="keywords">
+    <meta content="Cairo Metro" name="description">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap"
+        rel="stylesheet">
 
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
 
-  <!-- Libraries Stylesheet -->
-  <link rel="stylesheet" href="/lib/owlcarousel/assets/owl.carousel.min.css">
-  <link rel="stylesheet" href="/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" />
+    <!-- Libraries Stylesheet -->
+    <link rel="stylesheet" href="/lib/owlcarousel/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" />
 
-  <!-- Customized Bootstrap Stylesheet -->
-  <link href="/styles/bootstrap.min.css" rel="stylesheet">
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/styles/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Template Stylesheet -->
-  <link href="/styles/style.css" rel="stylesheet">
+    <!-- Template Stylesheet -->
+    <link href="/styles/style.css" rel="stylesheet">
 
-  <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
 </head>
 
 <body>
-    <script>
-        $(document).ready(function () {
-            $("#price").click( function(){
-                //console.log(response); //price
-                const from_station = $('#originstation').val();
-                const to_station = $('#destinationstation').val();
-                const data = {
-                    from_station,
-                    to_station,
-                }       
-            });
-            $.ajax({
-                type: "GET",
-                url: `/api/v1/tickets/price/${from_station}/${to_station}`,
-                data,
-                success: function (serverResponse) {
-                    if (serverResponse) {
-                        alert('this is the price', serverResponse);
-                        location.href = '/tickets';
-                    }
-                },
-                error: function (errorResponse) {
-                    if (errorResponse) {
-                        alert(`error: ${errorResponse.responseText}`);
-                    }
-                }
-            });
-        });
-
-    </script>
-
     <div>
         <!-- Topbar Start -->
         <div class='container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block'>
@@ -106,10 +75,10 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
+                            <a href="dashboard" class="nav-item nav-link">Dashboard</a>
                             {{#isAdmin}}
                             <a href="stations" class="nav-item nav-link">Stations</a>
-                            <a href="routes" class="nav-item nav-link">Routes</a>
+                            <a href="routes" class="nav-item nav-link active">Routes</a>
                             <a href="/manage/zones" class="nav-item nav-link">Zones</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
@@ -122,7 +91,7 @@
                             {{/isAdmin}}
                             {{#isNormal}}
                             <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
-                            <a href="tickets" class="nav-item nav-link">Tickets</a>
+                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
                             <a href="prices" class="nav-item nav-link">Prices</a>
                             <a href="rides" class="nav-item nav-link">Rides</a>
                             <div class="nav-item dropdown">
@@ -136,8 +105,8 @@
                             {{/isNormal}}
                             {{#isSenior}}
                             <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
-                            <a href="tickets" class="nav-item nav-link">Tickets</a>
-                            <a href="prices" class="nav-item nav-link active">Prices</a>
+                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
+                            <a href="prices" class="nav-item nav-link">Prices</a>
                             <a href="rides" class="nav-item nav-link">Rides</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
@@ -163,41 +132,15 @@
 
         <!-- Page Header Start -->
         <div class="container-fluid page-header">
-            <h1 class="display-3 text-uppercase text-white mb-3">Prices</h1>
+            <h1 class="display-3 text-uppercase text-white mb-3">Refunds</h1>
             <div class="d-inline-flex text-white">
                 <h6 class="text-uppercase m-0"><a class="text-white" href="/dashboard">Home</a></h6>
                 <h6 class="text-body m-0 px-3">/</h6>
-                <h6 class="text-uppercase text-body m-0">Prices</h6>
+                <h6 class="text-uppercase text-body m-0">Refunds</h6>
             </div>
         </div>
-        <!-- Page Header Start -->   
+        <!-- Page Header Start -->
     </div>
-
-        <!-- Content Start -->
-        <div class="a">
-            <h1>Price</h1>
-        </div>
-        <div style="padding-left: 500px">
-        <form class="form-horizontal" style="width: 50%;">
-          <div class="group">
-            <label for="origin station" class="col-sm-2 control-label">Origin station</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="originstation" name="originstation" placeholder="Station Name" value="">
-            </div>
-        </div>
-        <div class="group">
-            <label for="destination station" class="col-sm-2 control-label">Destination station</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="destinationstation" name="destinationstation" placeholder="Station Name" value="">
-            </div>
-        </div>
-        <div class = "group">
-          <div class = "col-sm-10 col-sm-offset-2">
-              <input id="price" name="price" type="button" value="price" class="btn btn-primary">
-          </div>
-      </div>
-      </div>
-    </form>
 
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">

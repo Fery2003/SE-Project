@@ -67,13 +67,6 @@ module.exports = function (app) {
     try {
       const { user_id } = await getUser(req);
       const { newPassword } = req.body;
-      if (!newPassword) {
-        return res.status(400).json({ msg: 'Please enter a password' });
-      }
-      if (newPassword.length == 0) {
-        //eh lazmeto ya yahia? what case should be inserted for this to actually happpen?
-        return res.status(400).json({ msg: 'Password must mot be empty' });
-      }
       await db.from('se_project.user').where('id', user_id).update({ password: newPassword });
       // res.json(ret);
       res.status(200).json({ message: 'Password reset successfully' });
@@ -99,7 +92,7 @@ module.exports = function (app) {
   // go through logic again before implementing
   app.post('/api/v1/payment/subscription', async (req, res) => {
     try {
-      const { first_name, last_name, user_id } = await getUser(req);
+      const { first_name, last_name, user_id, isSenior } = await getUser(req);
       const { creditCardNumber, holderName, paidAmount, subType, zoneId } = req.body;
 
       // input into transaction table (amount, user_id, purchase_id, purchase_type)
@@ -121,7 +114,7 @@ module.exports = function (app) {
         const { price } = await db.select('price').from('se_project.zone').where('id', zoneId).first();
         const numOfTickets = subType == 'annual' ? 100 : subType == 'quarterly' ? 25 : subType == 'monthly' ? 10 : -1;
         const total = price * numOfTickets;
-        user.isSenior ? (total *= 0.5) : total;
+        isSenior ? (total *= 0.5) : total;
 
         if (paidAmount < total) {
           return res.status(400).json({ msg: 'Not enough credit!' });
@@ -130,20 +123,17 @@ module.exports = function (app) {
           const ret = await db
             .from('se_project.subscription')
             .insert({ sub_type: subType, zone_id: zoneId, user_id: user_id, no_of_tickets: numOfTickets })
-            .returning('*')
-            .first();
+            .returning('*');
 
-          const { id } = ret;
+          const { id } = ret[0];
 
           await db.from('se_project.transaction').insert({ amount: total, user_id: user_id, purchase_id: id, purchase_type: 'subscription' });
           res.status(200).json({ msg: `successfully subbed ${subType}` });
         }
       } else {
-        console.log(`Name does not match credit card holder's name`);
+        console.log("Name does not match credit card holder's name!");
         res.status(500).send('Name does not match!');
       }
-      // res.json(ret);
-      res.json({ msg: `successfully subbed ${subType}` });
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -153,19 +143,34 @@ module.exports = function (app) {
   // pay for ticket endpoint
   app.post('/api/v1/payment/ticket', async (req, res) => {
     try {
-      const { first_name, last_name, id } = await getUser(req);
+      const user = await getUser(req);
       const { creditCardNumber, holderName, paidAmount, origin, destination, tripDate } = req.body;
 
       if (!creditCardNumber || !holderName || !paidAmount || !origin || !destination || !tripDate) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
 
-      if (`${first_name} ${last_name}` == holderName) {
+      if (`${user.first_name} ${user.last_name}` == holderName) {
         console.log('name matches');
+        let price = getPrice(origin, destination, user);
+        price = parseFloat(price);
 
-        
+        if (paidAmount < price) {
+          return res.status(400).json({ msg: 'Not enough credit!' });
+        } else {
+          // input into ticket table (origin, destination, user_id, sub_id, trip_date)
+          const ret = await db
+            .from('se_project.ticket')
+            .insert({ origin: origin, destination: destination, user_id: user.user_id, sub_id: null, trip_date: tripDate })
+            .returning('*');
+
+          const { id } = ret[0];
+
+          await db.from('se_project.transaction').insert({ amount: price, user_id: user.user_id, purchase_id: id, purchase_type: 'ticket' });
+          res.status(200).json({ msg: `Successfully bought ticket` });
+        }
       } else {
-        console.log(`Name does not match credit card holder's name`);
+        console.log("Name does not match credit card holder's name!");
         res.status(500).send('Name does not match!');
       }
     } catch (error) {
@@ -176,7 +181,7 @@ module.exports = function (app) {
 
   // Purchase ticket with subscription endpoint
   app.post('/api/v1/tickets/purchase/subscription', async (req, res) => {
-    const { userRemainingTickets } = getUser(req).numOfTickets;
+    const { userRemainingTickets } = getUser(req);
     try {
       const { id } = await getUser(req);
 
@@ -201,7 +206,7 @@ module.exports = function (app) {
       }
 
       const newTicket = await db.from('se_project.ticket').insert(ticket).returning('*');
-      getUser(req).numOfTickets--;
+      userRemainingTickets--;
 
       res.json(newTicket);
     } catch (err) {
@@ -215,8 +220,8 @@ module.exports = function (app) {
     if (!root) return null; // check if root is null "an extra unnecessary check :)"
     const rootNode = { nodes: [] }; // store children of root node
     let curr = rootNode; // store root as current node
-    do  {
-        const nextStationId = transferStation + 1; // fetch following station
+    do {
+      const nextStationId = transferStation + 1; // fetch following station
 
       // check if next station is destination
       if (nextStationId == destination) {
@@ -234,8 +239,7 @@ module.exports = function (app) {
       }
       //store the very next stations to the transfer (all of them) into the nodes stack
       curr.nodes.push(nextStationId);
-
-    } while (nextStationId.station_position != "end");
+    } while (nextStationId.station_position != 'end');
     if (nextStationId != destination) {
       //empty the stack
       nodes = [];
@@ -243,13 +247,12 @@ module.exports = function (app) {
     }
 
     return nodes.length;
-
   }
-  async function getPrice(fromStation , toStation, user){
-    const fromStationId = await db.select('*').from('se_project.station').where('station_name', fromStation);
-    const fromStationObj = await  db.select('*').from('se_project.station').where('id', fromStationId);
-    const toStationId = await db.select('*').from('se_project.station').where('station_name', toStation);
-    const toStationObj = await db.select('*').from('se_project.station').where('id', toStationId);
+  async function getPrice(fromStation, toStation, user) {
+    let fromStationId = await db.select('*').from('se_project.station').where('station_name', fromStation).first();
+    let fromStationObj = await db.select('*').from('se_project.station').where('id', fromStationId.id).first();
+    let toStationId = await db.select('*').from('se_project.station').where('station_name', toStation).first();
+    let toStationObj = await db.select('*').from('se_project.station').where('id', toStationId.id).first();
 
     const stationStack = [];
     const routeNames = 'hi' + fromStationObj.id + toStationObj.id;
@@ -261,7 +264,7 @@ module.exports = function (app) {
         .andWhere('to_station_id', toStationObj.id);
 
       if (ifDirect == routeNames) {
-        console.log('Your route is a direct one !');
+        console.log('Your route is a direct one!');
         stationStack.push(fromStationObj);
         stationStack.push(toStationObj);
       } else {
@@ -274,27 +277,22 @@ module.exports = function (app) {
 
     noOfStations = stationStack.length;
 
-    if  (fromStationObj.station_type == 'transfer')  {
+    if (fromStationObj.station_type == 'transfer') {
       x = transferTree(fromStationObj.id, toStationObj.id);
       noOfStations += x;
     }
 
     const getPrice = null;
     if (noOfStations <= 9) {
-      getPrice = await db.select("price").from("se_project.zone").where("zone_type", "1-9");
-    }
-    else if (noOfStations <= 16 && noOfStations > 9) {
-      getPrice = await db.select("price").from("se_project.zone").where("zone_type", "10-16");
-    }
-    else {
-      getPrice = await db.select("price").fromRaw('(select "price" from "se_project.zone" where "price" > ?)', '16');
+      getPrice = await db.select('price').from('se_project.zone').where('zone_type', '1-9');
+    } else if (noOfStations <= 16 && noOfStations > 9) {
+      getPrice = await db.select('price').from('se_project.zone').where('zone_type', '10-16');
+    } else {
+      getPrice = await db.select('price').fromRaw('(select "price" from "se_project.zone" where "price" > ?)', '16');
     } // greater than 16 to infinity
 
     //Now we check if the user is a senior or not:
-    const isSenior = await db.select('is_senior').from('se_project.user').where('id', user.user_id);
-
-    if (isSenior == true)
-      getPrice = getPrice * 0.5; // 50% discount
+    if (user.isSenior == true) getPrice = getPrice * 0.5; // 50% discount
 
     return getPrice;
   }
@@ -551,9 +549,7 @@ module.exports = function (app) {
               .into('se_project.station_route');
 
             let newSR2 = await db.insert([{ station_id: myToStation }, { route_id: parseInt(idNewStationToFrom) }]).into('se_project.station_route');
-          }
-          else
-          {
+          } else {
             await db('se_project.station').where('id', stationId).del();
           }
         } else if (station.station_type == 'transfer') {

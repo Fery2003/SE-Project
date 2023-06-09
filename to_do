@@ -1,28 +1,9 @@
-I will add a to do list here of things we need to make sure we handle. If there is anything else add it.
-When task is finished, write next to it done.
+# I will add a to do list here of things we need to make sure we handle. If there is anything else add it. When a task is finished, write "done" next to it
 
 - apply discount for those who are accepted as senior
-
-- correct/fix dashboard and navbars of all the users so that it works for all
-
 - make sure en ay 7aga ids mtzharsh fl frontend ex stations and routes
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- test checkprice manually and compare with actual outcome from ticket purchase endpoint
 
 - check price steps "just for me, you can ignore": // do we have to handle delete stations????????
     -take origin& dest names and get their ids from table station
@@ -34,20 +15,19 @@ When task is finished, write next to it done.
         - check secondly, the type of the station, if it's a normal one just keep looking fopr the next one as we were doing,, if type == tansfer do the following:
             -call the create tree function with parameter of the station name and our destination
             -make the root --> transfer
-            -do an empty stack 
+            -do an empty stack
             -do an array with the following/next stations from transfer (ex. s goes to 4, 7 and 9)
             -create nodes with the next stations (1st route) and add them up in a stack each time you add a node.
             -when you reach a node of type "end" compare it to the destination
             -if matches, return the stack with the number of stations (stack.length or size ig)
             -if it doesn't match, pop till you reach the transfer station in the stack
-            -pop the nodes you've drawn 
+            -pop the nodes you've drawn
             -start doing the next route (e.g. 3 -> 4 didn't work so we try 3 -> 7)
             -we do the same loop till we reach oir destination station.
             -go back to check price
     -now we have the number of stations starting from the transfer
     -count the stations in the original stack in your endpoint before the transfer
-    -now we check the price using table zones 
+    -now we check the price using table zones
     -after getting the price, we  check the user role
     -if the user is a senior -> discount
     -else, just return to him the price
-                      

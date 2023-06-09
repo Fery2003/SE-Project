@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
   <meta charset="utf-8">
   <title>Cairo Metro</title>
@@ -46,7 +47,7 @@
           data,
           success: function (serverResponse) {
             if (serverResponse) {
-              location.href = '/prices';
+              location.href = '/dashboard';
             }
           },
           error: function (errorResponse) {
@@ -59,8 +60,8 @@
     });
   </script>
 
-  <!-- Topbar Start -->
   <div>
+    <!-- Topbar Start -->
     <div class='container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block'>
       <div class='row'>
         <div class='col-md-6 text-center text-lg-left mb-2 mb-lg-0'>
