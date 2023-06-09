@@ -2,17 +2,11 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password</title>
-
-    {{! Bootstrap JS }}
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
+    <meta charset="utf-8">
+    <title>Stations</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Cairo Metro" name="keywords">
+    <meta content="Cairo Metro" name="description">
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap"
@@ -22,102 +16,136 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    {{! Bootstrap CSS }}
-    <link href="/views/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="/views/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/lib/owlcarousel/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="/views/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/styles/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
-    <link href="/views/css/style.css" rel="stylesheet">
+    <link href="/styles/style.css" rel="stylesheet">
 
-    <!--functionality -->
-    <body>
-           <!-- Topbar Start -->
-    <div class="container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block">
-        <div class="row">
-            <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
-                <div class="d-inline-flex align-items-center">
-                    <a class="text-body pr-3" href=""><i class="fa fa-phone-alt mr-2"></i>+012 345 6789</a>
-                    <span class="text-body">|</span>
-                    <a class="text-body px-3" href=""><i class="fa fa-envelope mr-2"></i>info@example.com</a>
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+</head>
+<!--functionality -->
+
+<body>
+    <div>
+        <!-- Topbar Start -->
+        <div class='container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block'>
+            <div class='row'>
+                <div class='col-md-6 text-center text-lg-left mb-2 mb-lg-0'>
+                    <div class='d-inline-flex align-items-center'>
+                        <a class='text-body pr-3' href=''><i class='fa fa-phone-alt mr-2'></i>+012 345 6789</a>
+                        <span class='text-body'>|</span>
+                        <a class='text-body px-3' href=''><i class='fa fa-envelope mr-2'></i>info@example.com</a>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6 text-center text-lg-right">
-                <div class="d-inline-flex align-items-center">
-                    <a class="text-body px-3" href="">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a class="text-body px-3" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-body px-3" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a class="text-body px-3" href="">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a class="text-body pl-3" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a>
+                <div class='col-md-6 text-center text-lg-right'>
+                    <div class='d-inline-flex align-items-center'>
+                        <a class='text-body px-3' href=''>
+                            <i class='fab fa-facebook-f'></i>
+                        </a>
+                        <a class='text-body px-3' href=''>
+                            <i class='fab fa-twitter'></i>
+                        </a>
+                        <a class='text-body px-3' href=''>
+                            <i class='fab fa-linkedin-in'></i>
+                        </a>
+                        <a class='text-body px-3' href=''>
+                            <i class='fab fa-instagram'></i>
+                        </a>
+                        <a class='text-body pl-3' href=''>
+                            <i class='fab fa-youtube'></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Topbar End -->
+        <!-- Topbar End -->
 
-    <!-- Navbar Start -->
-    <div class="container-fluid position-relative nav-bar p-0">
-        <div class="position-relative px-lg-5" style="z-index: 9;">
-            <nav class="navbar navbar-expand-lg bg-secondary navbar-dark py-3 py-lg-0 pl-3 pl-lg-5">
-                <a href="" class="navbar-brand">
-                    <h1 class="text-uppercase text-primary mb-1">Cairo Metro</h1>
-                </a>
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
-                    <div class="navbar-nav ml-auto py-0">
-                        <a href="/views/dashboard.hjs" class="nav-item nav-link">Dashboard</a>
-                        <a href="/views/manage/stations.hjs" class="nav-item nav-link">Stations</a>
-                        <a href="/views/manage/routes.hjs" class="nav-item nav-link active">Routes</a>
-                        <a href="/views/manage/zones.hjs" class="nav-item nav-link">Zones</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
-                            <div class="dropdown-menu rounded-0 m-0">
-                                <a href="/views/manage/requests/refunds.hjs" class="dropdown-item">Refund Requests</a>
-                                <a href="/views/manage/requests/seniors" class="dropdown-item">Senior Requests</a>
+        <!-- Navbar Start -->
+        <div class="container-fluid position-relative nav-bar p-0">
+            <div class="position-relative px-lg-5" style="z-index: 9;">
+                <nav class="navbar navbar-expand-lg bg-secondary navbar-dark py-3 py-lg-0 pl-3 pl-lg-5">
+                    <a href="" class="navbar-brand">
+                        <h1 class="text-uppercase text-primary mb-1">Cairo Metro</h1>
+                    </a>
+                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
+                        <div class="navbar-nav ml-auto py-0">
+                            <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
+                            {{#isAdmin}}
+                            <a href="stations" class="nav-item nav-link">Stations</a>
+                            <a href="routes" class="nav-item nav-link">Routes</a>
+                            <a href="/manage/zones" class="nav-item nav-link">Zones</a>
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
+                                <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/manage/refunds" class="dropdown-item">Refund
+                                        Requests</a>
+                                    <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
-                            <div class="dropdown-menu rounded-0 m-0">
-                                <a href="team.html" class="dropdown-item">My Acount</a>
-                                <!-- where will this redirect? -->
+                            {{/isAdmin}}
+                            {{#isNormal}}
+                            <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
+                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
+                            <a href="prices" class="nav-item nav-link">Prices</a>
+                            <a href="rides" class="nav-item nav-link">Rides</a>
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
+                                <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/manage/refunds" class="dropdown-item">Refund
+                                        Requests</a>
+                                    <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
+                                </div>
+                            </div>
+                            {{/isNormal}}
+                            {{#isSenior}}
+                            <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
+                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
+                            <a href="prices" class="nav-item nav-link">Prices</a>
+                            <a href="rides" class="nav-item nav-link">Rides</a>
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
+                                <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/manage/refunds" class="dropdown-item">Refund
+                                        Requests</a>
+                                    <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
+                                </div>
+                            </div>
+                            {{/isSenior}}
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
+                                <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="reset" class="dropdown-item">Reset Password</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </nav>
+                </nav>
+            </div>
         </div>
-    </div>
-    <!-- Navbar End -->
+        <!-- Navbar End -->
 
-    
-    <!-- Page Header Start EDDIITTTT-->
-    <div class="container-fluid page-header">
-        <h1 class="display-3 text-uppercase text-white mb-3">Senior Requests</h1>
-        <div class="d-inline-flex text-white">
-            <h6 class="text-uppercase m-0"><a class="text-white" href="/views/dashboard.hjs">Home</a></h6>
-            <h6 class="text-body m-0 px-3">/</h6>
-            <h6 class="text-uppercase text-body m-0">Senior Requests</h6>
+        <!-- Page Header Start -->
+        <div class="container-fluid page-header">
+            <h1 class="display-3 text-uppercase text-white mb-3">Senior Requests</h1>
+            <div class="d-inline-flex text-white">
+                <h6 class="text-uppercase m-0"><a class="text-white" href="/dashboard">Home</a></h6>
+                <h6 class="text-body m-0 px-3">/</h6>
+                <h6 class="text-uppercase text-body m-0">Senior Requests</h6>
+            </div>
         </div>
+        <!-- Page Header End -->
     </div>
-    <!-- Page Header End -->
+
 
     <!-- services start -->
-    
+
     <!-- services End -->
 
     <!-- Footer Start -->
@@ -195,5 +223,4 @@
 </body>
 
 </html>
-    </body> 
-
+</body>

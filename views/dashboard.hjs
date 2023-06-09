@@ -75,10 +75,10 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="dashboard" class="nav-item nav-link">Dashboard</a>
+                            <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
                             {{#isAdmin}}
                             <a href="stations" class="nav-item nav-link">Stations</a>
-                            <a href="routes" class="nav-item nav-link active">Routes</a>
+                            <a href="routes" class="nav-item nav-link">Routes</a>
                             <a href="/manage/zones" class="nav-item nav-link">Zones</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
