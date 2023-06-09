@@ -350,7 +350,7 @@ module.exports = function (app) {
   // Request senior ticket endpoint
   app.post('/api/v1/senior/request', async (req, res) => {
     try {
-      const { nationalId } = req.body;
+      const {nationalId}  = req.body;
       const uid = (await getUser(req)).user_id;
       if (!nationalId) {
         return res.status(400).json({ msg: 'Please enter all fields' });

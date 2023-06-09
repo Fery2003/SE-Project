@@ -78,7 +78,7 @@ module.exports = function (app) {
   app.get('/requests/senior', async function (req, res) {
     const user = await getUser(req);
     const senior = await db.select('*').from('se_project.senior_request').where('user_id', user.user_id);
-    return res.status(200).render('request_refund', { user, senior }); 
+    return res.status(200).render('request_senior', { user, senior }); 
   });
   app.get('/manage/request/refund', async function (req, res) {
     const user = await getUser(req);
@@ -115,4 +115,5 @@ module.exports = function (app) {
     const tickets = await db.select('*').from('se_project.subscription').where('user_id', user.user_id);
     return res.status(200).render('subscription', { user, tickets });
   });
+
 };

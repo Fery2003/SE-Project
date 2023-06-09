@@ -28,8 +28,38 @@
     <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
 </head>
 <!--functionality -->
+<!-- Page Header Start -->
+<div class="container-fluid page-header">
+    <h1 class="display-3 text-uppercase text-white mb-3">Senior Requests</h1>
+    <div class="d-inline-flex text-white">
+        <h6 class="text-uppercase m-0"><a class="text-white" href="/dashboard">Home</a></h6>
+        <h6 class="text-body m-0 px-3">/</h6>
+        <h6 class="text-uppercase text-body m-0">Senior Requests</h6>
+    </div>
+</div>
+<!-- Page Header End -->
+<!-- services start -->
 
 <body>
+    <script>
+        $(document).ready(function () {
+            $("#updateSeniorBtn").click(function () {
+                let NID = $("#NID").val();
+                $.ajax({
+                    url: "/api/v1/senior/request",
+                    type: "POST",
+                    data: JSON.stringify({ nationalId: NID }),
+                    success: function (serverResponse) {
+                        alert('Feras')
+                    },
+                    error: function (error) {
+                        console.error("Error", error.msg);
+                    }
+                });
+            });
+        });
+    </script>
+
     <div>
         <!-- Topbar Start -->
         <div class='container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block'>
@@ -63,90 +93,16 @@
             </div>
         </div>
         <!-- Topbar End -->
-
-        <!-- Navbar Start -->
-        <div class="container-fluid position-relative nav-bar p-0">
-            <div class="position-relative px-lg-5" style="z-index: 9;">
-                <nav class="navbar navbar-expand-lg bg-secondary navbar-dark py-3 py-lg-0 pl-3 pl-lg-5">
-                    <a href="" class="navbar-brand">
-                        <h1 class="text-uppercase text-primary mb-1">Cairo Metro</h1>
-                    </a>
-                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
-                        <div class="navbar-nav ml-auto py-0">
-                            <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
-                            {{#isAdmin}}
-                            <a href="stations" class="nav-item nav-link">Stations</a>
-                            <a href="routes" class="nav-item nav-link">Routes</a>
-                            <a href="/manage/zones" class="nav-item nav-link">Zones</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/refunds" class="dropdown-item">Refund
-                                        Requests</a>
-                                    <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
-                                </div>
-                            </div>
-                            {{/isAdmin}}
-                            {{#isNormal}}
-                            <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
-                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
-                            <a href="prices" class="nav-item nav-link">Prices</a>
-                            <a href="rides" class="nav-item nav-link">Rides</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/refunds" class="dropdown-item">Refund
-                                        Requests</a>
-                                    <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
-                                </div>
-                            </div>
-                            {{/isNormal}}
-                            {{#isSenior}}
-                            <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
-                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
-                            <a href="prices" class="nav-item nav-link">Prices</a>
-                            <a href="rides" class="nav-item nav-link">Rides</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/refunds" class="dropdown-item">Refund
-                                        Requests</a>
-                                    <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
-                                </div>
-                            </div>
-                            {{/isSenior}}
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="reset" class="dropdown-item">Reset Password</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-            </div>
-        </div>
-        <!-- Navbar End -->
-
-        <!-- Page Header Start -->
-        <div class="container-fluid page-header">
-            <h1 class="display-3 text-uppercase text-white mb-3">Senior Requests</h1>
-            <div class="d-inline-flex text-white">
-                <h6 class="text-uppercase m-0"><a class="text-white" href="/dashboard">Home</a></h6>
-                <h6 class="text-body m-0 px-3">/</h6>
-                <h6 class="text-uppercase text-body m-0">Senior Requests</h6>
-            </div>
-        </div>
-        <!-- Page Header End -->
     </div>
 
 
-    <!-- services start -->
-
-    <!-- services End -->
+    <div class="body">
+        <input type="text" id="NID" class="form-control" placeholder="Enter your National ID">
+    </div>
+    <div class="grp">
+        <button type="button" class="btn btn-primary" id="updateSeniorBtn">Update</button>
+    </div>
+ 
 
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
@@ -207,20 +163,18 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
-
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="/lib/easing/easing.min.js"></script>
+    <script src="/lib/waypoints/waypoints.min.js"></script>
+    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 
 </html>
-</body>
