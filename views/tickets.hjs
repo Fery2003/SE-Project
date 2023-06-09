@@ -14,12 +14,7 @@
                 const first_name = $('#first_name').val();
                 const last_name = $('#last_name').val();
                 const id = $('#id').val();
-                const { creditCardNumber,
-                    holderName,
-                    paidAmount,
-                    origin,
-                    destination,
-                    tripDate } = {
+                const data = {
                     creditCardNumber: $('#creditCardNumber').val(),
                     holderName: $('#holderName').val(),
                     paidAmount: $('#paidAmount').val(),
@@ -27,18 +22,6 @@
                     destination: $('#destination').val(),
                     tripDate: $('#tripDate').val()
                 }
-
-                const data = {
-                    first_name,
-                    last_name,
-                    id,
-                    creditCardNumber,
-                    holderName,
-                    paidAmount,
-                    origin,
-                    destination,
-                    tripDate
-                };
 
                 $.ajax({
                     type: "POST",
