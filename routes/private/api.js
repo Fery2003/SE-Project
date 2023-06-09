@@ -30,21 +30,21 @@ const getUser = async function (req) {
 };
 
 module.exports = function (app) {
-  //example
-  app.get('/test', async function (req, res) {
-    try {
-      const user = await getUser(req);
-      const users = await db.from('se_project.user').returning('*');
+  // Example
+  // app.get('/test', async function (req, res) {
+  //   try {
+  //     const user = await getUser(req);
+  //     const users = await db.from('se_project.user').returning('*');
 
-      return res.status(200).json(users[0]);
-    } catch (e) {
-      console.log(e.message);
-      return res.status(400).send('Could not get users');
-    }
-  });
+  //     return res.status(200).json(users[0]);
+  //   } catch (e) {
+  //     console.log(e.message);
+  //     return res.status(400).send('Could not get users');
+  //   }
+  // });
 
-  //User stuff
-
+  // User stuff
+  // MOVE TO VIEW.JS
   app.get('/dashboard', async (req, res) => {
     try {
       const user = await getUser(req);
@@ -87,7 +87,7 @@ module.exports = function (app) {
     }
   });
 
-  // pay for subscription endpoint
+  // Pay for subscription endpoint
   // these next 2 require a purchase id from the query so use req.query.purchaseid
   // go through logic again before implementing
   app.post('/api/v1/payment/subscription', async (req, res) => {
@@ -282,15 +282,14 @@ module.exports = function (app) {
       noOfStations += x;
     }
 
-    const getPrice = null;
+    let getPrice = null;
     if (noOfStations <= 9) {
-      getPrice = await db.select('price').from('se_project.zone').where('zone_type', '1-9');
+      getPrice = await db.select('price').from('se_project.zone').where('zone_type', '9').first();
     } else if (noOfStations <= 16 && noOfStations > 9) {
-      getPrice = await db.select('price').from('se_project.zone').where('zone_type', '10-16');
+      getPrice = await db.select('price').from('se_project.zone').where('zone_type', '10').first();
     } else {
-      getPrice = await db.select('price').fromRaw('(select "price" from "se_project.zone" where "price" > ?)', '16');
-    } // greater than 16 to infinity
-
+      getPrice = await db.select('price').from('se_project.zone').where('zone_type', '16').first();
+    }
     //Now we check if the user is a senior or not:
     if (user.isSenior == true) getPrice = getPrice * 0.5; // 50% discount
 
@@ -299,10 +298,11 @@ module.exports = function (app) {
   // Get ticket price endpoint
   app.get('/api/v1/tickets/price/:originId/:destinationId', async (req, res) => {
     try {
-      const { fromStation, toStation } = req.body;
+      const { originId, destinationId } = req.params;
       const user = await getUser(req);
-      const price = await getPrice(fromStation, toStation, user);
-      res.json(price);
+      const price = await getPrice(originId, destinationId, user);
+      console.log('price is: ', price);
+      res.json(price.price);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error!');
@@ -484,7 +484,6 @@ module.exports = function (app) {
           .update('station_name', stationName)
           .returning('*');
         res.json(updateStation);
-        res.send('Station updated.');
       }
       //redirect('/');
     } catch (error) {
