@@ -30,21 +30,21 @@ const getUser = async function (req) {
 };
 
 module.exports = function (app) {
-  //example
-  app.get('/test', async function (req, res) {
-    try {
-      const user = await getUser(req);
-      const users = await db.from('se_project.user').returning('*');
+  // Example
+  // app.get('/test', async function (req, res) {
+  //   try {
+  //     const user = await getUser(req);
+  //     const users = await db.from('se_project.user').returning('*');
 
-      return res.status(200).json(users[0]);
-    } catch (e) {
-      console.log(e.message);
-      return res.status(400).send('Could not get users');
-    }
-  });
+  //     return res.status(200).json(users[0]);
+  //   } catch (e) {
+  //     console.log(e.message);
+  //     return res.status(400).send('Could not get users');
+  //   }
+  // });
 
-  //User stuff
-
+  // User stuff
+  // MOVE TO VIEW.JS
   app.get('/dashboard', async (req, res) => {
     try {
       const user = await getUser(req);
@@ -87,7 +87,7 @@ module.exports = function (app) {
     }
   });
 
-  // pay for subscription endpoint
+  // Pay for subscription endpoint
   // these next 2 require a purchase id from the query so use req.query.purchaseid
   // go through logic again before implementing
   app.post('/api/v1/payment/subscription', async (req, res) => {
@@ -484,7 +484,6 @@ module.exports = function (app) {
           .update('station_name', stationName)
           .returning('*');
         res.json(updateStation);
-        res.send('Station updated.');
       }
       //redirect('/');
     } catch (error) {
