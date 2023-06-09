@@ -31,7 +31,7 @@
         <script>
             $(document).ready(function () {
                 // Handle Registration Button Click
-                $("#showTicketPrice").click(function () {
+                $("#submit").click(function () {
                     const first_name = $('#first_name').val();
                     const last_name = $('#last_name').val();
                     const id = $('#id').val();
@@ -51,7 +51,7 @@
                         success: function (serverResponse) {
                             if (serverResponse) {
                                 alert('Successfully Registered User');
-                                location.href = '/';
+                                location.href = '/tickets';
                             }
                         },
                         error: function (errorResponse) {
@@ -179,7 +179,6 @@
         <!-- Page Header End -->
     </div>
 
-    <div id="ticketContainer"></div>
 
     <div class="container">
         <div class="row justify-content-center">
