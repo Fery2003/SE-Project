@@ -5,3 +5,31 @@ When task is finished, write next to it done.
 - change role id for those accepted as senior to 3 (done)
 - affectedRoute returns an array of results so we should add .first() to get the first result (see first case in delete station endpoint)
 - we should handle deleting stations that have null station_positions
+
+- check price steps "just for me, you can ignore": // do we have to handle delete stations????????
+    -take origin& dest names and get their ids from table station
+    -check first if there is an existing direct route from origin to destination from table routes using from&to stations
+    -if there is none, so we trace it using the 12 / 23/ etc.. combination from table station_route in order to know the next station
+    -add up the stations in a stack
+    -while doing this:
+        - check first the position of the station (start, middle or end) using table station
+        - check secondly, the type of the station, if it's a normal one just keep looking fopr the next one as we were doing,, if type == tansfer do the following:
+            -call the create tree function with parameter of the station name and our destination
+            -make the root --> transfer
+            -do an empty stack 
+            -do an array with the following/next stations from transfer (ex. s goes to 4, 7 and 9)
+            -create nodes with the next stations (1st route) and add them up in a stack each time you add a node.
+            -when you reach a node of type "end" compare it to the destination
+            -if matches, return the stack with the number of stations (stack.length or size ig)
+            -if it doesn't match, pop till you reach the transfer station in the stack
+            -pop the nodes you've drawn 
+            -start doing the next route (e.g. 3 -> 4 didn't work so we try 3 -> 7)
+            -we do the same loop till we reach oir destination station.
+            -go back to check price
+    -now we have the number of stations starting from the transfer
+    -count the stations in the original stack in your endpoint before the transfer
+    -now we check the price using table zones 
+    -after getting the price, we  check the user role
+    -if the user is a senior -> discount
+    -else, just return to him the price
+                      
