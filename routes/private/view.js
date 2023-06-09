@@ -104,7 +104,7 @@ module.exports = function (app) {
   app.get('/subscriptions', async function (req, res) {
     const user = await getUser(req);
     const sub = await db.select('*').from('se_project.ticket').where('user_id', user.user_id);
-    return res.status(200).render('subscription', { user, sub });
+    return res.status(200).render('subscriptions', { user, sub });
   });
   app.get('/tickets', async function (req, res) {
     const user = await getUser(req);
