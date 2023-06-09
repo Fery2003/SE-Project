@@ -152,8 +152,8 @@ module.exports = function (app) {
 
       if (`${user.first_name} ${user.last_name}` == holderName) {
         console.log('name matches');
-        let price = getPrice(origin, destination, user);
-        price = parseFloat(price);
+        let { price } = await getPrice(origin, destination, user);
+        console.log(price);
 
         if (paidAmount < price) {
           return res.status(400).json({ msg: 'Not enough credit!' });
@@ -316,25 +316,23 @@ module.exports = function (app) {
       if (!ticket_id) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
-      const user_id = await getUser(req).id;
+
+      // check ticket date
+      const { user_id } = await getUser(req);
+      const ticket = await db.select('*').from('se_project.ticket').where('id', ticket_id).first();
+      if (ticket.trip_date < Date.now()) {
+        return res.status(400).json({ msg: 'Ticket is expired' });
+      }
       //const refund = await pool.query('INSERT INTO se_project.refund (ticket_id) VALUES ($1) RETURNING *', [ticket_id]);
-      const purchaseType = await db
-        .select('purchase_type')
+
+      const refundAmount = await db
+        .select('amount')
         .from('se_project.transaction')
         .innerJoin('se_project.user', 'se_project.transaction.user_id', 'se_project.user.id')
         .innerJoin('se_project.ticket', 'se_project.transaction.user_id', 'se_project.ticket.user_id')
         .where('se_project.ticket.id', ticket_id)
         .andWhere('se_project.user.id', user_id);
-      const refundAmount = 0;
-      if (purchaseType == 'ticket') {
-        refundAmount = await db
-          .select('amount')
-          .from('se_project.transaction')
-          .innerJoin('se_project.user', 'se_project.transaction.user_id', 'se_project.user.id')
-          .innerJoin('se_project.ticket', 'se_project.transaction.user_id', 'se_project.ticket.user_id')
-          .where('se_project.ticket.id', ticket_id)
-          .andWhere('se_project.user.id', user_id);
-      }
+
       const refund = await db
         .insert([{ status: 'pending' }, { user_id: user_id }, { refunded_amount: refundAmount }, { ticket_id: ticket_id }])
         .into('se_project.refund_request')
@@ -351,7 +349,7 @@ module.exports = function (app) {
   app.post('/api/v1/senior/request', async (req, res) => {
     try {
       const { nationalId } = req.body;
-      const uid = (await getUser(req)).user_id;
+      const { user_id } = await getUser(req);
       if (!nationalId) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       } else if (nationalId.length < 14) {
@@ -370,13 +368,13 @@ module.exports = function (app) {
       if (age < 60) {
         senior = {
           status: 'rejected',
-          user_id: uid,
+          user_id: user_id,
           national_id: nationalId
         };
       } else {
         senior = {
           status: 'pending',
-          user_id: uid,
+          user_id: user_id,
           national_id: nationalId
         };
       }
@@ -394,11 +392,11 @@ module.exports = function (app) {
     try {
       const { source, dest, date } = req.body;
       const user = await getUser(req);
-      const uid = user.user_id;
+      const { user_id } = user;
       if (!source || !dest || !date) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
-      const checkRide = await db.from('se_project.ride').where('user_id', uid);
+      const checkRide = await db.from('se_project.ride').where('user_id', user_id);
       const found = false;
       for (let i = 0; i < checkRide.length; i++) {
         if (checkRide[i].origin == source && checkRide[i].destination == dest && checkRide[i].trip_date == date) {
@@ -411,7 +409,7 @@ module.exports = function (app) {
           .where('origin', source)
           .andWhere('destination', dest)
           .andWhere('trip_date', date)
-          .andWhere('user_id', uid)
+          .andWhere('user_id', user_id)
           .update('status', 'complete');
 
         res.send('Ride is now completed!');
@@ -679,22 +677,20 @@ module.exports = function (app) {
 
   // Accept/Reject Refund
   //Complete it after subscription and online payment are done.
-  app.put('/api/v1/requests/refunds/:requestID', async (req, res) => {
+  app.put('/api/v1/requests/refunds/:requestId', async (req, res) => {
     //refund status either is accepted or rejected
     try {
-      const tripdate = getUser(req).tripdate;
-      const { refundstatus } = req.body;
+      const user = getUser(req);
+      const { refundStatus } = req.body;
       const requestId = req.params;
-      if (refundstatus.length === 0) {
-        return res.status(400).json({ msg: 'Refund cannot be updated with empty status!' });
-      }
-      if (tripdate < Date.now()) {
+
+      if (refundStatus.length === 0) {
         return res.status(400).json({ msg: 'Refund cannot be updated with empty status!' });
       } else {
         //future dated == yes
         //const updatedRefund = await pool.query('UPDATE refundrequests SET refundstatus = $1 WHERE id = $2 RETURNING *', [refundstatus, requestId]);
-        const updatedRefund = await db('se_project.refund_request').where('id', requestId).update('status', refundstatus).returning('*');
-        res.json(updatedRefund[0]);
+        await db('se_project.refund_request').where('id', requestId).update('status', refundStatus).returning('*');
+        // res.json(updatedRefund[0]);
         res.send('Refund request checked!');
       }
     } catch (error) {

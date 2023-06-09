@@ -32,15 +32,9 @@ module.exports = function (app) {
   });
 
   // Register HTTP endpoint to render /users page
-  app.get('/users', async function (req, res) {
-    const users = await db.select('*').from('se_project.user');
-    return res.render('users', { users });
-  });
-
-  // app.get('/manage/stations', async function(req, res) {
-  //   const user = await getUser(req);
-  //   const stations = await db.select('*').from('se_project.station');
-  //   return res.status(200).render('stations', { ...user, stations });
+  // app.get('/users', async function (req, res) {
+  //   const users = await db.select('*').from('se_project.user');
+  //   return res.render('users', { users });
   // });
 
   app.get('/manage/stations', async function (req, res) {
@@ -54,7 +48,7 @@ module.exports = function (app) {
     }
   });
 
-  app.get('/reset', async function (req, res) {
+  app.get('/resetPassword', async function (req, res) {
     try {
       const user = await getUser(req);
       res.status(200).render('reset', user); 
@@ -70,15 +64,10 @@ module.exports = function (app) {
     return res.status(200).render('rides', { user, rides });
   });
 
-  app.get('/requests/refund', async function (req, res) {
+  app.get('/manage/requests/refunds', async function (req, res) {
     const user = await getUser(req);
-    if (user.isAdmin) {
-      const refunds = await db.select('*').from('se_project.refund_request');
-      return res.status(200).render('request_refund', { user, refunds });
-    } else {
-      const refunds = await db.select('*').from('se_project.refund_request').where('user_id', user.user_id);
-      return res.status(200).render('request_refund', { user, refunds });
-    }
+    const rRequests = await db.select('*').from('se_project.refund_request');
+    return res.status(200).render('manage_refunds', { ...user, rRequests });
   });
   app.get('/manage/routes', async function (req, res) {
     const user = await getUser(req);
@@ -90,10 +79,11 @@ module.exports = function (app) {
     const zones = await db.select('*').from('se_project.zone');
     return res.status(200).render('zones', { user, zones });
   });
-  app.get('/manage/senior', async function (req, res) {
+  app.get('/manage/requests/seniors', async function (req, res) {
     const user = await getUser(req);
     const sRequests = await db.select('*').from('se_project.senior_request');
   });
+  
   app.get('/prices', async function (req, res) {
     const user = await getUser(req);
     const prices = await db.select('*').from('se_project.zone');
