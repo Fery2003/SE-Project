@@ -70,7 +70,7 @@ module.exports = function (app) {
       if (!newPassword) {
         return res.status(400).json({ msg: 'Please enter a password' });
       }
-      if (newPassword.length < 0) {
+      if (newPassword.length == 0) {
         //eh lazmeto ya yahia? what case should be inserted for this to actually happpen?
         return res.status(400).json({ msg: 'Password must mot be empty' });
       }
@@ -197,35 +197,35 @@ module.exports = function (app) {
     if (!root) return null; // check if root is null "an extra unnecessary check :)"
     const rootNode = { nodes: [] }; // store children of root node
     let curr = rootNode; // store root as current node
-    do{
+    do {
 
-    const nextStationId = transferStation + 1; // fetch following station
+      const nextStationId = transferStation + 1; // fetch following station
 
-    // check if next station is destination
-    if (nextStationId == destination) {
-      console.log('You have reached your destination !');
-    }
+      // check if next station is destination
+      if (nextStationId == destination) {
+        console.log('You have reached your destination !');
+      }
 
-    db.select('id')
-      .from('route')
-      .where('route_name')
-      .equals('hi' + transferStation + '%');
-    const stationType = db.select('station_type').from('se_project.station').where('id', transferStation);
-    if (stationType == 'transfer') {
-      root = transferStation;
+      db.select('id')
+        .from('route')
+        .where('route_name')
+        .equals('hi' + transferStation + '%');
+      const stationType = db.select('station_type').from('se_project.station').where('id', transferStation);
+      if (stationType == 'transfer') {
+        root = transferStation;
+        transferTree(nextStationId, destination);
+      }
+      //store the very next stations to the transfer (all of them) into the nodes stack
+      curr.nodes.push(nextStationId);
+
+    } while (nextStationId.station_position != "end");
+    if (nextStationId != destination) {
+      //empty the stack
+      nodes = [];
       transferTree(nextStationId, destination);
     }
-    //store the very next stations to the transfer (all of them) into the nodes stack
-    curr.nodes.push(nextStationId);
 
-  } while(nextStationId.station_position != "end");
-  if(nextStationId != destination){
-    //empty the stack
-    nodes = [];
-    transferTree(nextStationId, destination);
-  }
-
-  return nodes.length;
+    return nodes.length;
 
   }
   // Get ticket price endpoint
@@ -233,7 +233,7 @@ module.exports = function (app) {
     try {
       const { fromStation, toStation } = req.body;
       // fetch id of station
-      const fromStationId = await db.select('*').from('se_project.station').where('station_name', fromStation); 
+      const fromStationId = await db.select('*').from('se_project.station').where('station_name', fromStation);
       const fromStationObj = await db.select('*').from('se_project.station').where('id', fromStationId);
       const toStationId = await db.select('*').from('se_project.station').where('station_name', toStation);
       const toStationObj = await db.select('*').from('se_project.station').where('id', toStationId);
@@ -242,40 +242,43 @@ module.exports = function (app) {
       const routeNames = "hi" + fromStationObj.id + toStationObj.id;
       do {
         const ifDirect = await db.select("route_name").from("se_project.route").where("from_station_id", fromStationObj.id).andWhere("to_station_id", toStationObj.id);
-        
-        if(ifDirect == routeNames){
+
+        if (ifDirect == routeNames) {
           console.log("Your route is a direct one !");
           stationStack.push(fromStationObj);
           stationStack.push(toStationObj);
         }
-        else{
-        stationStack.push(fromStationObj); // pushing current station to stack
-        fromStationObj = toStationObj; // traversing to next node/station
-        toStationObj.id += 1;
-        toStationObj = await db.select("*").from("se_project.route").where("route_name", routeNames);
+        else {
+          stationStack.push(fromStationObj); // pushing current station to stack
+          fromStationObj = toStationObj; // traversing to next node/station
+          toStationObj.id += 1;
+          toStationObj = await db.select("*").from("se_project.route").where("route_name", routeNames);
         }
       } while ((fromStationObj.station_type == 'normal') && (toStationObj.station_type == 'normal'));
 
       noOfStations = stationStack.length;
 
-      if(fromStationObj.station_type == 'transfer'){
+      if (fromStationObj.station_type == 'transfer') {
         x = transferTree(fromStationObj.id, toStationObj.id);
         noOfStations += x;
       }
-      
+
       //converting noOfstations into a text:
       const getPrice = null;
-      if(noOfStations <= 9){
-        getPrice = await db.select("price").from("se_project.zone").where("zone_type", "1-9");}
-      else if(noOfStations <= 16 && noOfStations > 9){
-        getPrice = await db.select("price").from("se_project.zone").where("zone_type", "10-16");}
-      else{
-        getPrice = await db.select("price").fromRaw('(select "price" from "se_project.zone" where "price" > ?)', '16');} // greater than 16 to infinity
-     
+      if (noOfStations <= 9) {
+        getPrice = await db.select("price").from("se_project.zone").where("zone_type", "1-9");
+      }
+      else if (noOfStations <= 16 && noOfStations > 9) {
+        getPrice = await db.select("price").from("se_project.zone").where("zone_type", "10-16");
+      }
+      else {
+        getPrice = await db.select("price").fromRaw('(select "price" from "se_project.zone" where "price" > ?)', '16');
+      } // greater than 16 to infinity
+
       //Now we check if the user is a senior or not:
       const isSenior = await db.select("is_senior").from("se_project.user").where("id", getUser(req).id);
 
-      if(isSenior == true)
+      if (isSenior == true)
         getPrice = getPrice * 0.5; // 50% discount
 
       res.json(getPrice);
