@@ -31,130 +31,30 @@
 <body>
     <script>
         $(document).ready(function () {
-            // Function to update the table data
-            function updateTable() {
-                $.ajax({
-                    url: "/manage/stations",
-                    type: "GET",
-                    success: function (response) {
-                        var updatedTableHTML = "";
-                        console.log(response);
-
-                        if (Array.isArray(response.stations)) {
-                            // Generate the updated table HTML based on the response
-                            //response.stations.forEach(function (station) {
-                            //  updatedTableHTML += "<tr>" +
-                            //    "<td>" + station.id + "</td>" +
-                            //  "<td>" + station.station_name + "</td>" +
-                            //"<td>" + station.station_type + "</td>" +
-                            //"<td>" + station.station_position + "</td>" +
-                            //"<td>" + station.station_status + "</td>";
-
-                            //if (response.isAdmin) {
-                            //  updatedTableHTML += "<td class='text-center'>" +
-                            //    "<input id='btnEditStation' type='button' value='Edit station' class='btn btn-primary'>" +
-                            //  "<input id='btnDeleteStation' type='button' value='Delete station' class='btn btn-danger'>" +
-                            //"</td>";
-                            //}
-
-                            //updatedTableHTML += "</tr>";
-                            //});
-                            for (let station of response.stations) {
-                                updatedTableHTML += "<tr>" +
-                                    "<td>" + station.id + "</td>" +
-                                    "<td>" + station.station_name + "</td>" +
-                                    "<td>" + station.station_type + "</td>" +
-                                    "<td>" + station.station_position + "</td>" +
-                                    "<td>" + station.station_status + "</td>";
-
-                                if (response.isAdmin) {
-                                    updatedTableHTML += "<td class='text-center'>" +
-                                        "<input id='btnEditStation' type='button' value='Edit station' class='btn btn-primary'>" +
-                                        "<input id='btnDeleteStation' type='button' value='Delete station' class='btn btn-danger'>" +
-                                        "</td>";
-                                }
-
-                                updatedTableHTML += "</tr>";
-                            }
-
-                            // Update the table with the updated HTML
-                            $("#stationsTable tbody").html(updatedTableHTML);
-                        }
-                    },
-                    error: function (error) {
-                        console.error("Error updating table:", error);
-                    }
-                });
-            }
-
-            // Open the modal when the "Add Station" button is clicked
-            $("#btnAddStation").click(function () {
-                $("#stationModal").modal("show");
+            $("#price").click( function(){
+                //console.log(response); //price
+                const from_station = $('#originstation').val();
+                const to_station = $('#destinationstation').val();
+                const data = {
+                    from_station,
+                    to_station,
+                }       
             });
-
-            // Handle the "Create Station" button click inside the modal
-            $("#createStationBtn").click(function () {
-                var stationName = $("#stationNameInput").val();
-
-                // Make an AJAX request to create the station
-                $.ajax({
-                    url: "/api/v1/station",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify({ stationName: stationName }),
-                    success: function (response) {
-                        console.log(response);
-                        $("#stationModal").modal("hide"); // Hide the modal
-                        // updateTable(); // Update the table data
-
-                        // Display success message to the user
-                        var successMessage = $("<div>", {
-                            class: "alert alert-success",
-                            text: "Station created successfully!"
-                        });
-
-                        $("#stationModal").before(successMessage);
-
-                        // Automatically remove the success message after 3 seconds
-                        setTimeout(function () {
-                            successMessage.remove();
-                        }, 3000);
-                    },
-                    error: function (error) {
-                        console.error("Error creating station:", error.responseJSON.msg);
+            $.ajax({
+                type: "GET",
+                url: `/api/v1/tickets/price/${from_station}/${to_station}`,
+                data,
+                success: function (serverResponse) {
+                    if (serverResponse) {
+                        alert('this is the price', serverResponse);
+                        location.href = '/tickets';
                     }
-                });
-            });
-
-            // Handle the "Delete Station" button click
-            $(".delete-station").click(function () {
-                var stationId = $(this).attr("id");
-
-                // Make an AJAX request to delete the station
-                $.ajax({
-                    url: `/api/v1/station/${stationId}`,
-                    type: "DELETE",
-                    success: function (response) {
-                        console.log(response);
-                        // updateTable(); // Update the table data
-
-                        // Display success message to the user
-                        var successMessage = $("<div>", {
-                            class: "alert alert-success",
-                            text: "Station deleted successfully!"
-                        });
-
-                        $("#stationsTable").before(successMessage);
-
-                        // Automatically remove the success message after 3 seconds
-                        setTimeout(function () {
-                            successMessage.remove();
-                        }, 3000);
-                    },
-                    error: function (error) {
-                        console.error("Error deleting station:", error);
+                },
+                error: function (errorResponse) {
+                    if (errorResponse) {
+                        alert(`error: ${errorResponse.responseText}`);
                     }
-                });
+                }
             });
         });
 
@@ -273,68 +173,31 @@
         <!-- Page Header Start -->   
     </div>
 
-        {{#isAdmin}}
-        <div style="position:absolute; right:0;">
-            <input id="btnAddStation" type="button" value="Add station" class="btn btn-primary">
-            <br />
+        <!-- Content Start -->
+        <div class="a">
+            <h1>Price</h1>
         </div>
-        <div class="modal fade" id="stationModal" tabindex="-1" role="dialog" aria-labelledby="stationModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="stationModalLabel">Enter Station Name</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="text" id="stationNameInput" class="form-control" placeholder="Enter station name">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="createStationBtn">Create Station</button>
-                    </div>
-                </div>
+        <div style="padding-left: 500px">
+        <form class="form-horizontal" style="width: 50%;">
+          <div class="group">
+            <label for="origin station" class="col-sm-2 control-label">Origin station</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="originstation" name="originstation" placeholder="Station Name" value="">
             </div>
         </div>
-        {{/isAdmin}}
-        <br />
-        <table class="table" id="stationsTable">
-            <thead>
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Position</th>
-                    <th scope="col">Status</th>
-                    {{#isAdmin}}
-                    <th scope="col" class="text-center">Actions</th>
-                    {{/isAdmin}}
-
-
-                </tr>
-            </thead>
-            <tbody>
-                {{#stations}}
-                <tr>
-                    <td>{{id}}</td>
-                    <td>{{station_name}}</td>
-                    <td>{{station_type}}</td>
-                    <td>{{station_position}}</td>
-                    <td>{{station_status}}</td>
-                    {{#isAdmin}}
-                    <td class="text-center">
-                        <input id="{{id}}" type="button" value="Edit station" class="btn btn-primary edit-station">
-                        <input id="{{id}}" type="button" value="Delete station" class="btn btn-danger delete-station">
-                    </td>
-                    {{/isAdmin}}
-                </tr>
-                {{/stations}}
-            </tbody>
-
-        </table>
-    </div>
+        <div class="group">
+            <label for="destination station" class="col-sm-2 control-label">Destination station</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="destinationstation" name="destinationstation" placeholder="Station Name" value="">
+            </div>
+        </div>
+        <div class = "group">
+          <div class = "col-sm-10 col-sm-offset-2">
+              <input id="price" name="price" type="button" value="price" class="btn btn-primary">
+          </div>
+      </div>
+      </div>
+    </form>
 
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">

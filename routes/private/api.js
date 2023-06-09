@@ -282,8 +282,7 @@ module.exports = function (app) {
       noOfStations += x;
     }
 
-    //converting noOfStations into a string:
-    let getPrice = null;
+    const getPrice = null;
     if (noOfStations <= 9) {
       getPrice = await db.select('price').from('se_project.zone').where('zone_type', '1-9');
     } else if (noOfStations <= 16 && noOfStations > 9) {
@@ -298,7 +297,7 @@ module.exports = function (app) {
     return getPrice;
   }
   // Get ticket price endpoint
-  app.get('/api/v1/tickets/price/:originId', async (req, res) => {
+  app.get('/api/v1/tickets/price/:originId/:destinationId', async (req, res) => {
     try {
       const { fromStation, toStation } = req.body;
       const user = await getUser(req);
