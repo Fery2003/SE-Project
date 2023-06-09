@@ -47,7 +47,7 @@
           data,
           success: function (serverResponse) {
             if (serverResponse) {
-              location.href = '/requests/senior';
+              location.href = '/dashboard';
             }
           },
           error: function (errorResponse) {

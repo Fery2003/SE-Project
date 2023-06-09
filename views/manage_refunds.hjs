@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Stations</title>
+    <title>Manage Refund Requests</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Cairo Metro" name="keywords">
     <meta content="Cairo Metro" name="description">
@@ -27,8 +27,74 @@
 
     <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
 </head>
+<script>
+        $(document).ready(function () {
+            $("#requestsTable").on("click", "#btnAccept", function () {
+                var requestId = $(this).closest("tr").find("td:first").text();
+                const status = "accepted"
+                // Make an AJAX request to delete the station
+                $.ajax({
+                    url: "/api/v1/requests/senior/${requestId}",
+                    type: "PUT",
+                    status
+                    success: function (response) {
+                        console.log(response);
+                        updateTable(); // Update the table data
+
+                        // Display success message to the user
+                        var successMessage = $("<div>", {
+                            class: "alert alert-success",
+                            text: "Request accepted successfully!"
+                        });
+
+                        $("#requestsTable").before(successMessage);
+
+                        // Automatically remove the success message after 3 seconds
+                        setTimeout(function () {
+                            successMessage.remove();
+                        }, 3000);
+                    },
+                    error: function (error) {
+                        console.error("Error updating table:", error.msg);
+                    }
+                });
+            });
+            $("#requestsTable").on("click", "#btnReject", function () {
+                var requestId = $(this).closest("tr").find("td:first").text();
+                const status = "rejected"
+                // Make an AJAX request to delete the station
+                $.ajax({
+                    url: "/api/v1/requests/senior/${requestId}",
+                    type: "PUT",
+                    status
+                    success: function (response) {
+                        console.log(response);
+                        updateTable(); // Update the table data
+
+                        // Display success message to the user
+                        var successMessage = $("<div>", {
+                            class: "alert alert-success",
+                            text: "Request accepted successfully!"
+                        });
+
+                        $("#requestsTable").before(successMessage);
+
+                        // Automatically remove the success message after 3 seconds
+                        setTimeout(function () {
+                            successMessage.remove();
+                        }, 3000);
+                    },
+                    error: function (error) {
+                        console.error("Error updating table:", error.msg);
+                    }
+                });
+            });
+        });    
+    </script>
+    
 
 <body>
+    
     <div>
         <!-- Topbar Start -->
         <div class='container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block'>
@@ -77,43 +143,43 @@
                         <div class="navbar-nav ml-auto py-0">
                             <a href="dashboard" class="nav-item nav-link">Dashboard</a>
                             {{#isAdmin}}
-                            <a href="stations" class="nav-item nav-link">Stations</a>
-                            <a href="routes" class="nav-item nav-link active">Routes</a>
+                            <a href="/manage/stations" class="nav-item nav-link">Stations</a>
+                            <a href="/manage/routes" class="nav-item nav-link">Routes</a>
                             <a href="/manage/zones" class="nav-item nav-link">Zones</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/refunds" class="dropdown-item">Refund
+                                    <a href="/manage/requests/refund" class="dropdown-item">Refund
                                         Requests</a>
-                                    <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
+                                    <a href="/manage/requests/senior" class="dropdown-item">Senior Requests</a>
                                 </div>
                             </div>
                             {{/isAdmin}}
                             {{#isNormal}}
-                            <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
-                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
-                            <a href="prices" class="nav-item nav-link">Prices</a>
-                            <a href="rides" class="nav-item nav-link">Rides</a>
+                            <a href="/subscriptions" class="nav-item nav-link">Subscriptions</a>
+                            <a href="/tickets" class="nav-item nav-link">Tickets</a>
+                            <a href="/prices" class="nav-item nav-link">Prices</a>
+                            <a href="/rides" class="nav-item nav-link">Rides</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/refunds" class="dropdown-item">Refund
+                                    <a href="/manage/requests/refund" class="dropdown-item">Refund
                                         Requests</a>
-                                    <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
+                                    <a href="/manage/requests/senior" class="dropdown-item">Senior Requests</a>
                                 </div>
                             </div>
                             {{/isNormal}}
                             {{#isSenior}}
-                            <a href="subscriptions" class="nav-item nav-link">Subscriptions</a>
-                            <a href="tickets" class="nav-item nav-link active">Tickets</a>
-                            <a href="prices" class="nav-item nav-link">Prices</a>
-                            <a href="rides" class="nav-item nav-link">Rides</a>
+                            <a href="/subscriptions" class="nav-item nav-link">Subscriptions</a>
+                            <a href="/tickets" class="nav-item nav-link active">Tickets</a>
+                            <a href="/prices" class="nav-item nav-link">Prices</a>
+                            <a href="/rides" class="nav-item nav-link">Rides</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/refunds" class="dropdown-item">Refund
+                                    <a href="/manage/requests/refund" class="dropdown-item">Refund
                                         Requests</a>
-                                    <a href="/manage/seniors" class="dropdown-item">Senior Requests</a>
+                                    <a href="/manage/requests/senior" class="dropdown-item">Senior Requests</a>
                                 </div>
                             </div>
                             {{/isSenior}}
