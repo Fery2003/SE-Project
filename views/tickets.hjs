@@ -7,16 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tickets</title>
 
-    {{! Bootstrap CSS }}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-    {{! Bootstrap JS }}
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    {{! Font Awesome }}
-
-    <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
-
     <script>
         $(document).ready(function () {
             // Handle Registration Button Click
@@ -24,30 +14,14 @@
                 const first_name = $('#first_name').val();
                 const last_name = $('#last_name').val();
                 const id = $('#id').val();
-                const { creditCardNumber,
-                    holderName,
-                    paidAmount,
-                    origin,
-                    destination,
-                    tripDate } =
-                    $('#creditCardNumber').val(),
-                    $('#holderName').val(),
-                        $('#paidAmount').val(),
-                        $('#origin').val(),
-                        $('#destination').val(),
-                        $('#tripDate').val();
-
                 const data = {
-                    first_name,
-                    last_name,
-                    id,
-                    creditCardNumber,
-                    holderName,
-                    paidAmount,
-                    origin,
-                    destination,
-                    tripDate
-                };
+                    creditCardNumber: $('#creditCardNumber').val(),
+                    holderName: $('#holderName').val(),
+                    paidAmount: $('#paidAmount').val(),
+                    origin: $('#origin').val(),
+                    destination: $('#destination').val(),
+                    tripDate: $('#tripDate').val()
+                }
 
                 $.ajax({
                     type: "POST",

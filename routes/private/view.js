@@ -54,6 +54,16 @@ module.exports = function (app) {
     }
   });
 
+  app.get('/reset', async function (req, res) {
+    try {
+      const user = await getUser(req);
+      res.status(200).render('reset', user); 
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
+  });
+
   app.get('/rides', async function (req, res) {
     const user = await getUser(req);
     const rides = await db.select('*').from('se_project.ride');
@@ -66,7 +76,7 @@ module.exports = function (app) {
       const refunds = await db.select('*').from('se_project.refund_request');
       return res.status(200).render('request_refund', { user, refunds });
     } else {
-      const refunds = await db.select('*').from('se_project.refund_request').where('user_id', user.id);
+      const refunds = await db.select('*').from('se_project.refund_request').where('user_id', user.user_id);
       return res.status(200).render('request_refund', { user, refunds });
     }
   });
@@ -83,6 +93,11 @@ module.exports = function (app) {
   app.get('/manage/senior', async function (req, res) {
     const user = await getUser(req);
     const sRequests = await db.select('*').from('se_project.senior_request');
-    return res.status(200).render('routes', { user, sRequests });
+    return res.status(200).render('routes', { ...user, sRequests });
+  });
+  app.get('/prices', async function (req, res) {
+    const user = await getUser(req);
+    const prices = await db.select('*').from('se_project.zone');
+    return res.status(200).render('prices', { user, prices });
   });
 };
