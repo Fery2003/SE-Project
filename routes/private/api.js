@@ -497,15 +497,15 @@ module.exports = function (app) {
             await db('se_project.station').where('id', affectedRoute.to_station_id).update('station_position', 'start');
             await db('se_project.station').where('id', stationId).del();
           } else if (station.station_position == 'end') {
-            let affectedRoute = await db.select('*').from('se_project.route').where('from_station_id', stationId);
+            let affectedRoute = await db.select('*').from('se_project.route').where('from_station_id', stationId).first();
 
             //update the to station to become an end
             await db('se_project.station').where('id', affectedRoute.to_station_id).update('station_position', 'end');
             await db('se_project.station').where('id', stationId).del();
           } else if (station.station_position == 'middle') {
-            let middleIsTo = await db.select('*').from('se_project.route').where('to_station_id', stationId);
+            let middleIsTo = await db.select('*').from('se_project.route').where('to_station_id', stationId).first();
             let myFromStation = middleIsTo.from_station_id;
-            let middleIsFrom = await db.select('*').from('se_project.route').where('from_station_id', stationId);
+            let middleIsFrom = await db.select('*').from('se_project.route').where('from_station_id', stationId).first();
             let myToStation = middleIsFrom.to_station_id;
 
             await db('se_project.station').where('id', stationId).del();
@@ -529,8 +529,12 @@ module.exports = function (app) {
 
             let newSR2 = await db.insert([{ station_id: myToStation }, { route_id: parseInt(idNewStationToFrom) }]).into('se_project.station_route');
           }
+          else
+          {
+            await db('se_project.station').where('id', stationId).del();
+          }
         } else if (station.station_type == 'transfer') {
-          let transferRoutes = await db.select('*').from('se_project.route').where('from_station_id', stationId);
+          let transferRoutes = await db.select('*').from('se_project.route').where('from_station_id', stationId).first();
           let myNewTransfer = await db.select('from_station_id').from('se_project.route').where('to_station_id', stationId);
           for (let i = 0; i < transferRoutes.length; i++) {
             let toStation = transferRoutes[i].to_station_id;
