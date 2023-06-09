@@ -54,10 +54,32 @@ module.exports = function (app) {
     }
   });
 
-  app.get('/reset', async function (req, res) {
+  app.put('/reset', async function (req, res) {
+    //reset password of the user
     try {
       const user = await getUser(req);
-      res.status(200).render('reset', user); 
+      return res.status(200).render('reset', { user });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
+  });
+  app.get('/subscriptions', async function (req, res) {
+    try {
+      const user = await getUser(req);
+      return res.status(200).render('subscriptions', { user });
+    }
+    catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
+  });
+
+  app.post('/tickets', async function (req, res) {
+    try {
+      const user = await getUser(req);
+      const tickets = await db.select('*').from('se_project.ticket').where('user_id', user.user_id);
+      return res.status(200).render('tickets', { user, tickets });
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
