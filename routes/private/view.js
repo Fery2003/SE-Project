@@ -103,12 +103,16 @@ module.exports = function (app) {
   });
   app.get('/subscriptions', async function (req, res) {
     const user = await getUser(req);
-    const sub = await db.select('*').from('se_project.ticket').where('user_id', user.user_id);
+    const sub = await db.select('*').from('se_project.subscription').where('user_id', user.user_id);
     return res.status(200).render('subscriptions', { ...user, sub });
+  });
+  app.get('/tickets/purchase', async function (req, res) {
+    const user = await getUser(req);
+    return res.status(200).render('tickets_purchase', user);
   });
   app.get('/tickets', async function (req, res) {
     const user = await getUser(req);
     const tickets = await db.select('*').from('se_project.ticket').where('user_id', user.user_id);
-    return res.status(200).render('tickets', { ...user, tickets });
+    return res.status(200).render('tickets', {...user, tickets});
   });
 };
