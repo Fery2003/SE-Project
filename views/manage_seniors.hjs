@@ -213,7 +213,7 @@
             <thead>
                 <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">Request Stats</th>
+                    <th scope="col">Request Status</th>
                     <th scope="col">User Id</th>
                     <th scope="col">National Id</th>
                     {{#isAdmin}}

@@ -94,7 +94,33 @@
     
 
 <body>
-    
+    <script>
+        $(document).ready(function () {
+            $(".reject-btn").click(function () {
+                var id = $(this).attr('id');
+                $.ajax({
+                    url: `/api/v1/requests/refunds/${id}`,
+                    type: 'PUT',
+                    data: { refundStatus: "Rejected" },
+                    success: function (result) {
+                        location.reload();
+                    }
+                });
+            });
+
+            $(".accept-btn").click(function () {
+                var id = $(this).attr('id');
+                $.ajax({
+                    url: `/api/v1/requests/refunds/${id}`,
+                    type: 'PUT',
+                    data: { refundStatus: "Accepted" },
+                    success: function (result) {
+                        location.reload();
+                    }
+                });
+            });
+        });
+    </script>
     <div>
         <!-- Topbar Start -->
         <div class='container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block'>
@@ -205,7 +231,44 @@
                 <h6 class="text-uppercase text-body m-0">Refunds</h6>
             </div>
         </div>
-        <!-- Page Header Start -->
+        <!-- Page Header End -->
+    </div>
+
+    <div class="container-fluid py-5">
+        <table class="table" id="requestsTable">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Request Status</th>
+                    <th scope="col">User ID</th>
+                    <th scope="col">Refund Amount</th>
+                    <th scope="col">Ticket ID</th>
+                    {{#isAdmin}}
+                    <th scope="col" class="text-center">Actions</th>
+                    {{/isAdmin}}
+
+
+                </tr>
+            </thead>
+            <tbody>
+                {{#rRequests}}
+                <tr>
+                    <td>{{id}}</td>
+                    <td>{{status}}</td>
+                    <td>{{user_id}}</td>
+                    <td>{{refund_amount}}</td>
+                    <td>{{ticket_id}}</td>
+                    {{#isAdmin}}
+                    <td class="text-center">
+                        <input id="{{id}}" type="button" value="Accept" class="btn btn-primary accept-btn">
+                        <input id="{{id}}" type="button" value="Reject" class="btn btn-danger reject-btn">
+                    </td>
+                    {{/isAdmin}}
+                </tr>
+                {{/rRequests}}
+            </tbody>
+
+        </table>
     </div>
 
     <!-- Footer Start -->

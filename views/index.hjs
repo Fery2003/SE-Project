@@ -47,7 +47,8 @@
           data,
           success: function (serverResponse) {
             if (serverResponse) {
-              location.href = '/dashboard';
+              location.href = '/manage/requests/refunds';
+              // location.href = '/dashboard';
             }
           },
           error: function (errorResponse) {
