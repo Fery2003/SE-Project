@@ -46,7 +46,7 @@
 
             $.ajax({
                 type: "POST",
-                url: '/api/v1/subscriptions',
+                url: '/api/v1/payment/subscription',
                 data,
                 success: function (serverResponse) {
                     if (serverResponse) {
@@ -153,7 +153,8 @@
                             {{/isNormal}}
                             {{#isSenior}}
                             <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                                <a href="/subscriptions" class="nav-link dropdown-toggle"
+                                    data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
                                     <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
@@ -177,8 +178,8 @@
                                 </div>
                             </div>
                             {{/isSenior}}
-                            
-                            
+
+
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
                                 <div class="dropdown-menu rounded-0 m-0">
@@ -196,7 +197,7 @@
         <div class="container-fluid page-header">
             <h1 class="display-3 text-uppercase text-white mb-3">Subscriptions</h1>
             <div class="d-inline-flex text-white">
-                <h6 class="text-uppercase m-0"><a class="text-white" href="dashboard">Home</a></h6>
+                <h6 class="text-uppercase m-0"><a class="text-white" href="/dashboard.hjs">Home</a></h6>
                 <h6 class="text-body m-0 px-3">/</h6>
                 <h6 class="text-uppercase text-body m-0">Subscriptions</h6>
             </div>
@@ -204,32 +205,74 @@
         <!-- Page Header End -->
     </div>
 
+    <!-- Search Start -->
+    <div class="container-fluid bg-white pt-3 px-lg-5">
+        <div class="row mx-n2">
+            <div class="col-xl-2 col-lg-4 col-md-6 px-2">
+                <div class="time mb-3">
+                    <input type="integer" id="creditCardNumber" class="form-control border-dark"
+                        style="padding: 25px;" placeholder="Credit Card Number">
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-4 col-md-6 px-2">
+                <div class="time mb-3">
+                    <input type="text" id="holderName" class="form-control border-dark"
+                        style="padding: 25px;" placeholder="Holder Name">
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-4 col-md-6 px-2">
+                <div class="time mb-3">
+                    <input type="integer" id="paidAmount" class="form-control border-dark"
+                        style="padding: 25px;" placeholder="Enter Amount" >
+                </div>
+            </div>
+             <div class="col-xl-2 col-lg-4 col-md-6 px-2">
+                <div class="time mb-3">
+                    <input type="number" id="zoneId" class="form-control border-dark"
+                        style="padding: 25px;" placeholder="Enter Zone Id">
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-4 col-md-6 px-2">
+                <select id = "subType" class="custom-select px-4 mb-3" style="height: 50px;">
+                    <option selected>Select Subscription Type</option>
+                    <option value="1">Annual</option>
+                    <option value="2">Quarterly</option>
+                    <option value="3">Monthly</option>
+                </select>
+            </div>
+            <div class="col-xl-2 col-lg-4 col-md-6 px-2">
+                <button id = "submit" class="btn btn-primary btn-block mb-3" type="submit" style="height: 50px;">Pay</button>
+            </div>
+        </div>
+    </div>
+    <!-- Search End -->
+
     <div class="container-fluid">
         <table class="table">
             <thead>
                 <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">Subscription Type</th>
-                    <th scope="col">Zone Id</th>
-                    <th scope="col">User Id</th>
-                    <th scope="col">Number of Tickets Left</th>
+                    <th scope="col">Zone Type</th>
+                    <th scope="col">Price</th>
 
                 </tr>
             </thead>
             <tbody>
-                {{#sub}}
+                {{#zones}}
                 <tr>
                     <td>{{id}}</td>
-                    <td>{{sub_type}}</td>
-                    <td>{{zone_id}}</td>
-                    <td>{{user_id}}</td>
-                    <td>{{no_of_tickets}}</td>
+                    <td>{{zone_type}}</td>
+                    <td>{{price}}</td>
                 </tr>
-                {{/sub}}
+                {{/zones}}
             </tbody>
 
         </table>
     </div>
+
+    
+
+
 
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
@@ -288,14 +331,14 @@
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
     <!-- JavaScript Libraries -->
-            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-            <script src="/lib/easing/easing.min.js"></script>
-            <script src="/lib/waypoints/waypoints.min.js"></script>
-            <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
-            <script src="/lib/tempusdominus/js/moment.min.js"></script>
-            <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script>
-            <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="/lib/easing/easing.min.js"></script>
+    <script src="/lib/waypoints/waypoints.min.js"></script>
+    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Template Javascript -->
     <script src="/js/main.js"></script>
