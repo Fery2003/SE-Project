@@ -2,9 +2,25 @@ I will add a to do list here of things we need to make sure we handle. If there 
 When task is finished, write next to it done.
 
 - apply discount for those who are accepted as senior
-- change role id for those accepted as senior to 3 (done)
-- affectedRoute returns an array of results so we should add .first() to get the first result (see first case in delete station endpoint) (done)
-- we should handle deleting stations that have null station_positions (done)
+
+- correct/fix dashboard and navbars of all the users so that it works for all
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 - check price steps "just for me, you can ignore": // do we have to handle delete stations????????
     -take origin& dest names and get their ids from table station
