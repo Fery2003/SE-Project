@@ -67,13 +67,6 @@ module.exports = function (app) {
     try {
       const { user_id } = await getUser(req);
       const { newPassword } = req.body;
-      if (!newPassword) {
-        return res.status(400).json({ msg: 'Please enter a password' });
-      }
-      if (newPassword.length == 0) {
-        //eh lazmeto ya yahia? what case should be inserted for this to actually happpen?
-        return res.status(400).json({ msg: 'Password must mot be empty' });
-      }
       await db.from('se_project.user').where('id', user_id).update({ password: newPassword });
       // res.json(ret);
       res.status(200).json({ message: 'Password reset successfully' });

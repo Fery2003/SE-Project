@@ -54,6 +54,16 @@ module.exports = function (app) {
     }
   });
 
+  app.get('/reset', async function (req, res) {
+    try {
+      const user = await getUser(req);
+      res.status(200).render('reset', user); 
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error!');
+    }
+  });
+
   app.get('/rides', async function (req, res) {
     const user = await getUser(req);
     const rides = await db.select('*').from('se_project.ride');

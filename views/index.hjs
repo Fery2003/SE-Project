@@ -46,7 +46,7 @@
           data,
           success: function (serverResponse) {
             if (serverResponse) {
-              location.href = '/dashboard';
+              location.href = '/reset';
             }
           },
           error: function (errorResponse) {
