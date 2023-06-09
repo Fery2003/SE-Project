@@ -313,10 +313,13 @@ module.exports = function (app) {
   app.post('/api/v1/refund/:ticketId', async (req, res) => {
     try {
       const { ticket_id } = req.params;
+      const { trip_date } = await db.raw('SELECT trip_date FROM se_project.ticket WHERE id = ?', [ticket_id]);
       if (!ticket_id) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
-
+      if (Date.now() <= trip_date) {
+        return res.status(400).json({ msg: 'Ticket is not expired yet' });
+      }
       // check ticket date
       const { user_id } = await getUser(req);
       const ticket = await db.select('*').from('se_project.ticket').where('id', ticket_id).first();
