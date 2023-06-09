@@ -61,6 +61,67 @@
                         }
                     });
                 });
+                $("#pOnline").click(function () {
+                    $("#purchase_online").style.display = 'block';
+                });
+                $("#pSub").click(function () {
+                    $(".containerSub").style.display = 'block'; 
+                });
+                $("#purchaseOn").click(function()
+                {
+                    const data = 
+                    {
+                        creditCardNumber: $('#creditCardNumberO').val(),
+                        holderName: $('#holderNameO').val(),
+                        paidAmount: $('#paidAmountO').val(),
+                        origin: $('#originO').val(),
+                        destination: $('#destinationO').val(),
+                        tripDate: $('#tripDateO').val()
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: '/api/v1/payment/ticket',
+                        data,
+                        success: function (serverResponse) {
+                            if (serverResponse) {
+                                alert('Successfully Purchased Ticket');
+                                location.href = '/tickets';
+                            }
+                        },
+                        error: function (errorResponse) {
+                            if (errorResponse) {
+                                alert(`Error Register User: ${errorResponse.responseText}`);
+                            }
+                        }
+                    });
+                });
+                $("#purchaseSub").click(function()
+                {
+                    const subId = {{UserSub.id}}
+                    const data = 
+                    {
+                        subId: subId,
+                        origin: $('#originS').val(),
+                        destination: $('#destinationS').val(),
+                        tripDate: $('#tripDateS').val()
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: '/api/v1/tickets/purchase/subscription',
+                        data,
+                        success: function (serverResponse) {
+                            if (serverResponse) {
+                                alert('Successfully Purchased Ticket');
+                                location.href = '/tickets';
+                            }
+                        },
+                        error: function (errorResponse) {
+                            if (errorResponse) {
+                                alert(`Error Register User: ${errorResponse.responseText}`);
+                            }
+                        }
+                    });
+                });
             });
         </script>
     </head>
@@ -128,14 +189,16 @@
                             {{/isAdmin}}
                             {{#isNormal}}
                             <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
                                     <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
                                 </div>
                             </div>
                             <div class="nav-item dropdown">
-                                <a href="/tickets" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
                                 <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/tickets" class="dropdown-item">My Tickets</a>
                                     <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
                                 </div>
                             </div>
@@ -152,14 +215,17 @@
                             {{/isNormal}}
                             {{#isSenior}}
                             <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                                <a href="/subscriptions" class="nav-link dropdown-toggle"
+                                    data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
                                     <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
                                 </div>
                             </div>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
                                 <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="/tickets" class="dropdown-item">My Tickets</a>
                                     <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
                                 </div>
                             </div>
@@ -174,7 +240,7 @@
                                 </div>
                             </div>
                             {{/isSenior}}
-                            
+
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
                                 <div class="dropdown-menu rounded-0 m-0">
@@ -192,7 +258,7 @@
         <div class="container-fluid page-header">
             <h1 class="display-3 text-uppercase text-white mb-3">Tickets</h1>
             <div class="d-inline-flex text-white">
-                <h6 class="text-uppercase m-0"><a class="text-white" href="/dashboard.hjs">Home</a></h6>
+                <h6 class="text-uppercase m-0"><a class="text-white" href="dashboard">Home</a></h6>
                 <h6 class="text-body m-0 px-3">/</h6>
                 <h6 class="text-uppercase text-body m-0">Tickets</h6>
             </div>
@@ -200,61 +266,78 @@
         <!-- Page Header End -->
     </div>
 
-
-    <div class="container">
+    <div class="container-purchase-choice" >
+        <div class="input-group-append">
+            <button id = "pSub" class="btn btn-primary text-uppercase px-3">Purchase with Subscription</button>
+        </div>
+        <div class="input-group-append">
+            <button id = "pOnline" class="btn btn-primary text-uppercase px-3">Purchase Online</button>
+        </div>
+    </div>
+    <div class="container" id = "purchase_online" style = "display: none;">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h2>Ticket Information</h2>
                 <form>
                     <div class="form-group">
-                        <label for="first_name">First Name</label>
-                        <input type="text" class="form-control" id="first_name" placeholder="Enter your first name"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label for="last_name">Last Name</label>
-                        <input type="text" class="form-control" id="last_name" placeholder="Enter your last name"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label for="id">ID</label>
-                        <input type="text" class="form-control" id="id" placeholder="Enter your ID" required>
-                    </div>
-                    <div class="form-group">
                         <label for="creditCardNumber">Credit Card Number</label>
-                        <input type="text" class="form-control" id="creditCardNumber"
+                        <input type="text" class="form-control" id="creditCardNumberO"
                             placeholder="Enter your credit card number" required>
                     </div>
                     <div class="form-group">
                         <label for="holderName">Card Holder Name</label>
-                        <input type="text" class="form-control" id="holderName"
+                        <input type="text" class="form-control" id="holderNameO"
                             placeholder="Enter the card holder's name" required>
                     </div>
                     <div class="form-group">
                         <label for="paidAmount">Paid Amount</label>
-                        <input type="text" class="form-control" id="paidAmount" placeholder="Enter the paid amount"
+                        <input type="text" class="form-control" id="paidAmountO" placeholder="Enter the paid amount"
                             required>
                     </div>
                     <div class="form-group">
                         <label for="origin">Origin</label>
-                        <input type="text" class="form-control" id="origin" placeholder="Enter the origin" required>
+                        <input type="text" class="form-control" id="originO" placeholder="Enter the origin" required>
                     </div>
                     <div class="form-group">
                         <label for="destination">Destination</label>
-                        <input type="text" class="form-control" id="destination" placeholder="Enter the destination"
+                        <input type="text" class="form-control" id="destinationO" placeholder="Enter the destination"
                             required>
                     </div>
                     <div class="form-group">
                         <label for="tripDate">Trip Date</label>
-                        <input type="text" class="form-control" id="tripDate" placeholder="Enter the trip date"
+                        <input type="text" class="form-control" id="tripDateO" placeholder="Enter the trip date"
                             required>
                     </div>
-                    <button type="button" class="btn btn-primary" id="showTicketPrice">Show Ticket Price</button>
+                    <button type="button" class="btn btn-primary" id="purchaseOn">Purchase</button>
                 </form>
             </div>
         </div>
     </div>
 
+    <div class="container-Sub" id = "purchase_sub" style = "display: none;">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2>Ticket Information</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="origin">Origin</label>
+                        <input type="text" class="form-control" id="originS" placeholder="Enter the origin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="destination">Destination</label>
+                        <input type="text" class="form-control" id="destinationS" placeholder="Enter the destination"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tripDate">Trip Date</label>
+                        <input type="text" class="form-control" id="tripDateS" placeholder="Enter the trip date"
+                            required>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="purchaseSub">Purchase</button>
+                </form>
+            </div>
+        </div>
+    </div>
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
         <div class="row pt-5">
