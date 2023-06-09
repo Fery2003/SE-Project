@@ -209,8 +209,12 @@
                         <input type="text" id="creditCardNumber" placeholder="Credit Card Number">
                         <input type="text" id="holderName" placeholder="Holder Name">
                         <input type="text" id="paidAmount" placeholder="Paid Amount">
-                        <input type="text" id="subType" placeholder="Subscription Type">
-                        <input type="text" id="zoneId" placeholder="Zone Id">
+                        {{!-- <input type="text" id="subType" placeholder="Subscription Type"> --}}
+                        <select id="subType">
+                            <option value="1">Annual</option>
+                            <option value="2">Quarterly</option>
+                            <option value="3">Monthly</option>
+                            <input type="text" id="zoneId" placeholder="Zone Id">
                     </table>
                 </div>
             </div>

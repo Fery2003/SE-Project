@@ -28,8 +28,38 @@
     <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
 </head>
 <!--functionality -->
+<!-- Page Header Start -->
+<div class="container-fluid page-header">
+    <h1 class="display-3 text-uppercase text-white mb-3">Senior Requests</h1>
+    <div class="d-inline-flex text-white">
+        <h6 class="text-uppercase m-0"><a class="text-white" href="/dashboard">Home</a></h6>
+        <h6 class="text-body m-0 px-3">/</h6>
+        <h6 class="text-uppercase text-body m-0">Senior Requests</h6>
+    </div>
+</div>
+<!-- Page Header End -->
+<!-- services start -->
 
 <body>
+    <script>
+        $(document).ready(function () {
+            $("#updateSeniorBtn").click(function () {
+                let NID = $("#NID").val();
+                $.ajax({
+                    url: "/api/v1/senior/request",
+                    type: "POST",
+                    data: JSON.stringify({ nationalId: NID }),
+                    success: function (serverResponse) {
+                        alert('Feras')
+                    },
+                    error: function (error) {
+                        console.error("Error", error.msg);
+                    }
+                });
+            });
+        });
+    </script>
+
     <div>
         <!-- Topbar Start -->
         <div class='container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block'>
@@ -152,22 +182,13 @@
         </div>
         <!-- Navbar End -->
 
-        <!-- Page Header Start -->
-        <div class="container-fluid page-header">
-            <h1 class="display-3 text-uppercase text-white mb-3">Senior Requests</h1>
-            <div class="d-inline-flex text-white">
-                <h6 class="text-uppercase m-0"><a class="text-white" href="/dashboard">Home</a></h6>
-                <h6 class="text-body m-0 px-3">/</h6>
-                <h6 class="text-uppercase text-body m-0">Senior Requests</h6>
-            </div>
-        </div>
-        <!-- Page Header End -->
+    <div class="body">
+        <input type="text" id="NID" class="form-control" placeholder="Enter your National ID">
     </div>
-
-
-    <!-- services start -->
-
-    <!-- services End -->
+    <div class="grp">
+        <button type="button" class="btn btn-primary" id="updateSeniorBtn">Update</button>
+    </div>
+ 
 
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
@@ -244,4 +265,3 @@
 </body>
 
 </html>
-</body>

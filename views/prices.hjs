@@ -41,8 +41,6 @@
                         if (serverResponse) {
                             alert(serverResponse);
                             console.log(serverResponse);
-
-                            //  location.href = '/prices';
                         }
                     },
                     error: function (errorResponse) {

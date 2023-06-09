@@ -47,7 +47,7 @@
           data,
           success: function (serverResponse) {
             if (serverResponse) {
-              location.href = '/tickets';
+              location.href = '/subscriptions';
               // location.href = '/dashboard';
             }
           },
@@ -200,7 +200,6 @@
 
       <!-- Back to Top -->
       <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
 
       <!-- JavaScript Libraries -->
       <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
