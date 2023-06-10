@@ -2,15 +2,15 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>Dashboard</title>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <meta content="Cairo Metro" name="keywords">
-  <meta content="Cairo Metro" name="description">
-  <!-- Google Web Fonts -->
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap"
-    rel="stylesheet">
+    <meta charset="utf-8">
+    <title>Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Cairo Metro" name="keywords">
+    <meta content="Cairo Metro" name="description">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap"
+        rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
@@ -160,6 +160,7 @@
         <div class="container-fluid page-header">
             <h1 class="display-3 text-uppercase text-white mb-3">Home</h1>
         </div>
+        
         <!-- Page Header End -->
     </div>
 
@@ -169,44 +170,44 @@
             <h1 class="display-4 text-uppercase text-center mb-5">Meet Our Team</h1>
             <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
                 <div class="team-item">
-                    
+                    <img class="img-fluid w-100" src="images/fery.jpg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Feras Nizar</h4>
                         <p class="m-0">Software Engineer</p>
                     </div>
                 </div>
                 <div class="team-item">
-                    
+                    <img class="img-fluid w-100" src="images/retret.jpg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Rita Emad</h4>
                         <p class="m-0">Software Engineer</p>
                     </div>
                 </div>
                 <div class="team-item">
-                    
+                    <img class="img-fluid w-100" src="images/yaya.jpg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Yahia Ehab</h4>
                         <p class="m-0">Software Engineer</p>
                     </div>
                 </div>
                 <div class="team-item">
-                    
+                    <img class="img-fluid w-100" src="images/jana.jpg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Jana ElKasaby</h4>
                         <p class="m-0">Software Engineer</p>
                     </div>
                 </div>
                 <div class="team-item">
-                    
+                    <img class="img-fluid w-100" src="images/deebo.jpg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Mariam Amr</h4>
                         <p class="m-0">Software Engineer</p>
                     </div>
                 </div>
                 <div class="team-item">
-                    
+                    <img class="img-fluid w-100" src="images/raouf.jpeg" alt="">
                     <div class="position-relative py-4">
-                        <h4 class="text-uppercase">AbdelRaouf Khorshed</h4>
+                        <h4 class="text-uppercase">Abdelraouf Khorshed</h4>
                         <p class="m-0">Software Engineer</p>
                     </div>
                 </div>
