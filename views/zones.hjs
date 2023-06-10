@@ -119,59 +119,60 @@
                         </div>
                         {{/isAdmin}}
                         {{#isNormal}}
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
-                                    <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
-                                </div>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
+                                <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
                             </div>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/tickets" class="dropdown-item">My Tickets</a>
-                                    <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
-                                </div>
+                        </div>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="/tickets" class="dropdown-item">My Tickets</a>
+                                <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
                             </div>
-                            <a href="/prices" class="nav-item nav-link">Prices</a>
-                            <a href="/rides" class="nav-item nav-link">Rides</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/requests/refund" class="dropdown-item">Refund
-                                        Requests</a>
-                                    <a href="/requests/senior" class="dropdown-item">Senior Requests</a>
-                                </div>
+                        </div>
+                        <a href="/prices" class="nav-item nav-link">Prices</a>
+                        <a href="/rides" class="nav-item nav-link">Rides</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="/requests/refund" class="dropdown-item">Refund
+                                    Requests</a>
+                                <a href="/requests/senior" class="dropdown-item">Senior Requests</a>
                             </div>
-                            {{/isNormal}}
-                            {{#isSenior}}
-                            <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
-                                    <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
-                                </div>
+                        </div>
+                        {{/isNormal}}
+                        {{#isSenior}}
+                        <div class="nav-item dropdown">
+                            <a href="/subscriptions" class="nav-link dropdown-toggle"
+                                data-toggle="dropdown">Subscriptions</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
+                                <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
                             </div>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/tickets" class="dropdown-item">My Tickets</a>
-                                    <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
-                                </div>
+                        </div>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="/tickets" class="dropdown-item">My Tickets</a>
+                                <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
                             </div>
-                            <a href="/prices" class="nav-item nav-link">Prices</a>
-                            <a href="/rides" class="nav-item nav-link">Rides</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/requests/refund" class="dropdown-item">Refund
-                                        Requests</a>
-                                    <a href="/requests/senior" class="dropdown-item">Senior Requests</a>
-                                </div>
+                        </div>
+                        <a href="/prices" class="nav-item nav-link">Prices</a>
+                        <a href="/rides" class="nav-item nav-link">Rides</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="/requests/refund" class="dropdown-item">Refund
+                                    Requests</a>
+                                <a href="/requests/senior" class="dropdown-item">Senior Requests</a>
                             </div>
-                            {{/isSenior}}
-                            
-                            
+                        </div>
+                        {{/isSenior}}
+
+
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
                             <div class="dropdown-menu rounded-0 m-0">
@@ -252,7 +253,57 @@
         </table>
     </div>
     <!-- Services End -->
-
+    <!-- Team Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <h1 class="display-4 text-uppercase text-center mb-5">Meet Our Team</h1>
+            <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/feras.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Feras Nizar</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/rita.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Rita Emad</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/yahia.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Yahia Ehab</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="images/jana.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Jana ElKasaby</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="images/Mariam.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Mariam Amr</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/raouf.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">AbdelRaouf Khorshed</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Team End -->
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
         <div class="row pt-5">

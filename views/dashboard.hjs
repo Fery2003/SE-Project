@@ -2,34 +2,34 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>Stations</title>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <meta content="Cairo Metro" name="keywords">
-  <meta content="Cairo Metro" name="description">
-  <!-- Google Web Fonts -->
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap"
-    rel="stylesheet">
+    <meta charset="utf-8">
+    <title>Stations</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Cairo Metro" name="keywords">
+    <meta content="Cairo Metro" name="description">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap"
+        rel="stylesheet">
 
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
 
-  <!-- Libraries Stylesheet -->
-  <link rel="stylesheet" href="/lib/owlcarousel/assets/owl.carousel.min.css">
-  <link rel="stylesheet" href="/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" />
+    <!-- Libraries Stylesheet -->
+    <link rel="stylesheet" href="/lib/owlcarousel/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" />
 
-  <!-- Customized Bootstrap Stylesheet -->
-  <link href="/styles/bootstrap.min.css" rel="stylesheet">
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/styles/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Template Stylesheet -->
-  <link href="/styles/style.css" rel="stylesheet">
+    <!-- Template Stylesheet -->
+    <link href="/styles/style.css" rel="stylesheet">
 
-  <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
 </head>
 
 <body>
-  <div>
+    <div>
         <!-- Topbar Start -->
         <div class='container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block'>
             <div class='row'>
@@ -117,7 +117,8 @@
                             {{/isNormal}}
                             {{#isSenior}}
                             <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                                <a href="/subscriptions" class="nav-link dropdown-toggle"
+                                    data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
                                     <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
@@ -141,8 +142,8 @@
                                 </div>
                             </div>
                             {{/isSenior}}
-                            
-                            
+
+
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
                                 <div class="dropdown-menu rounded-0 m-0">
@@ -160,7 +161,7 @@
         <div class="container-fluid page-header">
             <h1 class="display-3 text-uppercase text-white mb-3">Home</h1>
         </div>
-        <!-- Page Header End -->   
+        <!-- Page Header End -->
     </div>
 
     <!-- Team Start -->
@@ -169,85 +170,51 @@
             <h1 class="display-4 text-uppercase text-center mb-5">Meet Our Team</h1>
             <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
                 <div class="team-item">
-                    <img class="img-fluid w-100" src="img/team-1.jpg" alt="">
+                    <img class="img-fluid w-100 form-control" src="images/feras.jpeg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Feras Nizar</h4>
                         <p class="m-0">Software Engineer</p>
-                        <div class="team-social position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
                     </div>
                 </div>
                 <div class="team-item">
-                    <img class="img-fluid w-100" src="img/team-2.jpg" alt="">
+                    <img class="img-fluid w-100 form-control" src="images/rita.jpeg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Rita Emad</h4>
                         <p class="m-0">Software Engineer</p>
-                        <div class="team-social position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
                     </div>
                 </div>
                 <div class="team-item">
-                    <img class="img-fluid w-100" src="img/team-3.jpg" alt="">
+                    <img class="img-fluid w-100 form-control" src="images/yahia.jpeg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Yahia Ehab</h4>
                         <p class="m-0">Software Engineer</p>
-                        <div class="team-social position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
                     </div>
                 </div>
                 <div class="team-item">
-                    <img class="img-fluid w-100" src="img/team-4.jpg" alt="">
+                    <img class="img-fluid w-100" src="images/jana.jpeg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Jana ElKasaby</h4>
                         <p class="m-0">Software Engineer</p>
-                        <div class="team-social position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
                     </div>
                 </div>
                 <div class="team-item">
-                    <img class="img-fluid w-100" src="img/team-4.jpg" alt="">
+                    <img class="img-fluid w-100" src="images/Mariam.jpeg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Mariam Amr</h4>
                         <p class="m-0">Software Engineer</p>
-                        <div class="team-social position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
                     </div>
                 </div>
                 <div class="team-item">
-                    <img class="img-fluid w-100" src="img/team-4.jpg" alt="">
+                    <img class="img-fluid w-100 form-control" src="images/raouf.jpeg" alt="">
                     <div class="position-relative py-4">
-                        <h4 class="text-uppercase">AbdelRaouf Khorshid</h4>
+                        <h4 class="text-uppercase">AbdelRaouf Khorshed</h4>
                         <p class="m-0">Software Engineer</p>
-                        <div class="team-social position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-lg btn-primary btn-lg-square mx-1" href="#"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- Team End -->
-
-
-    <!-- Vendor Start -->
-    <div class="container-fluid py-5">
 
 
     <!-- Footer Start -->

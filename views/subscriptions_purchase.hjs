@@ -210,30 +210,30 @@
         <div class="row mx-n2">
             <div class="col-xl-2 col-lg-4 col-md-6 px-2">
                 <div class="time mb-3">
-                    <input type="integer" id="creditCardNumber" class="form-control border-dark"
-                        style="padding: 25px;" placeholder="Credit Card Number">
+                    <input type="integer" id="creditCardNumber" class="form-control border-dark" style="padding: 25px;"
+                        placeholder="Credit Card Number">
                 </div>
             </div>
             <div class="col-xl-2 col-lg-4 col-md-6 px-2">
                 <div class="time mb-3">
-                    <input type="text" id="holderName" class="form-control border-dark"
-                        style="padding: 25px;" placeholder="Holder Name">
+                    <input type="text" id="holderName" class="form-control border-dark" style="padding: 25px;"
+                        placeholder="Holder Name">
                 </div>
             </div>
             <div class="col-xl-2 col-lg-4 col-md-6 px-2">
                 <div class="time mb-3">
-                    <input type="integer" id="paidAmount" class="form-control border-dark"
-                        style="padding: 25px;" placeholder="Enter Amount" >
-                </div>
-            </div>
-             <div class="col-xl-2 col-lg-4 col-md-6 px-2">
-                <div class="time mb-3">
-                    <input type="number" id="zoneId" class="form-control border-dark"
-                        style="padding: 25px;" placeholder="Enter Zone Id">
+                    <input type="integer" id="paidAmount" class="form-control border-dark" style="padding: 25px;"
+                        placeholder="Enter Amount">
                 </div>
             </div>
             <div class="col-xl-2 col-lg-4 col-md-6 px-2">
-                <select id = "subType" class="custom-select px-4 mb-3" style="height: 50px;">
+                <div class="time mb-3">
+                    <input type="number" id="zoneId" class="form-control border-dark" style="padding: 25px;"
+                        placeholder="Enter Zone Id">
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-4 col-md-6 px-2">
+                <select id="subType" class="custom-select px-4 mb-3" style="height: 50px;">
                     <option selected>Select Subscription Type</option>
                     <option value="1">Annual</option>
                     <option value="2">Quarterly</option>
@@ -241,7 +241,8 @@
                 </select>
             </div>
             <div class="col-xl-2 col-lg-4 col-md-6 px-2">
-                <button id = "submit" class="btn btn-primary btn-block mb-3" type="submit" style="height: 50px;">Pay</button>
+                <button id="submit" class="btn btn-primary btn-block mb-3" type="submit"
+                    style="height: 50px;">Pay</button>
             </div>
         </div>
     </div>
@@ -270,8 +271,58 @@
         </table>
     </div>
 
-    
 
+    <!-- Team Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <h1 class="display-4 text-uppercase text-center mb-5">Meet Our Team</h1>
+            <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/feras.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Feras Nizar</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/rita.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Rita Emad</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/yahia.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Yahia Ehab</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="images/jana.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Jana ElKasaby</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="images/Mariam.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Mariam Amr</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/raouf.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">AbdelRaouf Khorshed</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Team End -->
 
 
     <!-- Footer Start -->

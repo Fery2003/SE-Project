@@ -30,8 +30,7 @@
         <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
         <script>
             $(document).ready(function () {
-                $(".refund-ticket").click(function()
-                {
+                $(".refund-ticket").click(function () {
                     const ticketId = $(this).attr("id");
                     $.ajax({
                         type: "POST",
@@ -142,7 +141,8 @@
                             {{/isNormal}}
                             {{#isSenior}}
                             <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                                <a href="/subscriptions" class="nav-link dropdown-toggle"
+                                    data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
                                     <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
@@ -215,13 +215,13 @@
                     <td>{{sub_id}}</td>
                     <td>{{trip_date}}</td>
                     <td class="text-center">
-                        <input id="{{id}}" type="button" value="Refund Ticket" class="btn btn-primary refund-ticket" disabled>
+                        <input id="{{id}}" type="button" value="Refund Ticket" class="btn btn-primary refund-ticket"
+                            disabled>
                     </td>
                     <script>
-                        let date = {{trip_date}};
-                        if(date > new Date().getTime())
-                        {
-                            document.getElementById({{id}}).disabled = false;
+                        let date = {{ trip_date }};
+                        if (date > new Date().getTime()) {
+                            document.getElementById({{ id }}).disabled = false;
                         }
                     </script>
                 </tr>
@@ -230,6 +230,58 @@
 
         </table>
     </div>
+
+    <!-- Team Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <h1 class="display-4 text-uppercase text-center mb-5">Meet Our Team</h1>
+            <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/feras.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Feras Nizar</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/rita.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Rita Emad</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/yahia.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Yahia Ehab</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="images/jana.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Jana ElKasaby</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="images/Mariam.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Mariam Amr</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/raouf.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">AbdelRaouf Khorshed</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Team End -->
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
         <div class="row pt-5">

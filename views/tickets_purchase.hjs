@@ -65,11 +65,10 @@
                     $("#purchase_online").style.display = 'block';
                 });
                 $("#pSub").click(function () {
-                    $(".containerSub").style.display = 'block'; 
+                    $(".containerSub").style.display = 'block';
                 });
-                $("#purchaseOn").click(function()
-                {
-                    const data = 
+                $("#purchaseOn").click(function () {
+                    const data =
                     {
                         creditCardNumber: $('#creditCardNumberO').val(),
                         holderName: $('#holderNameO').val(),
@@ -95,33 +94,33 @@
                         }
                     });
                 });
-                $("#purchaseSub").click(function()
+                $("#purchaseSub").click(function () {
+                    const subId = {{ UserSub.id }
+                }
+                    const data =
                 {
-                    const subId = {{UserSub.id}}
-                    const data = 
-                    {
-                        subId: subId,
-                        origin: $('#originS').val(),
-                        destination: $('#destinationS').val(),
-                        tripDate: $('#tripDateS').val()
-                    }
-                    $.ajax({
-                        type: "POST",
-                        url: '/api/v1/tickets/purchase/subscription',
-                        data,
-                        success: function (serverResponse) {
-                            if (serverResponse) {
-                                alert('Successfully Purchased Ticket');
-                                location.href = '/tickets';
-                            }
-                        },
-                        error: function (errorResponse) {
-                            if (errorResponse) {
-                                alert(`Error Register User: ${errorResponse.responseText}`);
-                            }
+                    subId: subId,
+                    origin: $('#originS').val(),
+                    destination: $('#destinationS').val(),
+                    tripDate: $('#tripDateS').val()
+                }
+                $.ajax({
+                    type: "POST",
+                    url: '/api/v1/tickets/purchase/subscription',
+                    data,
+                    success: function (serverResponse) {
+                        if (serverResponse) {
+                            alert('Successfully Purchased Ticket');
+                            location.href = '/tickets';
                         }
-                    });
+                    },
+                    error: function (errorResponse) {
+                        if (errorResponse) {
+                            alert(`Error Register User: ${errorResponse.responseText}`);
+                        }
+                    }
                 });
+            });
             });
         </script>
     </head>
@@ -266,15 +265,15 @@
         <!-- Page Header End -->
     </div>
 
-    <div class="container-purchase-choice" >
+    <div class="container-purchase-choice">
         <div class="input-group-append">
-            <button id = "pSub" class="btn btn-primary text-uppercase px-3">Purchase with Subscription</button>
+            <button id="pSub" class="btn btn-primary text-uppercase px-3">Purchase with Subscription</button>
         </div>
         <div class="input-group-append">
-            <button id = "pOnline" class="btn btn-primary text-uppercase px-3">Purchase Online</button>
+            <button id="pOnline" class="btn btn-primary text-uppercase px-3">Purchase Online</button>
         </div>
     </div>
-    <div class="container" id = "purchase_online" style = "display: none;">
+    <div class="container" id="purchase_online" style="display: none;">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h2>Ticket Information</h2>
@@ -314,7 +313,7 @@
         </div>
     </div>
 
-    <div class="container-Sub" id = "purchase_sub" style = "display: none;">
+    <div class="container-Sub" id="purchase_sub" style="display: none;">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h2>Ticket Information</h2>
@@ -338,6 +337,58 @@
             </div>
         </div>
     </div>
+
+    <!-- Team Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <h1 class="display-4 text-uppercase text-center mb-5">Meet Our Team</h1>
+            <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/feras.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Feras Nizar</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/rita.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Rita Emad</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/yahia.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Yahia Ehab</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="images/jana.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Jana ElKasaby</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="images/Mariam.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Mariam Amr</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/raouf.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">AbdelRaouf Khorshed</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Team End -->
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
         <div class="row pt-5">

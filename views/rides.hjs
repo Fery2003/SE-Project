@@ -89,7 +89,7 @@
                                 </div>
                             </div>
                             {{/isAdmin}}
-                           {{#isNormal}}
+                            {{#isNormal}}
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
@@ -117,7 +117,8 @@
                             {{/isNormal}}
                             {{#isSenior}}
                             <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                                <a href="/subscriptions" class="nav-link dropdown-toggle"
+                                    data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
                                     <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
@@ -141,8 +142,8 @@
                                 </div>
                             </div>
                             {{/isSenior}}
-                            
-                            
+
+
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
                                 <div class="dropdown-menu rounded-0 m-0">
@@ -193,6 +194,58 @@
             <button id="showRides" class="btn btn-primary">Show Rides</button>
 
             <div id="rideContainer"></div>
+
+            <!-- Team Start -->
+            <div class="container-fluid py-5">
+                <div class="container py-5">
+                    <h1 class="display-4 text-uppercase text-center mb-5">Meet Our Team</h1>
+                    <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
+                        <div class="team-item">
+                            <img class="img-fluid w-100 form-control" src="images/feras.jpeg" alt="">
+                            <div class="position-relative py-4">
+                                <h4 class="text-uppercase">Feras Nizar</h4>
+                                <p class="m-0">Software Engineer</p>
+                            </div>
+                        </div>
+                        <div class="team-item">
+                            <img class="img-fluid w-100 form-control" src="images/rita.jpeg" alt="">
+                            <div class="position-relative py-4">
+                                <h4 class="text-uppercase">Rita Emad</h4>
+                                <p class="m-0">Software Engineer</p>
+                            </div>
+                        </div>
+                        <div class="team-item">
+                            <img class="img-fluid w-100 form-control" src="images/yahia.jpeg" alt="">
+                            <div class="position-relative py-4">
+                                <h4 class="text-uppercase">Yahia Ehab</h4>
+                                <p class="m-0">Software Engineer</p>
+                            </div>
+                        </div>
+                        <div class="team-item">
+                            <img class="img-fluid w-100" src="images/jana.jpeg" alt="">
+                            <div class="position-relative py-4">
+                                <h4 class="text-uppercase">Jana ElKasaby</h4>
+                                <p class="m-0">Software Engineer</p>
+                            </div>
+                        </div>
+                        <div class="team-item">
+                            <img class="img-fluid w-100" src="images/Mariam.jpeg" alt="">
+                            <div class="position-relative py-4">
+                                <h4 class="text-uppercase">Mariam Amr</h4>
+                                <p class="m-0">Software Engineer</p>
+                            </div>
+                        </div>
+                        <div class="team-item">
+                            <img class="img-fluid w-100 form-control" src="images/raouf.jpeg" alt="">
+                            <div class="position-relative py-4">
+                                <h4 class="text-uppercase">AbdelRaouf Khorshed</h4>
+                                <p class="m-0">Software Engineer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Team End -->
             <!-- Footer Start -->
             <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
                 <div class="row pt-5">
@@ -256,21 +309,22 @@
 
 
                     <!-- Back to Top -->
-            <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
-                    class="fa fa-angle-double-up"></i></a>
+                    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
+                            class="fa fa-angle-double-up"></i></a>
 
-            <!-- JavaScript Libraries -->
-            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-            <script src="/lib/easing/easing.min.js"></script>
-            <script src="/lib/waypoints/waypoints.min.js"></script>
-            <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
-            <script src="/lib/tempusdominus/js/moment.min.js"></script>
-            <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script>
-            <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+                    <!-- JavaScript Libraries -->
+                    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+                    <script
+                        src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+                    <script src="/lib/easing/easing.min.js"></script>
+                    <script src="/lib/waypoints/waypoints.min.js"></script>
+                    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+                    <script src="/lib/tempusdominus/js/moment.min.js"></script>
+                    <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script>
+                    <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-            <!-- Template Javascript -->
-            <script src="/js/main.js"></script>
+                    <!-- Template Javascript -->
+                    <script src="/js/main.js"></script>
         </body>
 
 </html>
