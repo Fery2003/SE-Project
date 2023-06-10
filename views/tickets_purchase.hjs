@@ -122,7 +122,18 @@
                             }
                         }
                     });
+                }
+                )
+            };
+            );
+            document.getElementById("pSub").addEventListener("click", function () {
+                document.getElementById("purchase_sub").style.display = "block";
+                document.getElementById("purchase_online").style.display = "none";
                 });
+
+            document.getElementById("pOnline").addEventListener("click", function () {
+                document.getElementById("purchase_sub").style.display = "none";
+                document.getElementById("purchase_online").style.display = "block";
             });
         </script>
     </head>
@@ -269,12 +280,32 @@
         <!-- Page Header End -->
     </div>
 
-    <div class="container-purchase-choice" >
+    <div class="container-purchase-choice">
+        <style>
+            .button-container {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .button-container .input-group-append {
+                margin: 10px;
+                /* Adjust the value to create the desired gap */
+                width: 50%;
+                /* Adjust the value to control the width of each button */
+            }
+
+            .button-container button {
+                width: 100%;
+            }
+        </style>
+
+        <div class="button-container">
         <div class="input-group-append">
-            <button id = "pSub" class="btn btn-primary text-uppercase px-3">Purchase with Subscription</button>
+                <button id="pSub" class="btn btn-primary text-uppercase px-3">Purchase with Subscription</button>
         </div>
         <div class="input-group-append">
-            <button id = "pOnline" class="btn btn-primary text-uppercase px-3">Purchase Online</button>
+                <button id="pOnline" class="btn btn-primary text-uppercase px-3">Purchase Online</button>
+            </div>
         </div>
 
     </div>
