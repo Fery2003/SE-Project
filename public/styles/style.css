@@ -126,6 +126,11 @@ h6,
     justify-content: center;
     background: linear-gradient(rgba(28, 30, 50, .9), rgba(28, 30, 50, .9));
     background-attachment: fixed;
+    background-image: url(../images/img1.jpeg);
+    background-size: contain;
+    background-position: center;
+
+    
 }
 
 @media (max-width: 991.98px) {
@@ -186,6 +191,7 @@ h6,
     text-align: center;
     background: var(--light);
     transition: .5s;
+    
 }
 
 .team-item:hover,
