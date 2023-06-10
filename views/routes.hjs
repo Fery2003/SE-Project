@@ -68,6 +68,7 @@
                         setTimeout(function () {
                             successMessage.remove();
                         }, 3000);
+                        location.reload();
                     },
                     error: function (error) {
                         console.error("Error creating route:", error.responseJSON.msg);
@@ -99,6 +100,7 @@
                         setTimeout(function () {
                             successMessage.remove();
                         }, 3000);
+                        location.reload();
                     },
                     error: function (error) {
                         console.error("Error deleting route:", error);
@@ -138,6 +140,7 @@
                             setTimeout(function () {
                                 successMessage.remove();
                             }, 3000);
+                            location.reload();
                         },
                         error: function (error) {
                             console.error("Error editing route:", error.responseJSON.msg);

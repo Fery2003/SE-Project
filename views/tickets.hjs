@@ -224,7 +224,7 @@
                     <script>
                         let date = {{ trip_date }};
                         if (date > new Date().getTime()) {
-                            document.getElementById({{ id }}).disabled = false;
+                            document.getElementById({{ id }}).disabled = true;
                         }
                     </script>
                 </tr>

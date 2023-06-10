@@ -191,10 +191,34 @@
         <body>
             <h1>Rides</h1>
 
-            <!-- Button to show the rides from the database -->
-            <button id="showRides" class="btn btn-primary">Show Rides</button>
+            <div id="rideContainer">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Origin Station</th>
+                            <th scope="col">Destination Station</th>
+                            <th scope="col">Ticket Id</th>
+                            <th scope="col">Trip Date</th>
 
-            <div id="rideContainer"></div>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#rides}}
+                        <tr>
+                            <td>{{id}}</td>
+                            <td>{{status}}</td>
+                            <td>{{origin}}</td>
+                            <td>{{destination}}</td>
+                            <td>{{ticket_id}}</td>
+                            <td>{{trip_date}}</td>
+                        </tr>
+                        {{/rides}}
+                    </tbody>
+
+                </table>
+            </div>
 
             <!-- Footer Start -->
             <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">

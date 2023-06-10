@@ -39,21 +39,22 @@
 
             // Handle the "update zone" button click inside the modal
             $("#updateZoneBtn").click(function () {
-                var zoneid = $("#zoneid").val();
+                var zoneId = $("#zoneid").val();
                 var zoneprice = $("#price").val();
                 // Make an AJAX request to update zone price
+                const data = { newPrice: zoneprice}
                 $.ajax({
-                    url: "/api/v1/zones/${zoneid}",
+                    url: `/api/v1/zones/${zoneId}`,
                     type: "PUT",
-                    contentType: "application/json",
-                    data: JSON.stringify({ price: zoneprice }),
+                    data,
                     success: function (response) {
                         console.log(response);
                         // Optionally, update the UI or perform additional actions after station creation
                         $("#zoneModal").modal("hide"); // Hide the modal
+                        location.reload(); // Reload the page
                     },
                     error: function (error) {
-                        console.error("Error creating station:", error.responseJSON.msg);
+                        console.error("Error creating station:", error);
                     }
                 });
             });
@@ -112,9 +113,9 @@
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                             <div class="dropdown-menu rounded-0 m-0">
-                                <a href="../manage/requests/refunds" class="dropdown-item">Review Refund
+                                <a href=".../manage/requests/refunds" class="dropdown-item">Review Refund
                                     Requests</a>
-                                <a href="../manage/requests/seniors" class="dropdown-item">Review Senior Requests</a>
+                                <a href=".../manage/requests/seniors" class="dropdown-item">Review Senior Requests</a>
                             </div>
                         </div>
                         {{/isAdmin}}
@@ -217,7 +218,7 @@
                     </div>
                     <div class="modal-body">
                         <input type="text" id="zoneid" class="form-control" placeholder="Enter zone id">
-                        <input type="number" id="price" class="form-control" placeholder="Enter new price">
+                        <input type="integer" id="price" class="form-control" placeholder="Enter new price">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -232,22 +233,19 @@
                     <th scope="col">ID</th>
                     <th scope="col">Zone Type</th>
                     <th scope="col">Price</th>
-                    {{#isAdmin}}
-                    <th scope="col" class="text-center">Actions</th>
-                    {{/isAdmin}}
 
 
                 </tr>
             </thead>
             <tbody>
-                {{#zone}}
+                {{#zones}}
                 <tr>
                     <td>{{id}}</td>
                     <td>{{zone_type}}</td>
                     <td>{{price}}</td>
 
                 </tr>
-                {{/zone}}
+                {{/zones}}
             </tbody>
 
         </table>
@@ -317,15 +315,15 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="/lib/easing/easing.min.js"></script>
+    <script src="/lib/waypoints/waypoints.min.js"></script>
+    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 
 </html>

@@ -34,7 +34,7 @@
                         const password = $("#password").val();
 
                         const data = {
-                            password,
+                            newPassword: password,
                         };
 
                         $.ajax({
@@ -261,11 +261,11 @@
             <button id="submit">Change</button>
 
             {{!-- input textbox in div to take input password --}}
-            <div class="form-group">
+            {{!-- <div class="form-group">
                 <label for="password">New Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Enter your new password"
+                <input type="password" class="form-control" id="pass" placeholder="Enter your new password"
                     required>
-            </div>
+            </div> --}}
 
             <!-- Back to Top -->
             <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i

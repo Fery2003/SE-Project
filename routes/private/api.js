@@ -149,7 +149,7 @@ module.exports = function (app) {
       if (!creditCardNumber || !holderName || !paidAmount || !origin || !destination || !tripDate) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
-
+      console.log(`${user.first_name} ${user.last_name}`);
       if (`${user.first_name} ${user.last_name}` == holderName) {
         console.log('name matches');
         let { price } = await getPrice(origin, destination, user);
@@ -531,14 +531,24 @@ module.exports = function (app) {
             let myToStation = middleIsFrom.to_station_id;
 
             await db('se_project.station').where('id', stationId).del();
+            console.log(myFromStation);
 
             //update routes table with new entries
-            let newStationFromTo = await db
-              .insert([{ route_name: '' + myFromStation + myToStation }, { from_station_id: myFromStation }, { to_station_id: myToStation }])
+            const newStationFromTo = {
+              route_name: '' + myFromStation + myToStation,
+              from_station_id: myFromStation,
+              to_station_id: myToStation
+            }
+            let newStationFromToEntry = await db
+              .insert(newStationFromTo)
               .into('se_project.route');
-
-            let newStationToFrom = await db
-              .insert([{ route_name: '' + myToStation + myFromStation }, { from_station_id: myToStation }, { to_station_id: myFromStation }])
+            const newStationToFrom = {
+              route_name: '' + myToStation + myFromStation,
+              from_station_id: myToStation,
+              to_station_id: myFromStation
+            }
+            let newStationToFromEntry = await db
+              .insert(newStationToFrom)
               .into('se_project.route');
 
             //add to SR table the new routes with their correspoding stations
@@ -741,7 +751,9 @@ module.exports = function (app) {
     try {
       const { newPrice } = req.body;
       const user = await getUser(req);
-      const zoneId = req.params;
+      const {zoneId} = req.params;
+      console.log(zoneId);
+      console.log(newPrice);
       if (user.isAdmin == false) {
         return res.status(401).json({ msg: 'User not authorized!' });
       }
@@ -749,8 +761,7 @@ module.exports = function (app) {
         return res.status(400).json({ msg: 'Zone cannot be updated with empty price!' });
       }
       //const updatedPrice = await pool.query('UPDATE zones SET price = $1 WHERE id = $2 RETURNING *', [newPrice, zoneId]);
-      const updatedPrice = await db('se_project.zone').where('id', zoneId.zoneId).update('price', newPrice).returning('*');
-      res.json(updatedPrice[0]);
+      const updatedPrice = await db('se_project.zone').where('id', zoneId).update('price', newPrice).returning('*');
       res.send('Zone price updated!');
     } catch (error) {
       console.error(error.message);

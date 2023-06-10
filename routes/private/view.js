@@ -75,6 +75,11 @@ module.exports = function (app) {
     const senior = await db.select('*').from('se_project.senior_request').where('user_id', user.user_id);
     return res.status(200).render('request_senior', { ...user, senior }); 
   });
+  app.get('/requests/refund', async function (req, res) {
+    const user = await getUser(req);
+    const refunds = await db.select('*').from('se_project.refund_request').where('user_id', user.user_id);
+    return res.status(200).render('request_refund', { ...user, refunds }); 
+  });
 
   app.get('/manage/routes', async function (req, res) {
     const user = await getUser(req);
@@ -126,7 +131,7 @@ module.exports = function (app) {
 
   app.get('/tickets/purchase/subscription', async function (req, res) {
     const user = await getUser(req);
-    const tickets = await db.select('*').from('se_project.ticket').where('user_id', user.user_id);
-    return res.status(200).render('tickets_purchase_sub', {...user, tickets});
+    const UserSub = await db.select('*').from('se_project.subscription').where('user_id', user.user_id);
+    return res.status(200).render('tickets_purchase_sub', {...user, UserSub});
   });
 };
