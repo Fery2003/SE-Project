@@ -111,17 +111,18 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
+                            <a href="../dashboard" class="nav-item nav-link active">Dashboard</a>
                             {{#isAdmin}}
-                            <a href="/manage/stations" class="nav-item nav-link">Stations</a>
-                            <a href="/manage/routes" class="nav-item nav-link">Routes</a>
-                            <a href="/manage/zones" class="nav-item nav-link">Zones</a>
+                            <a href="../manage/stations" class="nav-item nav-link">Stations</a>
+                            <a href="../manage/routes" class="nav-item nav-link">Routes</a>
+                            <a href="../manage/zones" class="nav-item nav-link">Zones</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/requests/refund" class="dropdown-item">Refund
+                                    <a href="../manage/requests/refunds" class="dropdown-item">Review Refund
                                         Requests</a>
-                                    <a href="/manage/requests/senior" class="dropdown-item">Senior Requests</a>
+                                    <a href="../manage/requests/seniors" class="dropdown-item">Review Senior
+                                        Requests</a>
                                 </div>
                             </div>
                             {{/isAdmin}}
@@ -129,60 +130,61 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
-                                    <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
+                                    <a href="../subscriptions" class="dropdown-item">My Subscription</a>
+                                    <a href="../subscriptions/purchase" class="dropdown-item">Purchase Subscription</a>
                                 </div>
                             </div>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/tickets" class="dropdown-item">My Tickets</a>
-                                    <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
+                                    <a href="../tickets" class="dropdown-item">My Tickets</a>
+                                    <a href="../tickets/purchase" class="dropdown-item">Purchase Subscription</a>
                                 </div>
                             </div>
-                            <a href="/prices" class="nav-item nav-link">Prices</a>
-                            <a href="/rides" class="nav-item nav-link">Rides</a>
+                            <a href="../prices" class="nav-item nav-link">Prices</a>
+                            <a href="../rides" class="nav-item nav-link">My Rides</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/requests/refund" class="dropdown-item">Refund
+                                    <a href="../requests/refund" class="dropdown-item">My Refund
                                         Requests</a>
-                                    <a href="/requests/senior" class="dropdown-item">Senior Requests</a>
+                                    <a href="../requests/senior" class="dropdown-item">Senior Status Request</a>
                                 </div>
                             </div>
                             {{/isNormal}}
                             {{#isSenior}}
                             <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                                <a href="../subscriptions" class="nav-link dropdown-toggle"
+                                    data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
-                                    <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
+                                    <a href="../subscriptions" class="dropdown-item">My Subscription</a>
+                                    <a href="../subscriptions/purchase" class="dropdown-item">Purchase</a>
                                 </div>
                             </div>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/tickets" class="dropdown-item">My Tickets</a>
-                                    <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
+                                    <a href="../tickets" class="dropdown-item">My Tickets</a>
+                                    <a href="../tickets/purchase" class="dropdown-item">Purchase Subscription</a>
                                 </div>
                             </div>
-                            <a href="/prices" class="nav-item nav-link">Prices</a>
-                            <a href="/rides" class="nav-item nav-link">Rides</a>
+                            <a href="../prices" class="nav-item nav-link">Prices</a>
+                            <a href="../rides" class="nav-item nav-link">Rides</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/requests/refund" class="dropdown-item">Refund
+                                    <a href="../requests/refund" class="dropdown-item">My Refund
                                         Requests</a>
-                                    <a href="/requests/senior" class="dropdown-item">Senior Requests</a>
+                                    <a href="../requests/senior" class="dropdown-item">Senior Status</a>
                                 </div>
                             </div>
                             {{/isSenior}}
-                            
-                            
+
+
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/reset" class="dropdown-item">Reset Password</a>
+                                    <a href="/resetPassword" class="dropdown-item">Reset Password</a>
                                 </div>
                             </div>
                         </div>
@@ -196,7 +198,7 @@
         <div class="container-fluid page-header">
             <h1 class="display-3 text-uppercase text-white mb-3">Subscriptions</h1>
             <div class="d-inline-flex text-white">
-                <h6 class="text-uppercase m-0"><a class="text-white" href="/dashboard.hjs">Home</a></h6>
+                <h6 class="text-uppercase m-0"><a class="text-white" href="dashboard">Home</a></h6>
                 <h6 class="text-body m-0 px-3">/</h6>
                 <h6 class="text-uppercase text-body m-0">Subscriptions</h6>
             </div>
@@ -204,96 +206,96 @@
         <!-- Page Header End -->
     </div>
 
-
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-12">
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover">
-                        <!-- Text boxes for user input -->
-                        <input type="text" id="creditCardNumber" placeholder="Credit Card Number">
-                        <input type="text" id="holderName" placeholder="Holder Name">
-                        <input type="text" id="paidAmount" placeholder="Paid Amount">
-                        {{!-- <input type="text" id="subType" placeholder="Subscription Type"> --}}
-                        <select id="subType">
-                            <option value="1">Annual</option>
-                            <option value="2">Quarterly</option>
-                            <option value="3">Monthly</option>
-                            <input type="text" id="zoneId" placeholder="Zone Id">
-                    </table>
-                </div>
-            </div>
-        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Subscription Type</th>
+                    <th scope="col">Zone Id</th>
+                    <th scope="col">User Id</th>
+                    <th scope="col">Number of Tickets Left</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {{#sub}}
+                <tr>
+                    <td>{{id}}</td>
+                    <td>{{sub_type}}</td>
+                    <td>{{zone_id}}</td>
+                    <td>{{user_id}}</td>
+                    <td>{{no_of_tickets}}</td>
+                </tr>
+                {{/sub}}
+            </tbody>
+
+        </table>
     </div>
-    <button id="submit" class="btn btn-primary">Pay</button>
-
-
-
-    <!-- Footer Start -->
-    <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
-        <div class="row pt-5">
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="text-uppercase text-light mb-4">Get In Touch!</h4>
-                <p class="mb-2"><i class="fa fa-map-marker-alt text-white mr-3"></i>123 Street, New York, USA
-                </p>
-                <p class="mb-2"><i class="fa fa-phone-alt text-white mr-3"></i>+012 345 67890</p>
-                <p><i class="fa fa-envelope text-white mr-3"></i>info@example.com</p>
-                <h6 class="text-uppercase text-white py-2">Follow Us</h6>
-                <div class="d-flex justify-content-start">
-                    <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                    <a class="btn btn-lg btn-dark btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
+    <!-- Team Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <h1 class="display-4 text-uppercase text-center mb-5">Meet Our Team</h1>
+            <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/feras.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Feras Nizar</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="text-uppercase text-light mb-4">Useful Links</h4>
-                <div class="d-flex flex-column justify-content-start">
-                    <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Privacy
-                        Policy</a>
-                    <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Terms &
-                        Conditions</a>
-                    <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>New
-                        Member
-                        Registration</a>
-                    <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Affiliate
-                        Programmes</a>
-                    <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Returns
-                        &
-                        Refunds</a>
-                    <a class="text-body" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Help &
-                        FAQs</a>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/rita.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Rita Emad</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="text-uppercase text-light mb-4">Newsletter</h4>
-                <p class="mb-4">Watch out for the latest news here!</p>
-                <div class="w-100 mb-3">
-                    <div class="input-group">
-                        <input type="text" class="form-control bg-dark border-dark" style="padding: 25px;"
-                            placeholder="Your Email">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary text-uppercase px-3">Sign Up</button>
-                        </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/yahia.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Yahia Ehab</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="images/jana.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Jana ElKasaby</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100" src="images/Mariam.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">Mariam Amr</h4>
+                        <p class="m-0">Software Engineer</p>
+                    </div>
+                </div>
+                <div class="team-item">
+                    <img class="img-fluid w-100 form-control" src="images/raouf.jpeg" alt="">
+                    <div class="position-relative py-4">
+                        <h4 class="text-uppercase">AbdelRaouf Khorshed</h4>
+                        <p class="m-0">Software Engineer</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Footer End -->
-
+    <!-- Team End -->
+    
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
     <!-- JavaScript Libraries -->
-            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-            <script src="/lib/easing/easing.min.js"></script>
-            <script src="/lib/waypoints/waypoints.min.js"></script>
-            <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
-            <script src="/lib/tempusdominus/js/moment.min.js"></script>
-            <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script>
-            <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="/lib/easing/easing.min.js"></script>
+    <script src="/lib/waypoints/waypoints.min.js"></script>
+    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Template Javascript -->
     <script src="/js/main.js"></script>

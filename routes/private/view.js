@@ -48,11 +48,10 @@ module.exports = function (app) {
     }
   });
 
-  app.get('/manage/reset', async function (req, res) {
+  app.get('/resetPassword', async function (req, res) {
     try {
       const user = await getUser(req);
-      const tickets = await db.select('*').from('se_project.ticket').where('user_id', user.user_id);
-      return res.status(200).render('tickets', { user, tickets });
+      return res.status(200).render('reset', { ...user });
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -105,8 +104,8 @@ module.exports = function (app) {
   });
   app.get('/subscriptions/purchase', async function (req, res) {
     const user = await getUser(req);
-    const sub = await db.select('*').from('se_project.subscription').where('user_id', user.user_id);
-    return res.status(200).render('subscriptions', { ...user, sub });
+    const zones = await db.select('*').from('se_project.zone');
+    return res.status(200).render('subscriptions_purchase', { ...user, zones });
   });
 
   app.get('/tickets/purchase', async function (req, res) {

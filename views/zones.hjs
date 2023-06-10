@@ -104,78 +104,79 @@
                 </button>
                 <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                     <div class="navbar-nav ml-auto py-0">
-                        <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
+                        <a href="../dashboard" class="nav-item nav-link active">Dashboard</a>
                         {{#isAdmin}}
-                        <a href="/manage/stations" class="nav-item nav-link">Stations</a>
-                        <a href="/manage/routes" class="nav-item nav-link">Routes</a>
-                        <a href="/manage/zones" class="nav-item nav-link">Zones</a>
+                        <a href="../manage/stations" class="nav-item nav-link">Stations</a>
+                        <a href="../manage/routes" class="nav-item nav-link">Routes</a>
+                        <a href="../manage/zones" class="nav-item nav-link">Zones</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                             <div class="dropdown-menu rounded-0 m-0">
-                                <a href="/manage/requests/refund" class="dropdown-item">Refund
+                                <a href="../manage/requests/refunds" class="dropdown-item">Review Refund
                                     Requests</a>
-                                <a href="/manage/requests/senior" class="dropdown-item">Senior Requests</a>
+                                <a href="../manage/requests/seniors" class="dropdown-item">Review Senior Requests</a>
                             </div>
                         </div>
                         {{/isAdmin}}
                         {{#isNormal}}
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
-                                    <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
-                                </div>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="../subscriptions" class="dropdown-item">My Subscription</a>
+                                <a href="../subscriptions/purchase" class="dropdown-item">Purchase Subscription</a>
                             </div>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/tickets" class="dropdown-item">My Tickets</a>
-                                    <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
-                                </div>
+                        </div>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="../tickets" class="dropdown-item">My Tickets</a>
+                                <a href="../tickets/purchase" class="dropdown-item">Purchase Subscription</a>
                             </div>
-                            <a href="/prices" class="nav-item nav-link">Prices</a>
-                            <a href="/rides" class="nav-item nav-link">Rides</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/requests/refund" class="dropdown-item">Refund
-                                        Requests</a>
-                                    <a href="/requests/senior" class="dropdown-item">Senior Requests</a>
-                                </div>
+                        </div>
+                        <a href="../prices" class="nav-item nav-link">Prices</a>
+                        <a href="../rides" class="nav-item nav-link">My Rides</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="../requests/refund" class="dropdown-item">My Refund
+                                    Requests</a>
+                                <a href="../requests/senior" class="dropdown-item">Senior Status Request</a>
                             </div>
-                            {{/isNormal}}
-                            {{#isSenior}}
-                            <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
-                                    <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
-                                </div>
+                        </div>
+                        {{/isNormal}}
+                        {{#isSenior}}
+                        <div class="nav-item dropdown">
+                            <a href="../subscriptions" class="nav-link dropdown-toggle"
+                                data-toggle="dropdown">Subscriptions</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="../subscriptions" class="dropdown-item">My Subscription</a>
+                                <a href="../subscriptions/purchase" class="dropdown-item">Purchase</a>
                             </div>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/tickets" class="dropdown-item">My Tickets</a>
-                                    <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
-                                </div>
+                        </div>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="../tickets" class="dropdown-item">My Tickets</a>
+                                <a href="../tickets/purchase" class="dropdown-item">Purchase Subscription</a>
                             </div>
-                            <a href="/prices" class="nav-item nav-link">Prices</a>
-                            <a href="/rides" class="nav-item nav-link">Rides</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/requests/refund" class="dropdown-item">Refund
-                                        Requests</a>
-                                    <a href="/requests/senior" class="dropdown-item">Senior Requests</a>
-                                </div>
+                        </div>
+                        <a href="../prices" class="nav-item nav-link">Prices</a>
+                        <a href="../rides" class="nav-item nav-link">Rides</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="../requests/refund" class="dropdown-item">My Refund
+                                    Requests</a>
+                                <a href="../requests/senior" class="dropdown-item">Senior Status</a>
                             </div>
-                            {{/isSenior}}
-                            
-                            
+                        </div>
+                        {{/isSenior}}
+
+
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
                             <div class="dropdown-menu rounded-0 m-0">
-                                <a href="/manage/reset" class="dropdown-item">Reset Password</a>
+                                <a href="/resetPassword" class="dropdown-item">Reset Password</a>
                             </div>
                         </div>
                     </div>
@@ -190,7 +191,7 @@
     <div class="container-fluid page-header">
         <h1 class="display-3 text-uppercase text-white mb-3">Zones</h1>
         <div class="d-inline-flex text-white">
-            <h6 class="text-uppercase m-0"><a class="text-white" href="/views/dashboard.hjs">Home</a></h6>
+            <h6 class="text-uppercase m-0"><a class="text-white" href="./dashboard">Home</a></h6>
             <h6 class="text-body m-0 px-3">/</h6>
             <h6 class="text-uppercase text-body m-0">Zones</h6>
         </div>
@@ -252,7 +253,7 @@
         </table>
     </div>
     <!-- Services End -->
-
+    
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
         <div class="row pt-5">

@@ -1,9 +1,5 @@
 # I will add a to do list here of things we need to make sure we handle. If there is anything else add it. When a task is finished, write "done" next to it
 
-- apply discount for those who are accepted as senior
-- make sure en ay 7aga ids mtzharsh fl frontend ex stations and routes
-
-- test checkprice manually and compare with actual outcome from ticket purchase endpoint
 
 - check price steps "just for me, you can ignore": // do we have to handle delete stations????????
     -take origin& dest names and get their ids from table station

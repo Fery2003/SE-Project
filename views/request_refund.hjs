@@ -76,17 +76,18 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
+                            <a href="../dashboard" class="nav-item nav-link active">Dashboard</a>
                             {{#isAdmin}}
-                            <a href="/manage/stations" class="nav-item nav-link">Stations</a>
-                            <a href="/manage/routes" class="nav-item nav-link">Routes</a>
-                            <a href="/manage/zones" class="nav-item nav-link">Zones</a>
+                            <a href="../manage/stations" class="nav-item nav-link">Stations</a>
+                            <a href="../manage/routes" class="nav-item nav-link">Routes</a>
+                            <a href="../manage/zones" class="nav-item nav-link">Zones</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/requests/refund" class="dropdown-item">Refund
+                                    <a href="../manage/requests/refunds" class="dropdown-item">Review Refund
                                         Requests</a>
-                                    <a href="/manage/requests/senior" class="dropdown-item">Senior Requests</a>
+                                    <a href="../manage/requests/seniors" class="dropdown-item">Review Senior
+                                        Requests</a>
                                 </div>
                             </div>
                             {{/isAdmin}}
@@ -94,60 +95,61 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
-                                    <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
+                                    <a href="../subscriptions" class="dropdown-item">My Subscription</a>
+                                    <a href="../subscriptions/purchase" class="dropdown-item">Purchase Subscription</a>
                                 </div>
                             </div>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/tickets" class="dropdown-item">My Tickets</a>
-                                    <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
+                                    <a href="../tickets" class="dropdown-item">My Tickets</a>
+                                    <a href="../tickets/purchase" class="dropdown-item">Purchase Subscription</a>
                                 </div>
                             </div>
-                            <a href="/prices" class="nav-item nav-link">Prices</a>
-                            <a href="/rides" class="nav-item nav-link">Rides</a>
+                            <a href="../prices" class="nav-item nav-link">Prices</a>
+                            <a href="../rides" class="nav-item nav-link">My Rides</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/requests/refund" class="dropdown-item">Refund
+                                    <a href="../requests/refund" class="dropdown-item">My Refund
                                         Requests</a>
-                                    <a href="/requests/senior" class="dropdown-item">Senior Requests</a>
+                                    <a href="../requests/senior" class="dropdown-item">Senior Status Request</a>
                                 </div>
                             </div>
                             {{/isNormal}}
                             {{#isSenior}}
                             <div class="nav-item dropdown">
-                                <a href="/subscriptions" class="nav-link dropdown-toggle" data-toggle="dropdown">Subscriptions</a>
+                                <a href="../subscriptions" class="nav-link dropdown-toggle"
+                                    data-toggle="dropdown">Subscriptions</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/subscriptions" class="dropdown-item">My Subscriptions</a>
-                                    <a href="/subscriptions/purchase" class="dropdown-item">Purchase</a>
+                                    <a href="../subscriptions" class="dropdown-item">My Subscription</a>
+                                    <a href="../subscriptions/purchase" class="dropdown-item">Purchase</a>
                                 </div>
                             </div>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ticket</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/tickets" class="dropdown-item">My Tickets</a>
-                                    <a href="/tickets/purchase" class="dropdown-item">Purchase</a>
+                                    <a href="../tickets" class="dropdown-item">My Tickets</a>
+                                    <a href="../tickets/purchase" class="dropdown-item">Purchase Subscription</a>
                                 </div>
                             </div>
-                            <a href="/prices" class="nav-item nav-link">Prices</a>
-                            <a href="/rides" class="nav-item nav-link">Rides</a>
+                            <a href="../prices" class="nav-item nav-link">Prices</a>
+                            <a href="../rides" class="nav-item nav-link">Rides</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/requests/refund" class="dropdown-item">Refund
+                                    <a href="../requests/refund" class="dropdown-item">My Refund
                                         Requests</a>
-                                    <a href="/requests/senior" class="dropdown-item">Senior Requests</a>
+                                    <a href="../requests/senior" class="dropdown-item">Senior Status</a>
                                 </div>
                             </div>
                             {{/isSenior}}
-                            
-                            
+
+
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="/manage/reset" class="dropdown-item">Reset Password</a>
+                                    <a href="/resetPassword" class="dropdown-item">Reset Password</a>
                                 </div>
                             </div>
                         </div>
@@ -167,120 +169,118 @@
         </div>
         <!-- Page Header End -->
     </div>
-        <script>
-            $(document).ready(function () {
-                // Request a refund for a ride
-                $(document).on('click', '#requestRefund', function () {
-                    var ticketId = extractTicketIdFromUrl();
+    <script>
+        $(document).ready(function () {
+            // Request a refund for a ride
+            $(document).on('click', '#requestRefund', function () {
+                var ticketId = extractTicketIdFromUrl();
 
-                    $.ajax({
-                        url: `/api/v1/refund/${ticketId}`,
-                        type: 'POST',
-                        success: function (result) {
-                            console.log(result);
-                            $('#requestRefund').html(result);
-                        }
-                    });
+                $.ajax({
+                    url: `/api/v1/refund/${ticketId}`,
+                    type: 'POST',
+                    success: function (result) {
+                        console.log(result);
+                        $('#requestRefund').html(result);
+                    }
                 });
-
-                function extractTicketIdFromUrl() {
-                    var url = window.location.href;
-                    var ticketIdIndex = url.lastIndexOf('/') + 1;
-                    var ticketId = url.substring(ticketIdIndex);
-                    return ticketId;
-                }
             });
 
-        </script>
+            function extractTicketIdFromUrl() {
+                var url = window.location.href;
+                var ticketIdIndex = url.lastIndexOf('/') + 1;
+                var ticketId = url.substring(ticketIdIndex);
+                return ticketId;
+            }
+        });
 
-        </head>
+    </script>
 
-        <body>
-            <h1>Refund</h1>
+    </head>
 
-            {{!-- Button to request a refund for a ride --}}
-            <button id="requestRefund" class="btn btn-primary">Request Refund</button>
+    <body>
+        <h1>Refund</h1>
+
+        {{!-- Button to request a refund for a ride --}}
+        <button id="requestRefund" class="btn btn-primary">Request Refund</button>
 
 
-            <div id="refundContainer"></div>
-            <!-- Footer Start -->
-            <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
-                <div class="row pt-5">
-                    <div class="col-lg-3 col-md-6 mb-5">
-                        <h4 class="text-uppercase text-light mb-4">Get In Touch!</h4>
-                        <p class="mb-2"><i class="fa fa-map-marker-alt text-white mr-3"></i>123 Street, New York, USA
-                        </p>
-                        <p class="mb-2"><i class="fa fa-phone-alt text-white mr-3"></i>+012 345 67890</p>
-                        <p><i class="fa fa-envelope text-white mr-3"></i>info@example.com</p>
-                        <h6 class="text-uppercase text-white py-2">Follow Us</h6>
-                        <div class="d-flex justify-content-start">
-                            <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i
-                                    class="fab fa-twitter"></i></a>
-                            <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i
-                                    class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i
-                                    class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-lg btn-dark btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
-                        </div>
+        <div id="refundContainer"></div>
+
+        <!-- Footer Start -->
+        <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
+            <div class="row pt-5">
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h4 class="text-uppercase text-light mb-4">Get In Touch!</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt text-white mr-3"></i>123 Street, New York, USA
+                    </p>
+                    <p class="mb-2"><i class="fa fa-phone-alt text-white mr-3"></i>+012 345 67890</p>
+                    <p><i class="fa fa-envelope text-white mr-3"></i>info@example.com</p>
+                    <h6 class="text-uppercase text-white py-2">Follow Us</h6>
+                    <div class="d-flex justify-content-start">
+                        <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-lg btn-dark btn-lg-square mr-2" href="#"><i
+                                class="fab fa-linkedin-in"></i></a>
+                        <a class="btn btn-lg btn-dark btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
                     </div>
-                    <div class="col-lg-3 col-md-6 mb-5">
-                        <h4 class="text-uppercase text-light mb-4">Useful Links</h4>
-                        <div class="d-flex flex-column justify-content-start">
-                            <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Privacy
-                                Policy</a>
-                            <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Terms &
-                                Conditions</a>
-                            <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>New
-                                Member
-                                Registration</a>
-                            <a class="text-body mb-2" href="#"><i
-                                    class="fa fa-angle-right text-white mr-2"></i>Affiliate
-                                Programmes</a>
-                            <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Returns
-                                &
-                                Refunds</a>
-                            <a class="text-body" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Help &
-                                FAQs</a>
-                        </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h4 class="text-uppercase text-light mb-4">Useful Links</h4>
+                    <div class="d-flex flex-column justify-content-start">
+                        <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Privacy
+                            Policy</a>
+                        <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Terms &
+                            Conditions</a>
+                        <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>New
+                            Member
+                            Registration</a>
+                        <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Affiliate
+                            Programmes</a>
+                        <a class="text-body mb-2" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Returns
+                            &
+                            Refunds</a>
+                        <a class="text-body" href="#"><i class="fa fa-angle-right text-white mr-2"></i>Help &
+                            FAQs</a>
                     </div>
-                    <div class="col-lg-3 col-md-6 mb-5">
-                        <h4 class="text-uppercase text-light mb-4">Newsletter</h4>
-                        <p class="mb-4">Watch out for the latest news here!</p>
-                        <div class="w-100 mb-3">
-                            <div class="input-group">
-                                <input type="text" class="form-control bg-dark border-dark" style="padding: 25px;"
-                                    placeholder="Your Email">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary text-uppercase px-3">Sign Up</button>
-                                </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h4 class="text-uppercase text-light mb-4">Newsletter</h4>
+                    <p class="mb-4">Watch out for the latest news here!</p>
+                    <div class="w-100 mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-dark border-dark" style="padding: 25px;"
+                                placeholder="Your Email">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary text-uppercase px-3">Sign Up</button>
                             </div>
                         </div>
                     </div>
-                    <div class="container-fluid bg-dark py-4 px-sm-3 px-md-5">
-                        <p class="mb-2 text-center text-body">&copy; <a href="#">Cairo Metro</a>. All Rights Reserved.
-                        </p>
-                        <p class="m-0 text-center text-body">Designed by <a href="https://htmlcodex.com">HTML Codex</a>
-                        </p>
-                    </div>
-                    <!-- Footer End -->
+                </div>
+                <div class="container-fluid bg-dark py-4 px-sm-3 px-md-5">
+                    <p class="mb-2 text-center text-body">&copy; <a href="#">Cairo Metro</a>. All Rights Reserved.
+                    </p>
+                    <p class="m-0 text-center text-body">Designed by <a href="https://htmlcodex.com">HTML Codex</a>
+                    </p>
+                </div>
+                <!-- Footer End -->
 
 
-                    <!-- Back to Top -->
-            <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
-                    class="fa fa-angle-double-up"></i></a>
+                <!-- Back to Top -->
+                <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
+                        class="fa fa-angle-double-up"></i></a>
 
-            <!-- JavaScript Libraries -->
-            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-            <script src="/lib/easing/easing.min.js"></script>
-            <script src="/lib/waypoints/waypoints.min.js"></script>
-            <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
-            <script src="/lib/tempusdominus/js/moment.min.js"></script>
-            <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script>
-            <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+                <!-- JavaScript Libraries -->
+                <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+                <script src="/lib/easing/easing.min.js"></script>
+                <script src="/lib/waypoints/waypoints.min.js"></script>
+                <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+                <script src="/lib/tempusdominus/js/moment.min.js"></script>
+                <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script>
+                <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-            <!-- Template Javascript -->
-            <script src="/js/main.js"></script>
-        </body>
+                <!-- Template Javascript -->
+                <script src="/js/main.js"></script>
+    </body>
 
 </html>
