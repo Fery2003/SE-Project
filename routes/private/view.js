@@ -118,5 +118,15 @@ module.exports = function (app) {
     const tickets = await db.select('*').from('se_project.ticket').where('user_id', user.user_id);
     return res.status(200).render('tickets', {...user, tickets});
   });
+  app.get('/tickets/purchase/online', async function (req, res) {
+    const user = await getUser(req);
+    const tickets = await db.select('*').from('se_project.ticket').where('user_id', user.user_id);
+    return res.status(200).render('tickets_purchase_on', {...user, tickets});
+  });
 
+  app.get('/tickets/purchase/subscription', async function (req, res) {
+    const user = await getUser(req);
+    const tickets = await db.select('*').from('se_project.ticket').where('user_id', user.user_id);
+    return res.status(200).render('tickets_purchase_sub', {...user, tickets});
+  });
 };

@@ -30,13 +30,33 @@
         <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
         <script>
             $(document).ready(function () {
-                $("#pOnline").click(function () {
-                    location.href = '/tickets/purchase/online';
+                $("#purchaseOn").click(function () {
+                    const data =
+                    {
+                        creditCardNumber: $('#creditCardNumberO').val(),
+                        holderName: $('#holderNameO').val(),
+                        paidAmount: $('#paidAmountO').val(),
+                        origin: $('#originO').val(),
+                        destination: $('#destinationO').val(),
+                        tripDate: $('#tripDateO').val()
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: '/api/v1/payment/ticket',
+                        data,
+                        success: function (serverResponse) {
+                            if (serverResponse) {
+                                alert('Successfully Purchased Ticket');
+                                location.href = '/tickets';
+                            }
+                        },
+                        error: function (errorResponse) {
+                            if (errorResponse) {
+                                alert(`Error Register User: ${errorResponse.responseText}`);
+                            }
+                        }
+                    });
                 });
-                $("#pSub").click(function () {
-                    location.href = '/tickets/purchase/subscription';
-                });
-                
             });
         </script>
     </head>
@@ -183,36 +203,19 @@
         <!-- Page Header End -->
     </div>
 
-    <div class="container-purchase-choice">
-        <style>
-            .button-container {
-                display: flex;
-                justify-content: space-between;
-            }
 
-            .button-container .input-group-append {
-                margin: 10px;
-                /* Adjust the value to create the desired gap */
-                width: 50%;
-                /* Adjust the value to control the width of each button */
-            }
-
-            .button-container button {
-                width: 100%;
-            }
-        </style>
-
-        <div class="button-container">
-            <div class="input-group-append">
-                <button id="pSub" class="btn btn-primary text-uppercase px-3 btn btn-danger btnpSub">Purchase with Subscription</button>
-            </div>
-            <div class="input-group-append">
-                <button id="pOnline" class="btn btn-primary text-uppercase px-3">Purchase Online</button>
-            </div>
+    <div class="button-container">
+        <div class="input-group-append">
+            <button id="pSub" class="btn btn-primary text-uppercase px-3 btn btn-danger btnpSub">Purchase with
+                Subscription</button>
         </div>
+        <div class="input-group-append">
+            <button id="pOnline" class="btn btn-primary text-uppercase px-3">Purchase Online</button>
+        </div>
+    </div>
 
     </div>
-    <div class="container-online" id="purchase_online" style="display: none;">
+    <div class="container-online" id="purchase_online">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h2>Ticket Information</h2>
@@ -247,31 +250,6 @@
                             required>
                     </div>
                     <button type="button" class="btn btn-primary" id="purchaseOn">Purchase</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="container-Sub" id="purchase_sub" style = "display: none;" >
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h2>Ticket Information</h2>
-                <form id = "subForm" disabled = "disabled">
-                    <div class="form-group">
-                        <label for="origin">Origin</label>
-                        <input type="text" class="form-control" id="originS" placeholder="Enter the origin" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="destination">Destination</label>
-                        <input type="text" class="form-control" id="destinationS" placeholder="Enter the destination"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tripDate">Trip Date</label>
-                        <input type="text" class="form-control" id="tripDateS" placeholder="Enter the trip date"
-                            required>
-                    </div>
-                    <button type="button" class="btn btn-primary" id="purchaseSub">Purchase</button>
                 </form>
             </div>
         </div>
