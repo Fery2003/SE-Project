@@ -48,11 +48,10 @@ module.exports = function (app) {
     }
   });
 
-  app.get('/manage/reset', async function (req, res) {
+  app.get('/resetPassword', async function (req, res) {
     try {
       const user = await getUser(req);
-      const tickets = await db.select('*').from('se_project.ticket').where('user_id', user.user_id);
-      return res.status(200).render('tickets', { user, tickets });
+      return res.status(200).render('reset', { ...user });
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
