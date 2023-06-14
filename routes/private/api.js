@@ -99,9 +99,11 @@ module.exports = function (app) {
       // purchase_type is subscription
 
       // check first if he has a subscription
-      const checkIfSubbed = await db.select('*').from('se_project.subscription').where('user_id', user_id);
+      const checkIfSubbedAnnual = await db.select('*').from('se_project.subscription').where('user_id', user_id).andWhere('sub_type', 1);
+      const checkIfSubbedMonthly = await db.select('*').from('se_project.subscription').where('user_id', user_id).andWhere('sub_type', 2);
+      const checkIfSubbedQuarterly = await db.select('*').from('se_project.subscription').where('user_id', user_id).andWhere('sub_type', 3);
 
-      if (checkIfSubbed.length > 0) {
+      if (checkIfSubbedAnnual.length > 0 && subType == 'annual' || checkIfSubbedMonthly.length > 0 && subType == 'monthly' || checkIfSubbedQuarterly.length > 0 && subType == 'quarterly') {
         return res.status(400).json({ msg: 'You already have a subscription' });
       }
 
@@ -207,6 +209,7 @@ module.exports = function (app) {
 
       const newTicket = await db.from('se_project.ticket').insert(ticket).returning('*');
       userRemainingTickets--;
+      const trans = await db.from('se_project.transaction').insert({ amount: 0, user_id: id, purchase_id: newTicket[0].id, purchase_type: 'ticket' })
 
       res.json(newTicket);
     } catch (err) {
@@ -713,7 +716,7 @@ module.exports = function (app) {
     try {
       const user = getUser(req);
       const { refundStatus } = req.body;
-      const requestId = req.params;
+      const {requestId} = req.params;
 
       if (refundStatus.length === 0) {
         return res.status(400).json({ msg: 'Refund cannot be updated with empty status!' });
@@ -760,7 +763,6 @@ module.exports = function (app) {
       if (newPrice.length === 0) {
         return res.status(400).json({ msg: 'Zone cannot be updated with empty price!' });
       }
-      //const updatedPrice = await pool.query('UPDATE zones SET price = $1 WHERE id = $2 RETURNING *', [newPrice, zoneId]);
       const updatedPrice = await db('se_project.zone').where('id', zoneId).update('price', newPrice).returning('*');
       res.send('Zone price updated!');
     } catch (error) {

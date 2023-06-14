@@ -31,15 +31,15 @@
     $(document).ready(function () {
         $("#requestsTable").on("click", "#btnAccept", function () {
             var requestId = $(this).closest("tr").find("td:first").text();
-            const status = "accepted"
+            const status = { seniorstatus: "accepted" }
             // Make an AJAX request to delete the station
             $.ajax({
-                url: "/api/v1/requests/senior/${requestId}",
+                url: `/api/v1/requests/senior/${requestId}`,
                 type: "PUT",
-                status
+                data: status,
                     success: function (response) {
                     console.log(response);
-                    updateTable(); // Update the table data
+                    // updateTable(); // Update the table data
 
                     // Display success message to the user
                     var successMessage = $("<div>", {
@@ -61,15 +61,15 @@
         });
         $("#requestsTable").on("click", "#btnReject", function () {
             var requestId = $(this).closest("tr").find("td:first").text();
-            const status = "rejected"
+            const status = {seniorstatus:"rejected"}
             // Make an AJAX request to delete the station
             $.ajax({
-                url: "/api/v1/requests/senior/${requestId}",
+                url: `/api/v1/requests/senior/${requestId}`,
                 type: "PUT",
-                status
+                data: status,
                     success: function (response) {
                     console.log(response);
-                    updateTable(); // Update the table data
+                    // updateTable(); // Update the table data
 
                     // Display success message to the user
                     var successMessage = $("<div>", {
@@ -253,7 +253,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{#senior_request}}
+                {{#sRequests}}
                 <tr>
                     <td>{{id}}</td>
                     <td>{{status}}</td>
@@ -266,7 +266,7 @@
                     </td>
                     {{/isAdmin}}
                 </tr>
-                {{/senior_request}}
+                {{/sRequests}}
             </tbody>
 
         </table>

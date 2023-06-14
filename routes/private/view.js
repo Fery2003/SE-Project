@@ -66,7 +66,7 @@ module.exports = function (app) {
 
   app.get('/manage/requests/refunds', async function (req, res) {
     const user = await getUser(req);
-    const refunds = await db.select('*').from('se_project.refund_request').where('user_id', user.user_id);
+    const refunds = await db.select('*').from('se_project.refund_request');
     return res.status(200).render('manage_refunds', { ...user, refunds }); 
   });
 

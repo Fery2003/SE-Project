@@ -186,12 +186,7 @@
                 });
             });
 
-            function extractTicketIdFromUrl() {
-                var url = window.location.href;
-                var ticketIdIndex = url.lastIndexOf('/') + 1;
-                var ticketId = url.substring(ticketIdIndex);
-                return ticketId;
-            }
+            
         });
 
     </script>
@@ -202,7 +197,7 @@
         <h1>Refund</h1>
 
         {{!-- Button to request a refund for a ride --}}
-        <button id="requestRefund" class="btn btn-primary">Request Refund</button>
+        <button type="button" id="requestRefund" class="btn btn-primary">Request Refund</button>
 
 
         <div id="refundContainer"></div>

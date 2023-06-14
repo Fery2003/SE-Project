@@ -36,7 +36,7 @@
             $.ajax({
                 url: "/api/v1/requests/senior/${requestId}",
                 type: "PUT",
-                status
+                status,
                     success: function (response) {
                     console.log(response);
                     updateTable(); // Update the table data
@@ -66,7 +66,7 @@
             $.ajax({
                 url: "/api/v1/requests/senior/${requestId}",
                 type: "PUT",
-                status
+                status,
                     success: function (response) {
                     console.log(response);
                     updateTable(); // Update the table data
@@ -113,7 +113,7 @@
                 $.ajax({
                     url: `/api/v1/requests/refunds/${id}`,
                     type: 'PUT',
-                    data: { refundStatus: "Accepted" },
+                    data: { refundStatus: "accepted" },
                     success: function (result) {
                         location.reload();
                     }
@@ -280,7 +280,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{#rRequests}}
+                {{#refunds}}
                 <tr>
                     <td>{{id}}</td>
                     <td>{{status}}</td>
@@ -294,7 +294,7 @@
                     </td>
                     {{/isAdmin}}
                 </tr>
-                {{/rRequests}}
+                {{/refunds}}
             </tbody>
 
         </table>
