@@ -176,7 +176,7 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href=".../manage/requests/refunds" class="dropdown-item">Review Refund
+                                    <a href=".../manage/requests/refunds" class="dropdown-item active">Review Refund
                                         Requests</a>
                                     <a href=".../manage/requests/seniors" class="dropdown-item">Review Senior
                                         Requests</a>

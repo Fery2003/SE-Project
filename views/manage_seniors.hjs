@@ -150,7 +150,7 @@
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a href=".../manage/requests/refunds" class="dropdown-item">Review Refund
                                         Requests</a>
-                                    <a href=".../manage/requests/seniors" class="dropdown-item">Review Senior
+                                    <a href=".../manage/requests/seniors" class="dropdown-item active">Review Senior
                                         Requests</a>
                                 </div>
                             </div>
