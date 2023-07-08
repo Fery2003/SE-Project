@@ -34,7 +34,7 @@
             const status = "accepted"
             // Make an AJAX request to delete the station
             $.ajax({
-                url: `/api/v1/requests/refund/${requestId}`,
+                url: `/api/v1/requests/refunds/${requestId}`,
                 type: "PUT",
                 status,
                 success: function (response) {
@@ -64,7 +64,7 @@
             const status = "rejected"
             // Make an AJAX request to delete the station
             $.ajax({
-                url: `/api/v1/requests/refund/${requestId}`,
+                url: `/api/v1/requests/refunds/${requestId}`,
                 type: "PUT",
                 status,
                 success: function (response) {
