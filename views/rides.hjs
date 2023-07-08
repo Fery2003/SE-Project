@@ -193,9 +193,9 @@
                     $(".simulate-ride").click(function () {
                         var data =
                         {
-                            "source": $(this).attr("origin"),
-                            "destination": $(this).attr("destination"),
-                            "date": $(this).attr("trip_date")
+                            "source": $(this).closest("tr").find("td:eq(2)").text(),
+                            "dest": $(this).closest("tr").find("td:eq(3)").text(),
+                            "date": $(this).closest("tr").find("td:eq(5)").text(),
                         }
 
                         $.ajax(
