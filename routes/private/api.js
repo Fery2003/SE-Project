@@ -796,4 +796,17 @@ module.exports = function (app) {
         res.status(500).send('Server Error!');
       }
     };
+
+  app.delete('/api/v1/logout', async (req, res) => {
+    try {
+      //I delete that user's token from session table
+      const {token} = await getUser(req);
+      const userSession = await db('se_project.session').where('token', token).del();
+      res.json('User logged out!');
+
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send('Server Error!');
+    }
+  });
 };

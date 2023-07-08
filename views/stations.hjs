@@ -274,6 +274,23 @@
                                     <a href="/resetPassword" class="dropdown-item">Reset Password</a>
                                 </div>
                             </div>
+                            <a id = "logout" href="#" class="nav-item nav-link">Logout</a>
+                            <script>
+                                document.getElementById("logout").addEventListener("click", function () {
+                                    $.ajax({
+                                        url: "/api/v1/logout",
+                                        type: "DELETE",
+                                        success: function (data) {
+                                            console.log(data);
+                                            window.location.href = "./login";
+                                        },
+                                        error: function (error) {
+                                            console.error("Error deleting station:", error);;
+                                        },
+                                    });
+                                    
+                                });
+                            </script>
                         </div>
                     </div>
                 </nav>
