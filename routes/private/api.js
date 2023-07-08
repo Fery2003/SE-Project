@@ -315,36 +315,37 @@ module.exports = function (app) {
   // Request ticket refund endpoint
   app.post('/api/v1/refund/:ticketId', async (req, res) => {
     try {
-      const { ticket_id } = req.params;
-      const { trip_date } = await db.raw('SELECT trip_date FROM se_project.ticket WHERE id = ?', [ticket_id]);
-      if (!ticket_id) {
+      const { ticketId } = req.params;
+      const { trip_date } = await db.raw('SELECT trip_date FROM se_project.ticket WHERE id = ?', [ticketId]);
+
+      if (!ticketId) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
-      if (Date.now() <= trip_date) {
+
+      if (new Date() <= new Date(trip_date)) {
         return res.status(400).json({ msg: 'Ticket is not expired yet' });
       }
-      // check ticket date
+
       const { user_id } = await getUser(req);
-      const ticket = await db.select('*').from('se_project.ticket').where('id', ticket_id).first();
-      if (ticket.trip_date < Date.now()) {
+      const ticket = await db.select('*').from('se_project.ticket').where('id', ticketId).first();
+
+      if (new Date(ticket.trip_date) < new Date()) {
         return res.status(400).json({ msg: 'Ticket is expired' });
       }
-      //const refund = await pool.query('INSERT INTO se_project.refund (ticket_id) VALUES ($1) RETURNING *', [ticket_id]);
 
       const refundAmount = await db
-        .select('amount')
+        .select('se_project.transaction.amount')
         .from('se_project.transaction')
         .innerJoin('se_project.user', 'se_project.transaction.user_id', 'se_project.user.id')
-        .innerJoin('se_project.ticket', 'se_project.transaction.user_id', 'se_project.ticket.user_id')
-        .where('se_project.ticket.id', ticket_id)
+        .innerJoin('se_project.ticket', 'se_project.transaction.ticket_id', 'se_project.ticket.id')
+        .where('se_project.ticket.id', ticketId)
         .andWhere('se_project.user.id', user_id);
 
-      const refund = await db
-        .insert([{ status: 'pending' }, { user_id: user_id }, { refunded_amount: refundAmount }, { ticket_id: ticket_id }])
-        .into('se_project.refund_request')
+      const refund = await db('se_project.refund_request')
+        .insert({ status: 'pending', user_id: user_id, refunded_amount: refundAmount, ticket_id: ticketId })
         .returning('*');
+
       res.json(refund[0]);
-      res.send('Refund request has been made');
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -717,7 +718,7 @@ module.exports = function (app) {
     try {
       const user = getUser(req);
       const { refundStatus } = req.body;
-      const {requestId} = req.params;
+      const { requestId } = req.params;
 
       if (refundStatus.length === 0) {
         return res.status(400).json({ msg: 'Refund cannot be updated with empty status!' });
@@ -755,7 +756,7 @@ module.exports = function (app) {
     try {
       const { newPrice } = req.body;
       const user = await getUser(req);
-      const {zoneId} = req.params;
+      const { zoneId } = req.params;
       console.log(zoneId);
       console.log(newPrice);
       if (user.isAdmin == false) {
@@ -800,7 +801,7 @@ module.exports = function (app) {
   app.delete('/api/v1/logout', async (req, res) => {
     try {
       //I delete that user's token from session table
-      const {token} = await getUser(req);
+      const { token } = await getUser(req);
       const userSession = await db('se_project.session').where('token', token).del();
       res.json('User logged out!');
 
