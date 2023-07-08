@@ -207,7 +207,7 @@
                                     console.log(result);
                                     let successMessage = $("<div>", {
                                         class: "alert alert-success",
-                                        text: `Station ${stationName} created successfully!`
+                                        text: "Ride Completed successfully!"
                                     });
                                     // Automatically remove the success message after 3 seconds
                                     setTimeout(function () {
