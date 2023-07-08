@@ -237,8 +237,7 @@
                     <td>{{sub_id}}</td>
                     <td>{{trip_date}}</td>
                     <td class="text-center">
-                        <input id="{{id}}" type="button" value="Refund Ticket" class="btn btn-primary refund-ticket"
-                            disabled>
+                        <input id="{{id}}" type="button" value="Refund Ticket" class="btn btn-primary refund-ticket">
                     </td>
                     <script>
                         let date = {{ trip_date }};
