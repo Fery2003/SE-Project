@@ -190,19 +190,6 @@
         <script>
             $(document).ready(
                 function () {
-                    //Show the rides from /api/v1/rides in the database
-                    $(document).on('click', '#showRides', function () {
-                        $.ajax(
-                            {
-                                url: '/api/v1/rides',
-                                type: 'GET',
-                                success: function (result) {
-                                    console.log(result);
-                                    $('#showRides').html(result);
-                                }
-                            }
-                        )
-                    });
                     $(".simulate-ride").click(function () {
                         var data =
                         {
@@ -213,14 +200,14 @@
 
                         $.ajax(
                             {
-                                url: `/api/v1/rides/simulate`,
+                                url: `/api/v1/ride/simulate`,
                                 type: 'PUT',
                                 data: data,
                                 success: function (result) {
                                     console.log(result);
                                     let successMessage = $("<div>", {
                                         class: "alert alert-success",
-                                        text: `Station ${stationName} created successfully!`
+                                        text: "Ride Completed successfully!"
                                     });
                                     // Automatically remove the success message after 3 seconds
                                     setTimeout(function () {
