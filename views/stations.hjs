@@ -272,25 +272,26 @@
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a href="/resetPassword" class="dropdown-item">Reset Password</a>
+                                    <a id="logout" href="#" class="dropdown-item">Logout</a>
+                                    <script>
+                                        document.getElementById("logout").addEventListener("click", function () {
+                                            $.ajax({
+                                                url: "/api/v1/logout",
+                                                type: "DELETE",
+                                                success: function (data) {
+                                                    console.log(data);
+                                                    window.location.href = "./login";
+                                                },
+                                                error: function (error) {
+                                                    console.error("Error deleting station:", error);;
+                                                },
+                                            });
+
+                                        });
+                                    </script>
                                 </div>
                             </div>
-                            <a id = "logout" href="#" class="nav-item nav-link">Logout</a>
-                            <script>
-                                document.getElementById("logout").addEventListener("click", function () {
-                                    $.ajax({
-                                        url: "/api/v1/logout",
-                                        type: "DELETE",
-                                        success: function (data) {
-                                            console.log(data);
-                                            window.location.href = "./login";
-                                        },
-                                        error: function (error) {
-                                            console.error("Error deleting station:", error);;
-                                        },
-                                    });
-                                    
-                                });
-                            </script>
+
                         </div>
                     </div>
                 </nav>

@@ -37,7 +37,7 @@
                 url: `/api/v1/requests/senior/${requestId}`,
                 type: "PUT",
                 data: status,
-                    success: function (response) {
+                success: function (response) {
                     console.log(response);
                     // updateTable(); // Update the table data
 
@@ -61,13 +61,13 @@
         });
         $("#requestsTable").on("click", "#btnReject", function () {
             var requestId = $(this).closest("tr").find("td:first").text();
-            const status = {seniorstatus:"rejected"}
+            const status = { seniorstatus: "rejected" }
             // Make an AJAX request to delete the station
             $.ajax({
                 url: `/api/v1/requests/senior/${requestId}`,
                 type: "PUT",
                 data: status,
-                    success: function (response) {
+                success: function (response) {
                     console.log(response);
                     // updateTable(); // Update the table data
 
@@ -214,25 +214,25 @@
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manage</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a href="/resetPassword" class="dropdown-item">Reset Password</a>
+                                    <a id="logout" href="#" class="dropdown-item">Logout</a>
+                                    <script>
+                                        document.getElementById("logout").addEventListener("click", function () {
+                                            $.ajax({
+                                                url: "/api/v1/logout",
+                                                type: "DELETE",
+                                                success: function (data) {
+                                                    console.log(data);
+                                                    window.location.href = "./login";
+                                                },
+                                                error: function (error) {
+                                                    console.error("Error deleting station:", error);;
+                                                },
+                                            });
+
+                                        });
+                                    </script>
                                 </div>
                             </div>
-                            <a id = "logout" href="#" class="nav-item nav-link">Logout</a>
-                            <script>
-                                document.getElementById("logout").addEventListener("click", function () {
-                                    $.ajax({
-                                        url: "/api/v1/logout",
-                                        type: "DELETE",
-                                        success: function (data) {
-                                            console.log(data);
-                                            window.location.href = "./login";
-                                        },
-                                        error: function (error) {
-                                            console.error("Error deleting station:", error);;
-                                        },
-                                    });
-                                    
-                                });
-                            </script>
                         </div>
                     </div>
                 </nav>
