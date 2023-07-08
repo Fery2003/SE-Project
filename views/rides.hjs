@@ -190,30 +190,17 @@
         <script>
             $(document).ready(
                 function () {
-                    //Show the rides from /api/v1/rides in the database
-                    $(document).on('click', '#showRides', function () {
-                        $.ajax(
-                            {
-                                url: '/api/v1/rides',
-                                type: 'GET',
-                                success: function (result) {
-                                    console.log(result);
-                                    $('#showRides').html(result);
-                                }
-                            }
-                        )
-                    });
                     $(".simulate-ride").click(function () {
                         var data =
                         {
-                            "source": $(this).attr("origin"),
-                            "destination": $(this).attr("destination"),
-                            "date": $(this).attr("trip_date")
+                            "source": $(this).closest("tr").find("td:eq(2)").text(),
+                            "dest": $(this).closest("tr").find("td:eq(3)").text(),
+                            "date": $(this).closest("tr").find("td:eq(5)").text(),
                         }
 
                         $.ajax(
                             {
-                                url: `/api/v1/rides/simulate`,
+                                url: `/api/v1/ride/simulate`,
                                 type: 'PUT',
                                 data: data,
                                 success: function (result) {

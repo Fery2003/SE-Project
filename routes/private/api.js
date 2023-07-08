@@ -103,7 +103,11 @@ module.exports = function (app) {
       const checkIfSubbedMonthly = await db.select('*').from('se_project.subscription').where('user_id', user_id).andWhere('sub_type', 2);
       const checkIfSubbedQuarterly = await db.select('*').from('se_project.subscription').where('user_id', user_id).andWhere('sub_type', 3);
 
-      if (checkIfSubbedAnnual.length > 0 && subType == 'annual' || checkIfSubbedMonthly.length > 0 && subType == 'monthly' || checkIfSubbedQuarterly.length > 0 && subType == 'quarterly') {
+      if (
+        (checkIfSubbedAnnual.length > 0 && subType == 'annual') ||
+        (checkIfSubbedMonthly.length > 0 && subType == 'monthly') ||
+        (checkIfSubbedQuarterly.length > 0 && subType == 'quarterly')
+      ) {
         return res.status(400).json({ msg: 'You already have a subscription' });
       }
 
@@ -209,7 +213,7 @@ module.exports = function (app) {
 
       const newTicket = await db.from('se_project.ticket').insert(ticket).returning('*');
       userRemainingTickets--;
-      const trans = await db.from('se_project.transaction').insert({ amount: 0, user_id: id, purchase_id: newTicket[0].id, purchase_type: 'ticket' })
+      const trans = await db.from('se_project.transaction').insert({ amount: 0, user_id: id, purchase_id: newTicket[0].id, purchase_type: 'ticket' });
 
       res.json(newTicket);
     } catch (err) {
@@ -399,13 +403,12 @@ module.exports = function (app) {
   app.put('/api/v1/ride/simulate', async (req, res) => {
     try {
       const { source, dest, date } = req.body;
-      const user = await getUser(req);
-      const { user_id } = user;
+      const { user_id } = await getUser(req);
       if (!source || !dest || !date) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
       const checkRide = await db.from('se_project.ride').where('user_id', user_id);
-      const found = false;
+      let found = false;
       for (let i = 0; i < checkRide.length; i++) {
         if (checkRide[i].origin == source && checkRide[i].destination == dest && checkRide[i].trip_date == date) {
           found = true;
@@ -420,6 +423,7 @@ module.exports = function (app) {
           .andWhere('user_id', user_id)
           .update('status', 'complete');
 
+        // await db.raw('UPDATE se_project.ride SET status = ? WHERE origin = ? AND destination = ? AND trip_date = ? AND user_id = ?', ['complete', source, dest, date, user_id]);
         res.send('Ride is now completed!');
       } else {
         res.send('No such ride exists.');
@@ -542,18 +546,14 @@ module.exports = function (app) {
               route_name: '' + myFromStation + myToStation,
               from_station_id: myFromStation,
               to_station_id: myToStation
-            }
-            let newStationFromToEntry = await db
-              .insert(newStationFromTo)
-              .into('se_project.route');
+            };
+            let newStationFromToEntry = await db.insert(newStationFromTo).into('se_project.route');
             const newStationToFrom = {
               route_name: '' + myToStation + myFromStation,
               from_station_id: myToStation,
               to_station_id: myFromStation
-            }
-            let newStationToFromEntry = await db
-              .insert(newStationToFrom)
-              .into('se_project.route');
+            };
+            let newStationToFromEntry = await db.insert(newStationToFrom).into('se_project.route');
 
             //add to SR table the new routes with their correspoding stations
             let idNewStationFromTo = await db.select('id').from('se_project.route').where('from_station_id', myFromStation);
@@ -702,7 +702,10 @@ module.exports = function (app) {
       } else {
         //const deleteRoute = await pool.query('DELETE FROM routes WHERE id = $1', [routeId]);
         const deleteRoute = await db('se_project.route').where('id', routeId.routeId).del();
-        const otherDirection = await db('se_project.route').where('from_station_id', deleteRoute.to_station_id).andWhere('to_station_id', deleteRoute.from_station_id).del();
+        const otherDirection = await db('se_project.route')
+          .where('from_station_id', deleteRoute.to_station_id)
+          .andWhere('to_station_id', deleteRoute.from_station_id)
+          .del();
         res.json('Route was deleted!');
       }
     } catch (error) {
@@ -800,7 +803,6 @@ module.exports = function (app) {
       const { token } = await getUser(req);
       const userSession = await db('se_project.session').where('token', token).del();
       res.json('User logged out!');
-
     } catch (error) {
       console.log(error.message);
       res.status(500).send('Server Error!');
