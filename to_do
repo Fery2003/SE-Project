@@ -1,5 +1,9 @@
 # I will add a to do list here of things we need to make sure we handle. If there is anything else add it. When a task is finished, write "done" next to it
 
+* get drop down to work
+* hash passwords
+* logout option
+* make sure purchases work
 
 - check price steps "just for me, you can ignore": // do we have to handle delete stations????????
     -take origin& dest names and get their ids from table station

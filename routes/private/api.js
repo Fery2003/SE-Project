@@ -701,6 +701,7 @@ module.exports = function (app) {
       } else {
         //const deleteRoute = await pool.query('DELETE FROM routes WHERE id = $1', [routeId]);
         const deleteRoute = await db('se_project.route').where('id', routeId.routeId).del();
+        const otherDirection = await db('se_project.route').where('from_station_id', deleteRoute.to_station_id).andWhere('to_station_id', deleteRoute.from_station_id).del();
         res.json('Route was deleted!');
       }
     } catch (error) {
