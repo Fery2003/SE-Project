@@ -138,7 +138,7 @@
                                     <a href=".../tickets/purchase" class="dropdown-item">Purchase Subscription</a>
                                 </div>
                             </div>
-                            <a href=".../prices" class="nav-item nav-link">Prices</a>
+                            <a href="../prices" class="nav-item nav-link">Prices</a>
                             <a href=".../rides" class="nav-item nav-link">My Rides</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>

@@ -192,7 +192,7 @@
                                                 type: "DELETE",
                                                 success: function (data) {
                                                     console.log(data);
-                                                    window.location.href = "./login";
+                                                    window.location.href = ".../login";
                                                 },
                                                 error: function (error) {
                                                     console.error("Error deleting station:", error);;

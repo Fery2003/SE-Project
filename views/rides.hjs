@@ -202,7 +202,39 @@
                                 }
                             }
                         )
-                    })
+                    });
+                    $(".simulate-ride").click(function () {
+                        var data =
+                        {
+                            "source": $(this).attr("origin"),
+                            "destination": $(this).attr("destination"),
+                            "date": $(this).attr("trip_date")
+                        }
+
+                        $.ajax(
+                            {
+                                url: `/api/v1/rides/simulate`,
+                                type: 'PUT',
+                                data: data,
+                                success: function (result) {
+                                    console.log(result);
+                                    let successMessage = $("<div>", {
+                                        class: "alert alert-success",
+                                        text: `Station ${stationName} created successfully!`
+                                    });
+                                    // Automatically remove the success message after 3 seconds
+                                    setTimeout(function () {
+                                        successMessage.remove();
+                                    }, 3000);
+
+                                    location.reload();
+                                },
+                                error: function (error) {
+                                    console.error("Error creating station:", error.responseJSON.msg);
+                                }
+                            }
+                        )
+                    });
                 }
             )
         </script>
@@ -221,7 +253,7 @@
                             <th scope="col">Destination Station</th>
                             <th scope="col">Ticket Id</th>
                             <th scope="col">Trip Date</th>
-
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -233,6 +265,10 @@
                             <td>{{destination}}</td>
                             <td>{{ticket_id}}</td>
                             <td>{{trip_date}}</td>
+                            <td class="text-center">
+                                <input id="{{id}}" type="button" value="Simulate Ride"
+                                    class="btn btn-primary simulate-ride">
+                            </td>
                         </tr>
                         {{/rides}}
                     </tbody>
