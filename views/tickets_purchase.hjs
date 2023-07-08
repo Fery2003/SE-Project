@@ -89,7 +89,7 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="../dashboard" class="nav-item nav-link active">Dashboard</a>
+                            <a href="../dashboard" class="nav-item nav-link">Dashboard</a>
                             {{#isAdmin}}
                             <a href="../manage/stations" class="nav-item nav-link">Stations</a>
                             <a href="../manage/routes" class="nav-item nav-link">Routes</a>

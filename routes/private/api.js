@@ -711,21 +711,17 @@ module.exports = function (app) {
   });
 
   // Accept/Reject Refund
-  //Complete it after subscription and online payment are done.
+  // Complete it after subscription and online payment are done.
   app.put('/api/v1/requests/refunds/:requestId', async (req, res) => {
     //refund status either is accepted or rejected
     try {
-      const user = getUser(req);
       const { refundStatus } = req.body;
-      const {requestId} = req.params;
+      const { requestId } = req.params;
 
       if (refundStatus.length === 0) {
         return res.status(400).json({ msg: 'Refund cannot be updated with empty status!' });
       } else {
-        //future dated == yes
-        //const updatedRefund = await pool.query('UPDATE refundrequests SET refundstatus = $1 WHERE id = $2 RETURNING *', [refundstatus, requestId]);
         await db('se_project.refund_request').where('id', requestId).update('status', refundStatus).returning('*');
-        // res.json(updatedRefund[0]);
         res.send('Refund request checked!');
       }
     } catch (error) {
@@ -736,14 +732,14 @@ module.exports = function (app) {
   // Accept/Reject Senior
   app.put('/api/v1/requests/senior/:requestId', async (req, res) => {
     try {
-      const requestId = req.params.requestId;
+      const { requestId } = req.params;
       const { seniorstatus } = req.body;
       const updatedSenior = await db.from('se_project.senior_request').where('id', requestId).update({ status: seniorstatus }).returning('*');
       if (seniorstatus == 'accepted') {
         const uid = await db.from('se_project.senior_request').where('id', requestId).select('user_id');
-        const updateUser = await db.from('se_project.user').where('id', uid[0].user_id).update('role_id', 3).returning('*');
+        await db.from('se_project.user').where('id', uid[0].user_id).update('role_id', 3).returning('*');
       }
-      res.json(updatedSenior);
+      res.status(200).json(updatedSenior);
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
