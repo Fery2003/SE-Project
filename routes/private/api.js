@@ -119,7 +119,7 @@ module.exports = function (app) {
         console.log('name matches');
         const { price } = await db.select('price').from('se_project.zone').where('id', zoneId).first();
         const numOfTickets = subType == 'annual' ? 100 : subType == 'quarterly' ? 25 : subType == 'monthly' ? 10 : -1;
-        const total = price * numOfTickets;
+        let total = price * numOfTickets;
         isSenior ? (total *= 0.5) : total;
 
         if (paidAmount < total) {

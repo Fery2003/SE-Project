@@ -112,7 +112,7 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="../dashboard" class="nav-item nav-link active">Dashboard</a>
+                            <a href="../dashboard" class="nav-item nav-link">Dashboard</a>
                             {{#isAdmin}}
                             <a href="../manage/stations" class="nav-item nav-link">Stations</a>
                             <a href="../manage/routes" class="nav-item nav-link">Routes</a>
@@ -221,8 +221,8 @@
                 <h6 class="text-uppercase text-body m-0">Subscriptions</h6>
             </div>
         </div>
-        <!-- Page Header End -->
     </div>
+    <!-- Page Header End -->
 
     <!-- Search Start -->
     <div class="container-fluid bg-white pt-3 px-lg-5">
@@ -242,13 +242,13 @@
             <div class="col-xl-2 col-lg-4 col-md-6 px-2">
                 <div class="time mb-3">
                     <input type="integer" id="paidAmount" class="form-control border-dark" style="padding: 25px;"
-                        placeholder="Enter Amount">
+                        placeholder="Amount">
                 </div>
             </div>
             <div class="col-xl-2 col-lg-4 col-md-6 px-2">
                 <div class="time mb-3">
                     <input type="number" id="zoneId" class="form-control border-dark" style="padding: 25px;"
-                        placeholder="Enter Zone Id">
+                        placeholder="Zone ID">
                 </div>
             </div>
             <div class="col-xl-2 col-lg-4 col-md-6 px-2">

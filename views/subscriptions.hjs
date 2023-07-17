@@ -112,7 +112,7 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="./dashboard" class="nav-item nav-link active">Dashboard</a>
+                            <a href="./dashboard" class="nav-item nav-link">Dashboard</a>
                             {{#isAdmin}}
                             <a href="./manage/stations" class="nav-item nav-link">Stations</a>
                             <a href="./manage/routes" class="nav-item nav-link">Routes</a>
@@ -251,50 +251,49 @@
 
         </table>
     </div>
-    <!-- Team Start -->
     <div class="container-fluid py-5">
         <div class="container py-5">
             <h1 class="display-4 text-uppercase text-center mb-5">Meet Our Team</h1>
             <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
                 <div class="team-item">
-                    <img class="img-fluid w-100 form-control" src="images/feras.jpeg" alt="">
+                    <img class="img-fluid w-100" src="images/fery.jpg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Feras Nizar</h4>
                         <p class="m-0">Software Engineer</p>
                     </div>
                 </div>
                 <div class="team-item">
-                    <img class="img-fluid w-100 form-control" src="images/rita.jpeg" alt="">
+                    <img class="img-fluid w-100" src="images/retret.jpg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Rita Emad</h4>
                         <p class="m-0">Software Engineer</p>
                     </div>
                 </div>
                 <div class="team-item">
-                    <img class="img-fluid w-100 form-control" src="images/yahia.jpeg" alt="">
+                    <img class="img-fluid w-100" src="images/yaya.jpg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Yahia Ehab</h4>
                         <p class="m-0">Software Engineer</p>
                     </div>
                 </div>
                 <div class="team-item">
-                    <img class="img-fluid w-100" src="images/jana.jpeg" alt="">
+                    <img class="img-fluid w-100" src="images/jana.jpg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Jana ElKasaby</h4>
                         <p class="m-0">Software Engineer</p>
                     </div>
                 </div>
                 <div class="team-item">
-                    <img class="img-fluid w-100" src="images/Mariam.jpeg" alt="">
+                    <img class="img-fluid w-100" src="images/deebo.jpg" alt="">
                     <div class="position-relative py-4">
                         <h4 class="text-uppercase">Mariam Amr</h4>
                         <p class="m-0">Software Engineer</p>
                     </div>
                 </div>
                 <div class="team-item">
-                    <img class="img-fluid w-100 form-control" src="images/raouf.jpeg" alt="">
+                    <img class="img-fluid w-100" src="images/raouf.jpeg" alt="">
                     <div class="position-relative py-4">
-                        <h4 class="text-uppercase">AbdelRaouf Khorshed</h4>
+                        <h4 class="text-uppercase">Abdelraouf Khorshed</h4>
                         <p class="m-0">Software Engineer</p>
                     </div>
                 </div>
