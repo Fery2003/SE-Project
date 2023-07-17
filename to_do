@@ -2,13 +2,15 @@
 
 * hash passwords
 * make sure purchases work
-* fix simulate ride so that it actuallu works
+* fix simulate ride so that it actually works
 * when refunding ticket:
-    delete it from my ticket
-    change status of ride to cancelled or delete it uslan
+    -delete it from my ticket
+    -change status of ride to cancelled or delete it uslan
     increment the number of tickets by one if purchase was of subscription type
+* we gotta fix the navbar redirections on the ticket purchase pages
+* meet our team is fixed in some pages but not all
 
-- check price steps "just for me, you can ignore": // do we have to handle delete stations????????
+* check price steps "just for me, you can ignore": // do we have to handle delete stations????????
     -take origin& dest names and get their ids from table station
     -check first if there is an existing direct route from origin to destination from table routes using from&to stations
     -if there is none, so we trace it using the 12 / 23/ etc.. combination from table station_route in order to know the next station
