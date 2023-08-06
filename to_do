@@ -1,14 +1,15 @@
 # I will add a to do list here of things we need to make sure we handle. If there is anything else add it. When a task is finished, write "done" next to it
 
+Comments:
+* i think we should hide like all the ids and they should be like automatically generated in a way. they might add some extra work in the backend for some things tho like things that need for the user to input it. - Mariam
+
+To-Do:
+
 * hash passwords
 * make sure purchases work
-* fix simulate ride so that it actually works
 * when refunding ticket:
-    -delete it from my ticket
-    -change status of ride to cancelled or delete it uslan
-    increment the number of tickets by one if purchase was of subscription type
-* we gotta fix the navbar redirections on the ticket purchase pages
-* meet our team is fixed in some pages but not all
+    increment the number of tickets by one if purchase was of subscription type 
+    (Should we do this when requesting refund or after refunding? and should we be deleting/cancelling that ride when submiting the request or when the admin approves? - Mariam)
 * improve payment pages (automatically input the price, etc..)
 
 * check price steps "just for me, you can ignore": // do we have to handle delete stations????????

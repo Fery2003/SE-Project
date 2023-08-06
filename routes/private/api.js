@@ -320,33 +320,47 @@ module.exports = function (app) {
   app.post('/api/v1/refund/:ticketId', async (req, res) => {
     try {
       const { ticketId } = req.params;
-      const {trip_date} = await db.from('se_project.ticket').where('id', parseInt(ticketId)).first();
-      //const { trip_date } = await db.raw('SELECT trip_date FROM se_project.ticket WHERE id = ?', [ticketId]);
-
+      const { user_id } = await getUser(req);
       if (!ticketId) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
 
-      const { user_id } = await getUser(req);
-      const ticket = await db.select('*').from('se_project.ticket').where('id', ticketId).first();
-
-      if (new Date(ticket.trip_date) < new Date()) {
+      //TODO: check that the trip is not expired
+      const {trip_date} = await db.from('se_project.ticket').where('id', parseInt(ticketId)).first();
+      //const { trip_date } = await db.raw('SELECT trip_date FROM se_project.ticket WHERE id = ?', [ticketId]);
+      if (new Date(trip_date) < new Date()) {
         return res.status(400).json({ msg: 'Ticket is expired' });
       }
+      else {
+        //TODO: add the ticket into the refund requests table
+        //get ticket transaction of that user
+        const userTicketTransaction = await db.select("*").from("se_project.transaction")
+        .where("user_id", user_id)
+        .andWhere("purchase_type", "ticket")
+        .andWhere("purchase_id", ticketId).first();
 
-      const refundAmount = await db
-        .select('se_project.transaction.amount')
-        .from('se_project.transaction')
-        .innerJoin('se_project.user', 'se_project.transaction.user_id', 'se_project.user.id')
-        .innerJoin('se_project.ticket', 'se_project.transaction.purchase_id', 'se_project.ticket.id')
-        .where('se_project.ticket.id', ticketId)
-        .andWhere('se_project.user.id', user_id);
+        const refundAmount = userTicketTransaction.amount;
 
-      const refund = await db('se_project.refund_request')
-        .insert({ status: 'pending', user_id: user_id, refunded_amount: refundAmount, ticket_id: ticketId })
-        .returning('*');
+        
+        // const refundAmount = await db
+        //   .select('se_project.transaction.amount')
+        //   .from('se_project.transaction')
+        //   .innerJoin('se_project.user', 'se_project.transaction.user_id', 'se_project.user.id')
+        //   .innerJoin('se_project.ticket', 'se_project.transaction.purchase_id', 'se_project.ticket.id')
+        //   .where('se_project.ticket.id', ticketId)
+        //   .andWhere('se_project.user.id', user_id);
 
-      res.json(refund[0]);
+        const refund = await db('se_project.refund_request')
+          .insert({ status: 'pending', user_id: user_id, refund_amount: refundAmount, ticket_id: ticketId })
+          .returning('*');
+
+        const refundedRide = await db.from("se_project.ride").where("ticket_id", ticketId).andWhere("trip_date", trip_date).andWhere("user_id", user_id).del().returning("*");
+        res.json("Refund request completed and ride has been deleted");
+
+      }
+
+      //const ticket = await db.select('*').from('se_project.ticket').where('id', ticketId).first();
+
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error!');
@@ -405,7 +419,7 @@ module.exports = function (app) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
       const checkRide = await db.from('se_project.ride').where('user_id', user_id);
-      let found = false; 
+      let found = false;
       let rideId = 0;
       for (let i = 0; i < checkRide.length; i++) {
         if (checkRide[i].origin == source && checkRide[i].destination == dest && checkRide[i].trip_date == date) {
