@@ -34,7 +34,7 @@
                     const ticketId = $(this).attr("id");
                     $.ajax({
                         type: "POST",
-                        url: '/api/v1/refund/${{ticketId}}',
+                        url: `/api/v1/refund/${ticketId}`,
                         success: function (serverResponse) {
                             if (serverResponse) {
                                 alert('Successfully Refunded Ticket');

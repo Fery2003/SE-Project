@@ -137,7 +137,7 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="../requests/refund" class="dropdown-item">My Refund
+                                    <a href="../requests/refund" class="dropdown-item">Refund
                                         Requests</a>
                                     <a href="../requests/senior" class="dropdown-item">Senior Status Request</a>
                                 </div>
@@ -164,7 +164,7 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="../requests/refund" class="dropdown-item">My Refund
+                                    <a href="../requests/refund" class="dropdown-item">Refund
                                         Requests</a>
                                     <a href="../requests/senior" class="dropdown-item active">Senior Status</a>
                                 </div>
@@ -221,6 +221,31 @@
             <br>
 
             <button type="button" class="btn btn-primary" id="updateSeniorBtn">Update</button>
+        </div>
+
+        <h1>My Senior Requests</h1>
+
+
+        <div id="seniorContainer">
+            <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">National Id</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#senior}}
+                <tr>
+                    <td>{{id}}</td>
+                    <td>{{status}}</td>
+                    <td>{{national_id}}</td>
+                </tr>
+                {{/senior}}
+            </tbody>
+
+        </table>
         </div>
 
         <!-- Footer Start -->

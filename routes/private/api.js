@@ -320,14 +320,11 @@ module.exports = function (app) {
   app.post('/api/v1/refund/:ticketId', async (req, res) => {
     try {
       const { ticketId } = req.params;
-      const { trip_date } = await db.raw('SELECT trip_date FROM se_project.ticket WHERE id = ?', [ticketId]);
+      const {trip_date} = await db.from('se_project.ticket').where('id', parseInt(ticketId)).first();
+      //const { trip_date } = await db.raw('SELECT trip_date FROM se_project.ticket WHERE id = ?', [ticketId]);
 
       if (!ticketId) {
         return res.status(400).json({ msg: 'Please enter all fields' });
-      }
-
-      if (new Date() <= new Date(trip_date)) {
-        return res.status(400).json({ msg: 'Ticket is not expired yet' });
       }
 
       const { user_id } = await getUser(req);
@@ -341,7 +338,7 @@ module.exports = function (app) {
         .select('se_project.transaction.amount')
         .from('se_project.transaction')
         .innerJoin('se_project.user', 'se_project.transaction.user_id', 'se_project.user.id')
-        .innerJoin('se_project.ticket', 'se_project.transaction.ticket_id', 'se_project.ticket.id')
+        .innerJoin('se_project.ticket', 'se_project.transaction.purchase_id', 'se_project.ticket.id')
         .where('se_project.ticket.id', ticketId)
         .andWhere('se_project.user.id', user_id);
 
@@ -408,19 +405,18 @@ module.exports = function (app) {
         return res.status(400).json({ msg: 'Please enter all fields' });
       }
       const checkRide = await db.from('se_project.ride').where('user_id', user_id);
-      let found = false;
+      let found = false; 
+      let rideId = 0;
       for (let i = 0; i < checkRide.length; i++) {
         if (checkRide[i].origin == source && checkRide[i].destination == dest && checkRide[i].trip_date == date) {
           found = true;
+          rideId = checkRide[i].id;
         }
       }
       if (found == true) {
         await db
           .from('se_project.ride')
-          .where('origin', source)
-          .andWhere('destination', dest)
-          .andWhere('trip_date', date)
-          .andWhere('user_id', user_id)
+          .where('id', rideId)
           .update('status', 'complete');
 
         // await db.raw('UPDATE se_project.ride SET status = ? WHERE origin = ? AND destination = ? AND trip_date = ? AND user_id = ?', ['complete', source, dest, date, user_id]);

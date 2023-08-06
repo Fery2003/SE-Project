@@ -112,7 +112,7 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="../requests/refund" class="dropdown-item">My
+                                    <a href="../requests/refund" class="dropdown-item">Refund
                                         Requests</a>
                                     <a href="../requests/senior" class="dropdown-item">Senior Status Request</a>
                                 </div>
@@ -139,7 +139,7 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Requests</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="../requests/refund" class="dropdown-item active">My
+                                    <a href="../requests/refund" class="dropdown-item active">Refund
                                         Requests</a>
                                     <a href="../requests/senior" class="dropdown-item">Senior Status</a>
                                 </div>
@@ -179,16 +179,16 @@
         <!-- Navbar End -->
         <!-- Page Header Start -->
         <div class="container-fluid page-header">
-            <h1 class="display-3 text-uppercase text-white mb-3">My Requests</h1>
+            <h1 class="display-3 text-uppercase text-white mb-3">My Refund Requests</h1>
             <div class="d-inline-flex text-white">
                 <h6 class="text-uppercase m-0"><a class="text-white" href="/dashboard">Home</a></h6>
                 <h6 class="text-body m-0 px-3">/</h6>
-                <h6 class="text-uppercase text-body m-0">My Requests</h6>
+                <h6 class="text-uppercase text-body m-0">My Refund Requests</h6>
             </div>
         </div>
         <!-- Page Header End -->
     </div>
-    <script>
+    {{!-- <script>
         $(document).ready(function () {
             // Request a refund for a ride
             $(document).on('click', '#requestRefund', function () {
@@ -207,7 +207,7 @@
 
         });
 
-    </script>
+    </script> --}}
 
     </head>
 
